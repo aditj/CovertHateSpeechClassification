@@ -1,0 +1,15 @@
+INFO:root:Communication round: 0, Aggregated Accuracies: 0.0003267173078493833 with 77 clients
+INFO:root:Communication round: 1, Aggregated Accuracies: 0.002047681731753693 with 43 clients
+INFO:root:Communication round: 2, Aggregated Accuracies: 0.010291595197255574 with 44 clients
+INFO:root:Communication round: 3, Aggregated Accuracies: 0.03965462104253279 with 59 clients
+INFO:root:Communication round: 4, Aggregated Accuracies: 0.11020915606260057 with 86 clients
+INFO:root:Communication round: 5, Aggregated Accuracies: 0.26331236897274646 with 60 clients
+INFO:root:Communication round: 6, Aggregated Accuracies: 0.46623363233323023 with 61 clients
+INFO:root:Communication round: 7, Aggregated Accuracies: 0.6189955336797011 with 69 clients
+INFO:root:Communication round: 8, Aggregated Accuracies: 0.7739409042363833 with 53 clients
+INFO:root:Communication round: 9, Aggregated Accuracies: 0.8491580442280374 with 62 clients
+INFO:root:Communication round: 10, Aggregated Accuracies: 0.8811093430325068 with 83 clients
+INFO:root:Communication round: 11, Aggregated Accuracies: 0.8923560716013547 with 52 clients
+INFO:root:Communication round: 12, Aggregated Accuracies: 0.8966431764795029 with 83 clients
+INFO:root:Communication round: 13, Aggregated Accuracies: 0.8998829896153283 with 86 clients
+INFO:root:Communication round: 14, Aggregated Accuracies: 0.8981768967438901 with 79 clients
