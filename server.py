@@ -9,13 +9,12 @@ import logging
 logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
 
 class Server():
-    def __init__(self,n_clients,n_communications,parameters,device_data_matrix):
+    def __init__(self,n_clients,n_communications,parameters):
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
         self.aggregated_parameters = parameters.copy()
         self.zero_aggregated_parameters()
         self.n_communications = n_communications
-        self.device_data_matrix = device_data_matrix
         self.clients = []
         self.initialize_clients()
         self.aggregated_loss = 0

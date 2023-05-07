@@ -31,16 +31,16 @@ class MarkovChain():
                 self.successful_round[t] = 1
         self.success_prob = self.n_success/self.n_visits
         print("Success probability for each oracle state: ",self.success_prob)
-
-sucess_probs = []
-m = MarkovChain()
-for thres in np.linspace(1,10,100):
-    sucess_probs.append(m.generate_device_data_matrix(thresfactor=thres))
-import matplotlib.pyplot as plt
-plt.plot(np.linspace(1,10,100),sucess_probs)
-plt.xlabel("Threshold factor")
-plt.ylabel("Success probability")
-plt.savefig("./data/success_prob_vs_threshold_factor.png")
+def generate_success_prob():
+    sucess_probs = []
+    m = MarkovChain()
+    for thres in np.linspace(1,10,100):
+        sucess_probs.append(m.generate_device_data_matrix())
+    import matplotlib.pyplot as plt
+    plt.plot(np.linspace(1,10,100),sucess_probs)
+    plt.xlabel("Threshold factor")
+    plt.ylabel("Success probability")
+    plt.savefig("./data/success_prob_vs_threshold_factor.png")
 
 
 # function for generating device data matrix

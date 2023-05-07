@@ -19,12 +19,11 @@ def main():
         create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data)
         print("Datasets created")
         
-    device_data_matrix = np.load("./data/device_data_matrix.npy")
-    print("Device data matrix loaded")
+    
 
     parameters = Client(0,BERTClass()).get_parameters()
     print("Initial Parameters initialized")
-    s = Server(N_device,N_communication_rounds,parameters,device_data_matrix)
+    s = Server(N_device,N_communication_rounds,parameters)
     print("Server initialized")
     
     s.train()

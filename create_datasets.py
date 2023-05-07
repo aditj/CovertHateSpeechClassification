@@ -1,7 +1,6 @@
 ### Create datasets
 #### Partition the entire dataset into N Clients
 import pandas as pd
-from markovchain import generate_device_data_matrix
 
 ## Function to create datasets
 def create_datasets_clients(N_device = 100, fraction_of_data = 1):
@@ -14,8 +13,6 @@ def create_datasets_clients(N_device = 100, fraction_of_data = 1):
     df = df.sample(frac=1).reset_index(drop=True)
     N_total = df.shape[0]
     N_batch = int(N_total/N_device)
-    generate_device_data_matrix(N_device = N_device,N_total = N_total)
-    print("Device data matrix generated")
 
     #### Partion the dataset into N devices disjoint datasets and save dataset
     #### Serially partition the dataset
