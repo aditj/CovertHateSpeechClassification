@@ -2,11 +2,11 @@ import torch
 from client import Client
 from model import BERTClass
 import numpy as np
+from markovchain import MarkovChain
 from tqdm import tqdm
 LOG = "cmd.log"
 import logging                                                     
 logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
-
 
 class Server():
     def __init__(self,n_clients,n_communications,parameters,device_data_matrix):
@@ -21,23 +21,32 @@ class Server():
         self.aggregated_loss = 0
         self.n_batch_per_client = self.clients[0].train_batch_size
         self.aggregated_accuracies = np.zeros(self.n_communications)
+        self.markovchain = MarkovChain()
+        self.markovchain.generate_device_data_matrix()
+        self.successful_round = self.markovchain.successful_round
+        self.device_data_matrix = self.markovchain.device_data_matrix
         print("Server initialized")
     def train(self):
         # for each communication round
         for i in tqdm(range(self.n_communications)):
-
+            if self.successful_round[i] == 1:
+                pass
+            else:
+                logging.info("Communication round {} failed".format(i))
+                print("Communication round {} failed".format(i))
+                if i > 0:
+                    self.aggregated_accuracies[i] = self.aggregated_accuracies[i-1]
+                continue
             self.zero_aggregated_parameters() # zero the aggregated parameters
             self.aggregated_loss = 0 # zero the aggregated loss
-           # clients_participating = self.device_data_matrix[i] # get the clients participating in this communication round
             clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
-            # randomly select clients
-            self.percent_clients = 0.6
-            self.percent_clients = np.random.uniform(0.4,0.9)
-            clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
-            for j in tqdm(clients_participating): # for each client
-                # if client_batch_size == 0:  # if the client is not participating in this communication round,
-                #     continue
-                client_batch_size = 40
+            clients_participating = self.device_data_matrix[i] # get the clients participating in this communication round
+            # # randomly select clients
+            # self.percent_clients = 0.6
+            # self.percent_clients = np.random.uniform(0.4,0.9)
+           # clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
+            for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
+                
                 self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client
                 self.add_parameters(self.clients[j].get_parameters()) # add the parameters to the aggregated parameters
                 self.aggregated_loss += self.clients[j].evaluate(self.clients[j].get_parameters(),client_batch_size) # add the loss to the aggregated loss
