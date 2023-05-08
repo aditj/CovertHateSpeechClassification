@@ -1,0 +1,43 @@
+INFO:root:Communication round 0 failed
+INFO:root:Eavesdropper accuracy: 0.011680482290881688
+INFO:root:Communication round 1 failed
+INFO:root:Eavesdropper accuracy: 0.007912584777694047
+INFO:root:Communication round 2 failed
+INFO:root:Eavesdropper accuracy: 0.015071590052750565
+INFO:root:Communication round: 3, Aggregated Accuracies: 0.014420062695924765 with 10 clients
+INFO:root:Communication round 4 failed
+INFO:root:Eavesdropper accuracy: 0.242778196433057
+INFO:root:Communication round 5 failed
+INFO:root:Eavesdropper accuracy: 0.613539311730721
+INFO:root:Communication round 6 failed
+INFO:root:Eavesdropper accuracy: 0.7943983923637277
+INFO:root:Communication round 7 failed
+INFO:root:Eavesdropper accuracy: 0.8662396382818387
+INFO:root:Communication round 8 failed
+INFO:root:Eavesdropper accuracy: 0.889851796031148
+INFO:root:Communication round 9 failed
+INFO:root:Eavesdropper accuracy: 0.8941220798794273
+INFO:root:Communication round 10 failed
+INFO:root:Eavesdropper accuracy: 0.8961316252197941
+INFO:root:Communication round: 11, Aggregated Accuracies: 0.0322884012539185 with 10 clients
+INFO:root:Communication round: 12, Aggregated Accuracies: 0.013793103448275858 with 10 clients
+INFO:root:Communication round: 13, Aggregated Accuracies: 0.34984326018808776 with 10 clients
+INFO:root:Communication round: 14, Aggregated Accuracies: 0.6636363636363637 with 10 clients
+INFO:root:Communication round: 15, Aggregated Accuracies: 0.8175548589341692 with 10 clients
+INFO:root:Communication round: 16, Aggregated Accuracies: 0.8717868338557994 with 10 clients
+INFO:root:Communication round: 17, Aggregated Accuracies: 0.8943573667711598 with 10 clients
+INFO:root:Communication round: 18, Aggregated Accuracies: 0.8990595611285265 with 10 clients
+INFO:root:Communication round: 19, Aggregated Accuracies: 0.9006269592476487 with 10 clients
+INFO:root:Communication round: 20, Aggregated Accuracies: 0.9009404388714731 with 10 clients
+INFO:root:Communication round: 21, Aggregated Accuracies: 0.9012539184952976 with 10 clients
+INFO:root:Communication round: 22, Aggregated Accuracies: 0.9012539184952976 with 10 clients
+INFO:root:Communication round: 23, Aggregated Accuracies: 0.901567398119122 with 10 clients
+INFO:root:Communication round: 24, Aggregated Accuracies: 0.901567398119122 with 10 clients
+INFO:root:Communication round: 25, Aggregated Accuracies: 0.901567398119122 with 10 clients
+INFO:root:Communication round: 26, Aggregated Accuracies: 0.901567398119122 with 10 clients
+INFO:root:Communication round: 27, Aggregated Accuracies: 0.901567398119122 with 10 clients
+INFO:root:Communication round: 28, Aggregated Accuracies: 0.901567398119122 with 10 clients
+INFO:root:Communication round 29 failed
+INFO:root:Eavesdropper accuracy: 0.8967596081386586
+INFO:root:Communication round 30 failed
+INFO:root:Eavesdropper accuracy: 0.8970108013062045

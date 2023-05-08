@@ -18,7 +18,7 @@ class Server():
         self.clients = []
         self.initialize_clients()
         self.aggregated_loss = 0
-        self.n_batch_per_client = self.clients[0].train_batch_size
+        self.n_batch_per_client = self.clients[0].n_batch_per_client
         self.aggregated_accuracies = np.zeros(self.n_communications)
         self.markovchain = MarkovChain(N_device=self.n_clients)
         self.markovchain.generate_device_data_matrix()

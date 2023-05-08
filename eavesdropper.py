@@ -32,12 +32,11 @@ class Eavesdropper():
         train_df['list'] = train_df[['toxic','severe_toxic','obscene','threat','insult','identity_hate']].values.tolist()
         train_df = train_df.drop(['toxic','severe_toxic','obscene','threat','insult','identity_hate'],axis=1)
         train_df = train_df.sample(n = self.batch_size*self.n_batches_per_client, random_state=200)
-        train_df = train_df.sample(frac=0.8, random_state=200)
         train_df = train_df.reset_index(drop=True)
         train_df.to_csv('./data/client_datasets/eavesdropper_train.csv',index=False)
         n_train = len(train_df)
         n_valid = len(df) - n_train
-        valid_df = df.sample(n = int(n_valid*0.1), random_state=200)
+        valid_df = df.sample(n = int(n_valid*0.05), random_state=200)
         valid_df['list'] = valid_df[['toxic','severe_toxic','obscene','threat','insult','identity_hate']].values.tolist()
         valid_df = valid_df.drop(['toxic','severe_toxic','obscene','threat','insult','identity_hate'],axis=1)
         valid_df = valid_df.reset_index(drop=True)
@@ -76,7 +75,7 @@ class Eavesdropper():
                 optimizer.step()
             #print(f'Client: {self.cid}, Batch: {_}, Loss:  {loss.item()}')
     
-    def evaluate(self,parameters,batch_size):
+    def evaluate(self,parameters):
         self.set_parameters(parameters)
         self.model.eval()
         fin_targets=[]
@@ -92,7 +91,7 @@ class Eavesdropper():
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) >= 0.5
         accuracy = metrics.accuracy_score(fin_targets, outputs)
-        print("Eavesdropper: ",self.cid," Accuracy: ",accuracy)
+        print("Eavesdropper Accuracy: ",accuracy)
         return accuracy
     def get_parameters(self):
         return self.model.state_dict()

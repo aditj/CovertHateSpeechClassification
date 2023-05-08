@@ -79,6 +79,7 @@ class Client():
         self.train_dataset = CustomDataset(train_df, tokenizer, self.max_len)
         self.valid_dataset = CustomDataset(valid_df, tokenizer, self.max_len)
         self.train_loader = DataLoader(self.train_dataset, shuffle = True, batch_size=self.train_batch_size, num_workers=0)
+        self.n_batch_per_client = len(self.train_loader)//self.train_batch_size
         self.valid_loader = DataLoader(self.valid_dataset, shuffle = True, batch_size=self.valid_batch_size, num_workers=0)
     def train(self,parameters,n_batches_max,i):
         self.set_parameters(parameters)
@@ -105,7 +106,8 @@ class Client():
                 targets = data['targets'].to(self.device,torch.float)
                 outputs = self.model(ids, mask, token_type_ids)
                 optimizer.zero_grad()
-                loss = torch.nn.BCEWithLogitsLoss()(outputs, targets)
+                ### Add weights for classes to loss function
+                loss = torch.nn.BCEWithLogitsLoss(pos_weight = torch.tensor([10.0, 10.0, 10.0, 10.0, 10.0, 10.0]))(outputs, targets)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
