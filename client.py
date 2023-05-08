@@ -55,7 +55,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 20,valid_batch_size = 20,max_len = 20,epochs = 1,learning_rate = 1e-04,device = "cuda"):
+    def __init__(self,cid,network,train_batch_size = 20,valid_batch_size = 20,max_len = 40,epochs = 1,learning_rate = 1e-03,device = "cuda"):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -109,7 +109,7 @@ class Client():
                 ### Add weights for samples with all 0 classes to avoid bias
                 all_zeros = torch.zeros([6])
                 all_zeros = all_zeros.to(self.device)
-                weights = torch.where(targets == all_zeros,torch.tensor(1.0).to(self.device),torch.tensor(10.0).to(self.device))
+                weights = torch.where(targets == all_zeros,torch.tensor(0.0).to(self.device),torch.tensor(10.0).to(self.device))
                 weights = weights.to(self.device)
                 loss = torch.nn.BCEWithLogitsLoss(weight = weights)(outputs, targets)
                 optimizer.zero_grad()
@@ -134,7 +134,7 @@ class Client():
         outputs = np.array(fin_outputs) >= 0.5
         ## create weights for samples with all 0 classes to avoid bias
         all_zeros = np.zeros([6])
-        weights = np.where(np.array(fin_targets) == all_zeros,1.0,10.0).sum(axis = 1)
+        weights = np.where(np.array(fin_targets) == all_zeros,0.0,10.0).sum(axis = 1)
         weights = weights/weights.sum()
         accuracy = metrics.accuracy_score(fin_targets, outputs, sample_weight = weights)
         print("Client: ",self.cid," Accuracy: ",accuracy)
