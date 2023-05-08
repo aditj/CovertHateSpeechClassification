@@ -35,7 +35,7 @@ class Server():
             if self.successful_round[i] == 1:
                 pass
             else:
-                
+                continue
                 self.eavesdropper.train(self.obfuscating_parameters)
                 self.obfuscating_parameters = self.eavesdropper.get_parameters()
                 self.eavesdropper_accuracy[i] = self.eavesdropper.evaluate(self.obfuscating_parameters)
@@ -49,10 +49,12 @@ class Server():
             self.aggregated_loss = 0 # zero the aggregated loss
             clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
             clients_participating = self.device_data_matrix[i] # get the clients participating in this communication round
-            # # randomly select clients
-            # self.percent_clients = 0.6
-            # self.percent_clients = np.random.uniform(0.4,0.9)
-           # clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
+            # randomly select clients
+            self.percent_clients = 0.6
+            self.percent_clients = np.random.uniform(0.4,0.9)
+            clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
+            clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
+
             for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
                 
                 self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client

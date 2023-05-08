@@ -90,6 +90,11 @@ class Eavesdropper():
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) >= 0.5
+        ## create weights for samples with all 0 classes to avoid bias
+        all_zeros = np.zeros([6])
+        weights = np.where(np.array(fin_targets) == all_zeros,1.0,10.0).sum(axis=1)
+        print("No of samples will all zero classes: ",np.where(weights == 6.0).sum())
+        accuracy = metrics.accuracy_score(fin_targets, outputs, sample_weight = weights)
         accuracy = metrics.accuracy_score(fin_targets, outputs)
         print("Eavesdropper Accuracy: ",accuracy)
         return accuracy

@@ -55,7 +55,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 20,valid_batch_size = 20,max_len = 20,epochs = 1,learning_rate = 1e-05,device = "cuda"):
+    def __init__(self,cid,network,train_batch_size = 20,valid_batch_size = 20,max_len = 20,epochs = 1,learning_rate = 1e-04,device = "cuda"):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -106,8 +106,12 @@ class Client():
                 targets = data['targets'].to(self.device,torch.float)
                 outputs = self.model(ids, mask, token_type_ids)
                 optimizer.zero_grad()
-                ### Add weights for classes to loss function
-                loss = torch.nn.BCEWithLogitsLoss(pos_weight = torch.tensor([10.0, 10.0, 10.0, 10.0, 10.0, 10.0]))(outputs, targets)
+                ### Add weights for samples with all 0 classes to avoid bias
+                all_zeros = torch.zeros([6])
+                all_zeros = all_zeros.to(self.device)
+                weights = torch.where(targets == all_zeros,torch.tensor(1.0).to(self.device),torch.tensor(10.0).to(self.device))
+                weights = weights.to(self.device)
+                loss = torch.nn.BCEWithLogitsLoss(weight = weights)(outputs, targets)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -128,7 +132,11 @@ class Client():
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) >= 0.5
-        accuracy = metrics.accuracy_score(fin_targets, outputs)
+        ## create weights for samples with all 0 classes to avoid bias
+        all_zeros = np.zeros([6])
+        weights = np.where(np.array(fin_targets) == all_zeros,1.0,10.0).sum(axis = 1)
+        weights = weights/weights.sum()
+        accuracy = metrics.accuracy_score(fin_targets, outputs, sample_weight = weights)
         print("Client: ",self.cid," Accuracy: ",accuracy)
         return accuracy
     
