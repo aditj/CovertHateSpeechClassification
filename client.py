@@ -65,7 +65,7 @@ class Client():
         self.max_len = max_len
         self.load_data()
         self.model = network
-        self.model.to(device)
+        self.model.to(self.device)
        
         print("Client", self.cid, "initialized with ",len(self.train_dataset),"train samples and ",len(self.valid_dataset),"valid samples")
 

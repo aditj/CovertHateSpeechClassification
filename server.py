@@ -7,7 +7,7 @@ from tqdm import tqdm
 LOG = "cmd.log"
 import logging                                                     
 logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
-
+from eavesdropper import Eavesdropper
 class Server():
     def __init__(self,n_clients,n_communications,parameters):
         self.n_clients = n_clients
@@ -20,10 +20,14 @@ class Server():
         self.aggregated_loss = 0
         self.n_batch_per_client = self.clients[0].train_batch_size
         self.aggregated_accuracies = np.zeros(self.n_communications)
-        self.markovchain = MarkovChain()
+        self.markovchain = MarkovChain(N_device=self.n_clients)
         self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
+        self.train_batch_size = self.clients[0].train_batch_size
+        self.eavesdropper = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len)
+        self.obfuscating_parameters = parameters.copy()
+        self.eavesdropper_accuracy = np.zeros(self.n_communications)
         print("Server initialized")
     def train(self):
         # for each communication round
@@ -31,7 +35,12 @@ class Server():
             if self.successful_round[i] == 1:
                 pass
             else:
+                
+                self.eavesdropper.train(self.obfuscating_parameters)
+                self.obfuscating_parameters = self.eavesdropper.get_parameters()
+                self.eavesdropper_accuracy[i] = self.eavesdropper.evaluate(self.obfuscating_parameters)
                 logging.info("Communication round {} failed".format(i))
+                logging.info("Eavesdropper accuracy: {}".format(self.eavesdropper_accuracy[i]))
                 print("Communication round {} failed".format(i))
                 if i > 0:
                     self.aggregated_accuracies[i] = self.aggregated_accuracies[i-1]

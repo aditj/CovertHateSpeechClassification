@@ -10,9 +10,9 @@ from create_datasets import create_datasets_clients
 import matplotlib.pyplot as plt
 
 def main():
-    N_device = 100
+    N_device = 10
     N_communication_rounds = 100
-    fraction_of_data = 0.5
+    fraction_of_data = 0.1
     
     GENERATE_DATA = True
     if GENERATE_DATA:
