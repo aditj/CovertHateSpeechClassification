@@ -55,7 +55,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-04,device = "cuda"):
+    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -63,6 +63,7 @@ class Client():
         self.learning_rate = learning_rate
         self.device = device
         self.max_len = max_len
+        self.n_classes = n_classes 
         self.load_data()
         self.model = network
         self.model.to(self.device)
@@ -84,10 +85,10 @@ class Client():
     def train(self,parameters,n_batches_max,i):
         self.set_parameters(parameters)
         self.model.train()
-        optimizer = torch.optim.Adam(params =  self.model.parameters(), lr=self.learning_rate)
+        ## Adam with weight decay AdamW
+        optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
-
             n_batches = len(self.train_loader)
             n_batches_start = (n_batches_max*i) % n_batches
             n_batches_end = (n_batches_max*(i+1)) % n_batches
@@ -107,9 +108,9 @@ class Client():
                 outputs = self.model(ids, mask, token_type_ids)
                 optimizer.zero_grad()
                 ### Add weights for samples with all 0 classes to avoid bias
-                pos_weights = torch.ones([6])*10
-                pos_weights = pos_weights.to(self.device)
-                loss = torch.nn.BCEWithLogitsLoss(pos_weight = pos_weights)(outputs, targets)
+                #pos_weights = torch.ones([self.n_classes])*10
+                #pos_weights = pos_weights.to(self.device)
+                loss = torch.nn.BCEWithLogitsLoss()(outputs, targets)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -120,6 +121,7 @@ class Client():
         self.model.eval()
         fin_targets=[]
         fin_outputs=[]
+        loss = []
         with torch.no_grad():
             for _, data in enumerate(self.valid_loader):
                 ids = data['ids'].to(self.device,torch.long)
@@ -127,6 +129,9 @@ class Client():
                 token_type_ids = data['token_type_ids'].to(self.device,torch.long)
                 targets = data['targets'].to(self.device,torch.float)
                 outputs = self.model(ids, mask, token_type_ids)
+               # pos_weights = torch.ones([self.n_classes])*10
+               # pos_weights = pos_weights.to(self.device)
+                #loss+=[torch.nn.BCEWithLogitsLoss(pos_weight = pos_weights)(outputs, targets)]
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) >= 0.5
@@ -134,7 +139,7 @@ class Client():
         ## create weights for samples with all 0 classes to avoid bias
         f1_score = metrics.f1_score(fin_targets, outputs, average='weighted',zero_division=1)
         accuracy = metrics.accuracy_score(fin_targets, outputs)
-        balanced_accuracy = metrics.balanced_accuracy_score(fin_targets[:,0], outputs[:,0])
+        balanced_accuracy = metrics.balanced_accuracy_score(fin_targets, outputs, adjusted=True)       
         print("Client: ",self.cid," Accuracy: ",accuracy)
         return accuracy,f1_score,balanced_accuracy
     def get_parameters(self):

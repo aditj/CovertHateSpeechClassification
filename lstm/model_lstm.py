@@ -13,9 +13,9 @@ class SpatialDropout(nn.Dropout2d):
         x = x.squeeze(2)  # (N, T, K)
         return x
     
-class NeuralNet(nn.Module):
+class LSTM(nn.Module):
     def __init__(self, embedding_matrix,max_features):
-        super(NeuralNet, self).__init__()
+        super(LSTM, self).__init__()
         self.max_features = max_features
         
         self.LSTM_UNITS = 128

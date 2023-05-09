@@ -10,8 +10,7 @@ from transformers import BertTokenizer
 tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-2_H-128_A-2', do_lower_case=True)
 from torch.utils.data import Dataset, DataLoader
 class Eavesdropper():
-    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-05,device = "cuda"):
-        
+    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6):
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.device = device
@@ -19,37 +18,16 @@ class Eavesdropper():
         self.batch_size = batch_size
         self.n_batches_per_client = n_batches_per_client
         self.max_len = max_len
-        self.model = BERTClass()
-        self.create_dataset()
+        self.model = BERTClass(n_classes=n_classes)
         self.load_data()
         self.model.to(self.device)
-    def create_dataset(self):
-        df = pd.read_csv('./data/train.csv')
-        df = df[['id','comment_text','toxic','severe_toxic','obscene','threat','insult','identity_hate']]
-        ## filter away rows with toxic
-        df_tobedropped = df[(df['obscene'] == 1)]
-        train_df = df.drop(df_tobedropped.index)
-        train_df['list'] = train_df[['toxic','severe_toxic','obscene','threat','insult','identity_hate']].values.tolist()
-        train_df = train_df.drop(['toxic','severe_toxic','obscene','threat','insult','identity_hate'],axis=1)
-        train_df = train_df.sample(n = self.batch_size*self.n_batches_per_client, random_state=200)
-        train_df = train_df.reset_index(drop=True)
-        train_df.to_csv('./data/client_datasets/eavesdropper_train.csv',index=False)
-        n_train = len(train_df)
-        n_valid = len(df) - n_train
-        valid_df = df.sample(n = int(n_valid*0.05), random_state=200)
-        valid_df['list'] = valid_df[['toxic','severe_toxic','obscene','threat','insult','identity_hate']].values.tolist()
-        valid_df = valid_df.drop(['toxic','severe_toxic','obscene','threat','insult','identity_hate'],axis=1)
-        valid_df = valid_df.reset_index(drop=True)
-        valid_df.to_csv('./data/client_datasets/eavesdropper_test.csv',index=False)
     def load_data(self):
-        train_df = pd.read_csv('./data/client_datasets/eavesdropper_train.csv')
+        train_df = pd.read_csv('./data/client_datasets/client_eav_train.csv')
         train_df['list'] = train_df['list'].apply(lambda x: x.strip('][').split(','))
         train_df['list'] = train_df['list'].apply(lambda x: [float(i) for i in x])
-        
         self.train_dataset = CustomDataset(train_df, tokenizer, self.max_len)
         self.train_loader = DataLoader(self.train_dataset, shuffle = True, batch_size=self.batch_size, num_workers=0)
-        
-        valid_df = pd.read_csv('./data/client_datasets/eavesdropper_test.csv')
+        valid_df = pd.read_csv('./data/client_datasets/client_eav_valid.csv')
         valid_df['list'] = valid_df['list'].apply(lambda x: x.strip('][').split(','))
         valid_df['list'] = valid_df['list'].apply(lambda x: [float(i) for i in x])
         self.valid_dataset = CustomDataset(valid_df, tokenizer, self.max_len)
@@ -58,7 +36,7 @@ class Eavesdropper():
     def train(self,parameters):
         self.set_parameters(parameters)
         self.model.train()
-        optimizer = torch.optim.Adam(params =  self.model.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
             # take subset of train  loader from n_batches_start to n_batches_end                    
@@ -73,7 +51,6 @@ class Eavesdropper():
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-            #print(f'Client: {self.cid}, Batch: {_}, Loss:  {loss.item()}')
     
     def evaluate(self,parameters):
         self.set_parameters(parameters)
@@ -91,18 +68,16 @@ class Eavesdropper():
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) >= 0.5
         ## create weights for samples with all 0 classes to avoid bias
-        all_zeros = np.zeros([6])
-        weights = np.where(np.array(fin_targets) == all_zeros,1.0,10.0).sum(axis=1)
-        print("No of samples will all zero classes: ",np.where(weights == 6.0).sum())
-        accuracy = metrics.accuracy_score(fin_targets, outputs, sample_weight = weights)
         accuracy = metrics.accuracy_score(fin_targets, outputs)
+        f1_score = metrics.f1_score(fin_targets, outputs, average='micro')
+        balanced_accuracy = metrics.balanced_accuracy_score(fin_targets, outputs)
+        print("Eavesdropper Balanced Accuracy: ",balanced_accuracy)
+        print("Eavesdropper F1 Score: ",f1_score)
         print("Eavesdropper Accuracy: ",accuracy)
-        return accuracy
+        return accuracy,f1_score,balanced_accuracy
     def get_parameters(self):
         return self.model.state_dict()
-    
     def set_parameters(self,parameters_state_dict):
-       
         self.model.load_state_dict(parameters_state_dict, strict=True)
     
 

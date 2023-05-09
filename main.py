@@ -10,10 +10,13 @@ from create_datasets import create_datasets_clients
 import matplotlib.pyplot as plt
 
 def main():
-    N_device = 100
+    N_device = 20
     N_communication_rounds = 100
-    fraction_of_data = 1
-    
+    model = BERTClass
+
+    fraction_of_data = 0.5
+    n_classes = 1
+    client_parameters = {"learning_rate":0.001}
     GENERATE_DATA = True
     if GENERATE_DATA:
         create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data)
@@ -21,9 +24,9 @@ def main():
         
     
 
-    parameters = Client(0,CNNBERTClass()).get_parameters()
+    parameters = Client(0,model(n_classes)).get_parameters()
     print("Initial Parameters initialized")
-    s = Server(N_device,N_communication_rounds,parameters)
+    s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters)
     print("Server initialized")
     
     s.train()
