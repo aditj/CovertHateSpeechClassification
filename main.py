@@ -4,14 +4,14 @@
 
 from server import Server
 from client import Client 
-from model import BERTClass
+from models import BERTClass,CNNBERTClass
 import numpy as np
 from create_datasets import create_datasets_clients
 import matplotlib.pyplot as plt
 
 def main():
     N_device = 100
-    N_communication_rounds = 200
+    N_communication_rounds = 100
     fraction_of_data = 1
     
     GENERATE_DATA = True
@@ -21,7 +21,7 @@ def main():
         
     
 
-    parameters = Client(0,BERTClass()).get_parameters()
+    parameters = Client(0,CNNBERTClass()).get_parameters()
     print("Initial Parameters initialized")
     s = Server(N_device,N_communication_rounds,parameters)
     print("Server initialized")

@@ -1,10 +1,10 @@
 import torch
 from client import Client
-from model import BERTClass
+from models import BERTClass,CNNBERTClass
 import numpy as np
 from markovchain import MarkovChain
 from tqdm import tqdm
-LOG = "/data/cmd.log"
+LOG = "./data/cmd.log"
 import logging                                                     
 logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
 from eavesdropper import Eavesdropper
@@ -19,13 +19,13 @@ class Server():
         self.initialize_clients()
         self.aggregated_loss = 0
         self.n_batch_per_client = self.clients[0].n_batch_per_client
-        self.aggregated_accuracies = np.zeros(self.n_communications)
+        self.aggregated_accuracies = np.zeros((self.n_communications,2))
         self.markovchain = MarkovChain(N_device=self.n_clients)
         self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
         self.train_batch_size = self.clients[0].train_batch_size
-        self.eavesdropper = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len)
+        #self.eavesdropper = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len)
         self.obfuscating_parameters = parameters.copy()
         self.eavesdropper_accuracy = np.zeros(self.n_communications)
         print("Server initialized")
@@ -47,6 +47,8 @@ class Server():
                 continue
             self.zero_aggregated_parameters() # zero the aggregated parameters
             self.aggregated_loss = 0 # zero the aggregated loss
+            self.aggregated_f1 = 0
+            self.aggregated_balanced_accuracy = 0
             clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
             clients_participating = self.device_data_matrix[i] # get the clients participating in this communication round
             # randomly select clients
@@ -54,22 +56,26 @@ class Server():
             self.percent_clients = np.random.uniform(0.4,0.9)
             clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
             clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
-
             for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
                 
                 self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client
                 self.add_parameters(self.clients[j].get_parameters()) # add the parameters to the aggregated parameters
-                self.aggregated_loss += self.clients[j].evaluate(self.clients[j].get_parameters(),client_batch_size) # add the loss to the aggregated loss
+                evaluations = self.clients[j].evaluate(self.clients[j].get_parameters(),client_batch_size) 
+                self.aggregated_loss += evaluations[0]
+                self.aggregated_f1 += evaluations[1]
+                self.aggregated_balanced_accuracy += evaluations[2]
             self.divide_parameters(len(clients_participating)) # divide the aggregated parameters by the number of clients
             self.aggregated_loss/=len(clients_participating) 
-            self.aggregated_accuracies[i] = self.aggregated_loss
+            self.aggregated_f1/=len(clients_participating)
+            self.aggregated_accuracies[i,:] = self.aggregated_loss,self.aggregated_f1
+            print(i)
             self.assign_global_parameters(self.aggregated_parameters) # assign the global parameters to the aggregated parameters
-            logging.info(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss} with {len(clients_participating)} clients') # print the loss
-            print(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}') # print the loss
+            logging.info(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
+            print(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
         
     def initialize_clients(self):
         for i in range(self.n_clients): # for each client
-            self.clients.append(Client(i,BERTClass())) # initialize a client
+            self.clients.append(Client(i,CNNBERTClass())) # initialize a client
                 
     def get_parameters(self):
         return self.global_parameters

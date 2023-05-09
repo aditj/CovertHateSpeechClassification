@@ -55,7 +55,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 20,valid_batch_size = 20,max_len = 40,epochs = 1,learning_rate = 1e-03,device = "cuda"):
+    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-04,device = "cuda"):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -107,11 +107,9 @@ class Client():
                 outputs = self.model(ids, mask, token_type_ids)
                 optimizer.zero_grad()
                 ### Add weights for samples with all 0 classes to avoid bias
-                all_zeros = torch.zeros([6])
-                all_zeros = all_zeros.to(self.device)
-                weights = torch.where(targets == all_zeros,torch.tensor(0.0).to(self.device),torch.tensor(10.0).to(self.device))
-                weights = weights.to(self.device)
-                loss = torch.nn.BCEWithLogitsLoss(weight = weights)(outputs, targets)
+                pos_weights = torch.ones([6])*10
+                pos_weights = pos_weights.to(self.device)
+                loss = torch.nn.BCEWithLogitsLoss(pos_weight = pos_weights)(outputs, targets)
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -132,19 +130,16 @@ class Client():
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) >= 0.5
+        fin_targets = np.array(fin_targets)
         ## create weights for samples with all 0 classes to avoid bias
-        all_zeros = np.zeros([6])
-        weights = np.where(np.array(fin_targets) == all_zeros,0.0,10.0).sum(axis = 1)
-        weights = weights/weights.sum()
-        accuracy = metrics.accuracy_score(fin_targets, outputs, sample_weight = weights)
+        f1_score = metrics.f1_score(fin_targets, outputs, average='weighted',zero_division=1)
+        accuracy = metrics.accuracy_score(fin_targets, outputs)
+        balanced_accuracy = metrics.balanced_accuracy_score(fin_targets[:,0], outputs[:,0])
         print("Client: ",self.cid," Accuracy: ",accuracy)
-        return accuracy
-    
+        return accuracy,f1_score,balanced_accuracy
     def get_parameters(self):
         return self.model.state_dict()
-    
     def set_parameters(self,parameters_state_dict):
-       
         self.model.load_state_dict(parameters_state_dict, strict=True)
     def are_parameters_equal(self,parameters_state_dict):
         for layer in self.model.state_dict():

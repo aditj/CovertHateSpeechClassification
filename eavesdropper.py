@@ -1,7 +1,7 @@
 # create an eavesdropper client
 
 from client import Client,CustomDataset
-from model import BERTClass
+from models import BERTClass
 from sklearn import metrics
 import torch
 import pandas as pd
