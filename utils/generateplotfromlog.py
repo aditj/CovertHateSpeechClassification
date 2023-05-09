@@ -17,4 +17,4 @@ with open("cmd.log") as file:
 plt.plot(range(i),accuracies)
 plt.xlabel("Communication Round")
 plt.ylabel("Accuracies of the Aggregated Model")
-plt.savefig("./data/plots/accuracies.png")
+plt.savefig("../plots/accuracies.png")

@@ -4,7 +4,7 @@ from model import BERTClass
 import numpy as np
 from markovchain import MarkovChain
 from tqdm import tqdm
-LOG = "cmd.log"
+LOG = "/data/cmd.log"
 import logging                                                     
 logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
 from eavesdropper import Eavesdropper
