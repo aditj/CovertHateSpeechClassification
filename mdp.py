@@ -19,6 +19,8 @@ class MarkovChain():
         self.X = 0
         self.device_data_matrix = np.zeros((T, N_device),dtype=np.int16)
         self.successful_round = np.zeros(T,dtype=np.int16)
+        ## Parameters of MDP
+        
     def generate_device_data_matrix(self):
         for t in range(self.T):
             no_of_devices_selected = int(np.random.uniform(self.N_choices[self.X] - self.N_window, self.N_choices[self.X] + self.N_window))
@@ -44,3 +46,17 @@ def generate_success_prob():
 
 
 # function for generating device data matrix
+class MDP():
+    def __init__(self,M,P_O,fs,C_A,C_L):
+        self.O = 3
+        self.L = M
+        self.X = self.O*self.L
+        self.U = 2
+        self.D = 0.6
+        self.P_O = P_O
+        self.fs = fs
+        self.P  = self.generate_P()
+        self.C_A = C_A
+        self.C_L = C_L
+    def generate_P():
+        

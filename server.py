@@ -4,6 +4,7 @@ from models import BERTClass,CNNBERTClass
 import numpy as np
 from markovchain import MarkovChain
 from tqdm import tqdm
+from solvemdp import solvelp
 ## add date and time to log file
 import datetime
 now = datetime.datetime.now()
@@ -113,3 +114,6 @@ class Server():
             if not torch.equal(self.obfuscating_parameters[layer],parameters[layer]):
                 return False
         return True
+    def generate_policy(self):
+        self.policy = solvelp(self.markovchain.C_A,self.markovchain.C_L,self.markovchain.P,self.markovchain.P.shape[0],self.markovchain.U,self.markovchain.D )
+        
