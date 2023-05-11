@@ -16,7 +16,7 @@ def main():
 
     fraction_of_data = 0.5
     n_classes = 1
-    client_parameters = {"learning_rate":0.001}
+    client_parameters = {"learning_rate":0.0001}
     GENERATE_DATA = True
     if GENERATE_DATA:
         create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data)
