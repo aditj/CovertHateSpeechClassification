@@ -2,9 +2,8 @@ import torch
 from client import Client
 from models import BERTClass,CNNBERTClass
 import numpy as np
-from markovchain import MarkovChain
+from mdp import MDP,MarkovChain
 from tqdm import tqdm
-from solvemdp import solvelp
 ## add date and time to log file
 import datetime
 now = datetime.datetime.now()
@@ -13,7 +12,7 @@ import logging
 logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
 from eavesdropper import Eavesdropper
 class Server():
-    def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters):
+    def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters,generate_policy = False):
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
         self.aggregated_parameters = parameters.copy()
@@ -25,7 +24,8 @@ class Server():
         self.initialize_clients()
         self.aggregated_loss = 0
         self.aggregated_accuracies = np.zeros((self.n_communications,2))
-        self.markovchain = MarkovChain(N_device=self.n_clients)
+        self.mdp = MarkovChain(N_device=self.n_clients)
+        self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
         self.n_batch_per_client = self.clients[0].n_batch_per_client
@@ -35,10 +35,9 @@ class Server():
         self.obfuscating_parameters = self.eavesdropper_random.get_parameters()
         self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
         self.zero_aggregated_parameters()
-        self.markovchain.generate_device_data_matrix()
         self.state_learning_queries = 10
         self.state_oracle = 0
-        self.policy = np.zeros((self.markovchain.P.shape))
+        self.policy = self.get_policy(generate_policy)
         print("Server initialized")
     def train(self):
         # for each communication round
@@ -114,6 +113,22 @@ class Server():
             if not torch.equal(self.obfuscating_parameters[layer],parameters[layer]):
                 return False
         return True
-    def generate_policy(self):
-        self.policy = solvelp(self.markovchain.C_A,self.markovchain.C_L,self.markovchain.P,self.markovchain.P.shape[0],self.markovchain.U,self.markovchain.D )
-        
+    def get_policy(self,generate_policy):
+        if generate_policy:
+            L = 30
+            P_O = self.markovchain.P
+            fs = self.markovchain.success_prob
+            ## Advesarial cost
+            C_A = [[0,1.6],
+                [0,0.7],
+                [0,0.2]]
+            C_A = np.tile(C_A,L).reshape(O*L,A) # tiling adversarial cost 
+            ## Learner Cost
+            C_L =  np.tile([1.0,0],O*L).reshape(O*L,A)
+            #    [0,1.55,1.75,3],
+            #     [0,1.75,2.25,3],
+            #     [0,2,3,3.25]
+            # ]
+            C_L[0::L,:] = [0.5,0]
+            mdp = MDP(L,P_O,fs,C_A,C_L)
+        self.policy = np.load("./data/input/policy.npy")

@@ -1,4 +1,5 @@
 import numpy as np
+from utils.solvemdp import solvelp,spsa
 class MarkovChain():
     def __init__(self,T = 1000,N_device = 100,N_total = 150000,thresfactor = 4,P = np.array([[0.8,0.2,0],
         [0.3,0.2,0.5],
@@ -47,16 +48,51 @@ def generate_success_prob():
 
 # function for generating device data matrix
 class MDP():
-    def __init__(self,M,P_O,fs,C_A,C_L):
+    def __init__(self,M,P_O,fs,C_A,C_L,solvemethod = "lp"):
         self.O = 3
         self.L = M
         self.X = self.O*self.L
         self.U = 2
         self.D = 0.6
+        self.delta = 0.1
         self.P_O = P_O
         self.fs = fs
         self.P  = self.generate_P()
         self.C_A = C_A
         self.C_L = C_L
-    def generate_P():
-        
+        self.solvemdp(solvemethod)
+    def generate_P(self):
+        self.P = np.zeros((self.U, self.O*self.L,  self.O*self.L))
+        for u in range(self.U):
+            for o in range(self.O):
+                f = (self.fs[o])*u # Probability of success for learner state
+                delta = self.delta # Probability of new arrival
+                # Probability transition for learner state
+                P_L = (1-delta)*(f)*np.roll(np.identity(self.L),-1,axis=1) +  ((delta)*(f)+(1-delta)*(1-f))*np.roll(np.identity(self.L),0,axis=1) + delta*(1-f)*np.roll(np.identity(self.L),1,axis=1)# Probability transition for learner state               
+                P_L[0,-1] = 0
+                P_L[-1,0] = 0
+                if ((P_L>0).sum(axis = 1)>3).sum()>0:
+                    print("more learner transitions than required")
+                P_L = P_L/P_L.sum(axis = 1).reshape(self.L,1)
+                self.P[u,o*self.L:(o+1)*self.L,:] = np.tile(P_L,(1,self.O))*np.repeat(self.P_O[u,o],self.L,axis = 0)
+            self.P[:,self.L-1::self.L,0::self.L] = 0
+            self.P[u,:,:] = self.P[u,:,:]/self.P[u,:,:].sum(axis = 1).reshape(self.O*self.L,1)
+            self.P[u,:,:] = np.around(self.P[u,:,:],decimals = 4)
+        if self.fs.shape != (self.U):
+            print("please correct dimension of fs")
+        if self.P_O.shape != (self.O,self.O):
+            print("please correct dimension of P_O")
+        ### Stochastic Check 
+        if (np.around(self.P.sum(axis = 2),5) != 1).sum() > 0:
+            print("P is not stochastic")
+    def solvemdp(self,method):
+        if method == "lp":
+            self.policy = solvelp(self.C_A,self.C_L,self.P,self.X,self.U,self.D)
+            np.save("./data/input/policy.npy",self.policy)
+        elif method == "vi":
+            print("vi not defined")
+          #  self.V = solvevi(self.P,self.C_A,self.C_L)
+        elif method == "spsa":
+            self.policy = spsa(self.P,self.C_A,self.C_L)
+        else:
+            print("Please enter a valid method")

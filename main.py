@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def main():
     N_device = 20
-    N_communication_rounds = 100
+    N_communication_rounds = 10
     model = BERTClass
 
     fraction_of_data = 0.5
@@ -22,11 +22,11 @@ def main():
         create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data)
         print("Datasets created")
         
-    
+    GENERATE_POLICY = True
 
     parameters = Client(0,model(n_classes)).get_parameters()
     print("Initial Parameters initialized")
-    s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters)
+    s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY)
     print("Server initialized")
     
     s.train()
