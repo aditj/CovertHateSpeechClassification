@@ -39,3 +39,4 @@ def create_datasets_clients(N_device = 100, fraction_of_data = 1,batch_size = 40
     valid_df_eav = df.drop(train_df_eav.index).reset_index(drop=True).sample(n = int(N_batch*0.4))
     train_df_eav.to_csv(f"./data/client_datasets/client_eav_train.csv",index=False)
     valid_df_eav.to_csv(f"./data/client_datasets/client_eav_valid.csv",index=False)
+

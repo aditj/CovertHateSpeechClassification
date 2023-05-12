@@ -21,7 +21,7 @@ class MarkovChain():
         self.device_data_matrix = np.zeros((T, N_device),dtype=np.int16)
         self.successful_round = np.zeros(T,dtype=np.int16)
         ## Parameters of MDP
-        
+        self.oracle_states = np.zeros(T)
     def generate_device_data_matrix(self):
         for t in range(self.T):
             no_of_devices_selected = int(np.random.uniform(self.N_choices[self.X] - self.N_window, self.N_choices[self.X] + self.N_window))
@@ -29,6 +29,7 @@ class MarkovChain():
             self.device_data_matrix[t,devices_selected] = np.random.randint(0,self.N_batch_per_device,size = no_of_devices_selected)
             self.n_success[self.X] += self.device_data_matrix[t,:].sum()>self.thres
             self.n_visits[self.X] += 1
+            self.oracle_states[t] = self.X
             self.X = np.random.choice(range(3),p = self.P[self.X])
             if self.device_data_matrix[t,:].sum()>self.thres:
                 self.successful_round[t] = 1
@@ -39,25 +40,25 @@ def generate_success_prob():
     m = MarkovChain()
     for thres in np.linspace(1,10,100):
         sucess_probs.append(m.generate_device_data_matrix())
-    import matplotlib.pyplot as plt
-    plt.plot(np.linspace(1,10,100),sucess_probs)
-    plt.xlabel("Threshold factor")
-    plt.ylabel("Success probability")
-    plt.savefig("./data/success_prob_vs_threshold_factor.png")
+    # import matplotlib.pyplot as plt
+    # plt.plot(np.linspace(1,10,100),sucess_probs)
+    # plt.xlabel("Threshold factor")
+    # plt.ylabel("Success probability")
+    # plt.savefig("./data/success_prob_vs_threshold_factor.png")
 
 
 # function for generating device data matrix
 class MDP():
     def __init__(self,M,P_O,fs,C_A,C_L,solvemethod = "lp"):
-        self.O = 3
+        self.O = P_O.shape[0]
         self.L = M
         self.X = self.O*self.L
         self.U = 2
-        self.D = 0.6
+        self.D = 0.5
         self.delta = 0.1
         self.P_O = P_O
         self.fs = fs
-        self.P  = self.generate_P()
+        self.generate_P()
         self.C_A = C_A
         self.C_L = C_L
         self.solvemdp(solvemethod)
@@ -74,20 +75,26 @@ class MDP():
                 if ((P_L>0).sum(axis = 1)>3).sum()>0:
                     print("more learner transitions than required")
                 P_L = P_L/P_L.sum(axis = 1).reshape(self.L,1)
-                self.P[u,o*self.L:(o+1)*self.L,:] = np.tile(P_L,(1,self.O))*np.repeat(self.P_O[u,o],self.L,axis = 0)
+                self.P[u,o*self.L:(o+1)*self.L,:] = np.tile(P_L,(1,self.O))*np.repeat(self.P_O[o],self.L,axis = 0)
             self.P[:,self.L-1::self.L,0::self.L] = 0
             self.P[u,:,:] = self.P[u,:,:]/self.P[u,:,:].sum(axis = 1).reshape(self.O*self.L,1)
             self.P[u,:,:] = np.around(self.P[u,:,:],decimals = 4)
-        if self.fs.shape != (self.U):
+        if self.fs.shape != (self.O):
             print("please correct dimension of fs")
         if self.P_O.shape != (self.O,self.O):
             print("please correct dimension of P_O")
         ### Stochastic Check 
-        if (np.around(self.P.sum(axis = 2),5) != 1).sum() > 0:
+        if (np.around(self.P.sum(axis = 2),7) != 1).sum() > 0:
             print("P is not stochastic")
+    def policyfrom(self,probpolicy,X):
+        probpolicy += 1e-10
+        policy = (probpolicy/probpolicy.sum(axis = 1).reshape(X,1))[:,0]
+        # replace na with 0
+        return policy
     def solvemdp(self,method):
         if method == "lp":
-            self.policy = solvelp(self.C_A,self.C_L,self.P,self.X,self.U,self.D)
+            probpolicy = solvelp(self.C_A,self.C_L,self.P,self.X,self.U,self.D)
+            self.policy = self.policyfrom(probpolicy,self.X)
             np.save("./data/input/policy.npy",self.policy)
         elif method == "vi":
             print("vi not defined")

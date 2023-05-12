@@ -2,20 +2,7 @@
 ### import packages     
 from ortools.linear_solver import pywraplp
 import numpy as np
-import matplotlib.pyplot as plt
-np.set_printoptions(precision=2)
-np.set_printoptions(suppress=True)
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "Times New Roman"
-})
-import matplotlib
-matplotlib.rcParams['pdf.fonttype'] = 42
-matplotlib.rcParams['ps.fonttype'] = 42
-import matplotlib as mpl
-from matplotlib.colors import ListedColormap, LinearSegmentedColormap
-from mpl_toolkits.mplot3d import Axes3D
-viridis = mpl.colormaps['viridis'].resampled(3000)
+
 
 #### Functions for solving MDPs using Linear Programming
 def solvelp(C_A,C_L,P,X,U,D):

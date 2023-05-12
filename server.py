@@ -13,67 +13,78 @@ logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)
 from eavesdropper import Eavesdropper
 class Server():
     def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters,generate_policy = False):
+        ### FL Server Related ###
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
         self.aggregated_parameters = parameters.copy()
         self.n_communications = n_communications
         self.n_classes = n_classes
+        
+        ### MDP Related ###
+        self.markovchain = MarkovChain(N_device=self.n_clients)
+        self.markovchain.generate_device_data_matrix()
+        self.successful_round = self.markovchain.successful_round
+        self.device_data_matrix = self.markovchain.device_data_matrix
+        self.get_policy(generate_policy)
+        self.state_learning_queries = 29
+        self.state_oracle = 0
+        
+        ### FL Client Related ###
         self.clients = []
         self.client_parameters = client_parameters
         self.model = BERTClass
         self.initialize_clients()
-        self.aggregated_loss = 0
-        self.aggregated_accuracies = np.zeros((self.n_communications,2))
-        self.mdp = MarkovChain(N_device=self.n_clients)
-        self.markovchain.generate_device_data_matrix()
-        self.successful_round = self.markovchain.successful_round
-        self.device_data_matrix = self.markovchain.device_data_matrix
         self.n_batch_per_client = self.clients[0].n_batch_per_client
         self.train_batch_size = self.clients[0].train_batch_size
+
+        ### Eavesdropper Related ###
         self.eavesdropper_random = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         self.obfuscating_parameters = self.eavesdropper_random.get_parameters()
         self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
         self.zero_aggregated_parameters()
-        self.state_learning_queries = 10
-        self.state_oracle = 0
-        self.policy = self.get_policy(generate_policy)
+        
+        
         print("Server initialized")
     def train(self):
         # for each communication round
         for i in tqdm(range(self.n_communications)):
-            if self.successful_round[i] == 1 :
-                self.zero_aggregated_parameters() # zero the aggregated parameters
-                self.aggregated_loss = 0 # zero the aggregated loss
-                self.aggregated_f1 = 0
-                self.aggregated_balanced_accuracy = 0
-                clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
-                # Markov chain based client selection
-                clients_participating = self.device_data_matrix[i] # get the clients participating in this communication round
-                # randomly select clients
-                # self.percent_clients = 0.6
-                # self.percent_clients = np.random.uniform(0.4,0.9)
-                # clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
-                # All Clients
-                # clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
-                for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
-                    
-                    self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client
-                    self.add_parameters(self.clients[j].get_parameters()) # add the parameters to the aggregated parameters
-                    evaluations = self.clients[j].evaluate(self.clients[j].get_parameters(),client_batch_size) 
-                    self.aggregated_loss += evaluations[0]
-                    self.aggregated_f1 += evaluations[1]
-                    self.aggregated_balanced_accuracy += evaluations[2]
-                self.divide_parameters(len(clients_participating)) # divide the aggregated parameters by the number of clients
-                self.aggregated_loss/=len(clients_participating) 
-                self.aggregated_f1/=len(clients_participating)
-                self.aggregated_balanced_accuracy/=len(clients_participating)
-                self.assign_global_parameters(self.aggregated_parameters) # assign the global parameters to the aggregated parameters
-                logging.info(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
-                print(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
-                
-            else:
+            
+            self.state_oracle = self.markovchain.oracle_states[i]
+            action_prob = self.policy[int(self.state_oracle*self.L + self.state_learning_queries)]
+            action = np.random.choice([0,1],p=[action_prob,1-action_prob])
 
+            print(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: {action_prob}")
+            if action == 1:
+                if self.successful_round[i] == 1 :
+                    self.state_learning_queries -= 1
+                    
+                    ### Zero the aggregated parameters and loss
+                    self.zero_aggregated_parameters() # zero the aggregated parameters
+                    self.aggregated_loss = 0 # zero the aggregated loss
+                    self.aggregated_f1 = 0
+                    self.aggregated_balanced_accuracy = 0
+
+                    clients_participating = self.select_clients(i)
+                    ### Train the clients and aggregate the parameters
+                    for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
+                        self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client
+                        self.add_parameters(self.clients[j].get_parameters()) # add the parameters to the aggregated parameters
+                        evaluations = self.clients[j].evaluate(self.clients[j].get_parameters(),client_batch_size) 
+                        self.aggregated_loss += evaluations[0]
+                        self.aggregated_f1 += evaluations[1]
+                        self.aggregated_balanced_accuracy += evaluations[2]
+                    
+                    self.divide_parameters(len(clients_participating)) # divide the aggregated parameters by the number of clients
+                    self.aggregated_loss/=len(clients_participating) 
+                    self.aggregated_f1/=len(clients_participating)
+                    self.aggregated_balanced_accuracy/=len(clients_participating)
+                    self.assign_global_parameters(self.aggregated_parameters) # assign the global parameters to the aggregated parameters
+                    logging.info(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
+                    print(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
+                else:
+                    print("Communication round {} failed and no obfuscation".format(i))
+            else:
                 self.randomize_eavesdropper_parameters(i)
                 self.eavesdropper_random.train(self.obfuscating_parameters)
                 self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
@@ -88,6 +99,18 @@ class Server():
     def initialize_clients(self):
         for i in range(self.n_clients): # for each client
             self.clients.append(Client(i,self.model(self.n_classes),n_classes=self.n_classes,learning_rate=self.client_parameters["learning_rate"])) # initialize a client
+    def select_clients(self,i):
+        # All Clients
+        #clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
+        # Markov chain based client selection
+        clients_participating = self.device_data_matrix[i] # get the clients participating in this communication round
+        # randomly select clients
+        # self.percent_clients = 0.6
+        # self.percent_clients = np.random.uniform(0.4,0.9)
+        # clients_participating = np.random.choice(self.n_clients,size=int(self.percent_clients*self.n_clients),replace=False)
+        # All Clients
+        # clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
+        return clients_participating
     def randomize_eavesdropper_parameters(self,i):
         # randomize the eavesdropper parameters
         # random seed
@@ -115,20 +138,22 @@ class Server():
         return True
     def get_policy(self,generate_policy):
         if generate_policy:
-            L = 30
+            self.L = 30
+            self.O = 3
+            U = 2
             P_O = self.markovchain.P
             fs = self.markovchain.success_prob
             ## Advesarial cost
             C_A = [[0,1.6],
                 [0,0.7],
                 [0,0.2]]
-            C_A = np.tile(C_A,L).reshape(O*L,A) # tiling adversarial cost 
+            C_A = np.tile(C_A,self.L).reshape(self.O*self.L,U) # tiling adversarial cost 
             ## Learner Cost
-            C_L =  np.tile([1.0,0],O*L).reshape(O*L,A)
+            C_L =  np.tile([1.0,0],self.O*self.L).reshape(self.O*self.L,U)
             #    [0,1.55,1.75,3],
             #     [0,1.75,2.25,3],
             #     [0,2,3,3.25]
             # ]
-            C_L[0::L,:] = [0.5,0]
-            mdp = MDP(L,P_O,fs,C_A,C_L)
+            C_L[0::self.L,:] = [0.5,0]
+            mdp = MDP(self.L,P_O,fs,C_A,C_L)
         self.policy = np.load("./data/input/policy.npy")

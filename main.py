@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def main():
     N_device = 20
-    N_communication_rounds = 10
+    N_communication_rounds = 100
     model = BERTClass
 
     fraction_of_data = 0.5
@@ -31,8 +31,6 @@ def main():
     
     s.train()
     print("Training complete")
-    np.save("./data/aggregated_accuracies.npy",s.aggregated_accuracies)
-    print("Accuracies saved")
 
     
     plt.plot(s.aggregated_accuracies)
