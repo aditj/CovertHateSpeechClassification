@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from utils.randomseed import seed_everything
 def main():
     N_device = 20
-    N_communication_rounds = 100
+    N_communication_rounds = 80
     model = BERTClass
 
     fraction_of_data = 0.5

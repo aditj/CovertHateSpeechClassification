@@ -60,7 +60,7 @@ class Server():
             if self.state_learning_queries == 0:
                 action = 0
             if action == 1:
-                continue
+                
                 if self.successful_round[i] == 1 :
                     self.state_learning_queries -= 1
                     
@@ -90,8 +90,8 @@ class Server():
                 else:
                     print("Communication round {} failed and no obfuscation".format(i))
             else:
-                self.eavesdropper_smart.train(self.eavesdropper_smart.get_parameters())
-                self.eavesdropper_without_obf.train(None)                
+                self.eavesdropper_smart.train(None)
+                self.eavesdropper_without_obf.train(self.global_parameters)                
                 evaluations_smart = self.eavesdropper_smart.evaluate()
                 evaluations_without_obf = self.eavesdropper_without_obf.evaluate()
 
