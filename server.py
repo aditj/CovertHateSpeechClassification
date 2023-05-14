@@ -36,11 +36,12 @@ class Server():
         self.initialize_clients()
         self.n_batch_per_client = self.clients[0].n_batch_per_client
         self.train_batch_size = self.clients[0].train_batch_size
-
+        self.count_learning_queries = 0
         ### Eavesdropper Related ###
         # self.eavesdropper_random = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
-        self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         # self.obfuscating_parameters = self.eavesdropper_random.get_parameters()
+
+        self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
         self.zero_aggregated_parameters()
         
@@ -48,6 +49,50 @@ class Server():
         self.eavesdropper_without_obf.set_parameters(self.global_parameters)
         
         print("Server initialized")
+    def train_greedy(self):
+        ### train by always training 
+        for i in tqdm(range(self.n_communications)):
+
+            self.state_oracle = self.markovchain.oracle_states[i]
+            if self.state_learning_queries == 0:
+                action = 0
+                self.count_learning_queries += 1
+            else:
+                action = 1
+
+            if action == 1:
+                if self.successful_round[i] == 1 :
+                    self.state_learning_queries -= 1
+                    ### Zero the aggregated parameters and loss
+                    self.zero_aggregated_parameters()
+                    self.aggregated_loss = 0 # zero the aggregated loss
+                    self.aggregated_f1 = 0
+                    self.aggregated_balanced_accuracy = 0
+
+                    clients_participating = self.select_clients(i)
+                    ### Train the clients and aggregate the parameters
+                    for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
+                        self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client
+                        self.add_parameters(self.clients[j].get_parameters()) # add the parameters to the aggregated parameters
+                        evaluations = self.clients[j].evaluate(self.clients[j].get_parameters(),client_batch_size) 
+                        self.aggregated_loss += evaluations[0]
+                        self.aggregated_f1 += evaluations[1]
+                        self.aggregated_balanced_accuracy += evaluations[2]
+                    self.divide_parameters(len(clients_participating)) # divide the aggregated parameters by the number of clients
+                    self.aggregated_loss/=len(clients_participating) 
+                    self.aggregated_f1/=len(clients_participating)
+                    self.aggregated_balanced_accuracy/=len(clients_participating)
+                    self.assign_global_parameters(self.aggregated_parameters) # assign the global parameters to the aggregated parameters
+                    logging.info(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
+                    print(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
+                else:
+                    print("Communication round {} failed and no obfuscation".format(i))
+                self.eavesdropper_without_obf.set_parameters(self.global_parameters)
+                self.eavesdropper_without_obf.evaluate()
+                logging.info(f'Communication round: {i}, Eavesdropper Accuracies: {self.eavesdropper_without_obf.loss}, {self.eavesdropper_without_obf.f1}, {self.eavesdropper_without_obf.balanced_accuracy}') # print the loss
+            else:
+                print("Communication round {} failed and obfuscation".format(i))
+                logging.info("Number of Training rounds completed: {}".format(i))                
     def train(self):
         # for each communication round
         for i in tqdm(range(self.n_communications)):
@@ -91,13 +136,14 @@ class Server():
                     print("Communication round {} failed and no obfuscation".format(i))
             else:
                 self.eavesdropper_smart.train(None)
-                self.eavesdropper_without_obf.train(self.global_parameters)                
+                #self.eavesdropper_without_obf.train(self.global_parameters)                
                 evaluations_smart = self.eavesdropper_smart.evaluate()
-                evaluations_without_obf = self.eavesdropper_without_obf.evaluate()
+                #self.eavesdropper_without_obf.set_parameters(self.global_parameters)
+             #   evaluations_without_obf = self.eavesdropper_without_obf.evaluate()
 
                 # logging.info(f"Communication round {i} Eavesdropper accuracy: {evaluations[0]} F1 {evaluations[1]} Balanced Accuracy {evaluations[2]}")
                 logging.info(f"Communication round {i} SmartEavesdropper accuracy: {evaluations_smart[0]} F1 {evaluations_smart[1]} Balanced Accuracy {evaluations_smart[2]}")
-                logging.info(f"Communication round {i} Without Obf accuracy: {evaluations_without_obf[0]} F1 {evaluations_without_obf[1]} Balanced Accuracy {evaluations_without_obf[2]}")
+                #logging.info(f"Communication round {i} Without Obf accuracy: {evaluations_without_obf[0]} F1 {evaluations_without_obf[1]} Balanced Accuracy {evaluations_without_obf[2]}")
                 print("Communication round {} failed".format(i))
                 
                 
