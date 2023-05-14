@@ -7,9 +7,7 @@ from tqdm import tqdm
 ## add date and time to log file
 import datetime
 now = datetime.datetime.now()
-LOG = f"./data/logs/server_{now.strftime('%Y-%m-%d_%H:%M:%S')}.log"
 import logging                                                     
-logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
 from eavesdropper import Eavesdropper
 class Server():
     def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters,generate_policy = False):
@@ -25,10 +23,12 @@ class Server():
         self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
-        self.get_policy(generate_policy)
-        self.state_learning_queries = 29
-        self.state_oracle = 0
         
+        self.state_learning_queries = 19
+        self.get_policy(generate_policy)
+        self.state_oracle = 0
+        LOG = f"./data/logs/experiment1/server_{now.strftime('%Y-%m-%d_%H:%M:%S')}.log"
+        logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
         ### FL Client Related ###
         self.clients = []
         self.client_parameters = client_parameters
@@ -38,12 +38,14 @@ class Server():
         self.train_batch_size = self.clients[0].train_batch_size
 
         ### Eavesdropper Related ###
-        self.eavesdropper_random = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
+        # self.eavesdropper_random = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
-        self.obfuscating_parameters = self.eavesdropper_random.get_parameters()
+        # self.obfuscating_parameters = self.eavesdropper_random.get_parameters()
         self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
         self.zero_aggregated_parameters()
         
+        self.eavesdropper_without_obf = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
+        self.eavesdropper_without_obf.set_parameters(self.global_parameters)
         
         print("Server initialized")
     def train(self):
@@ -55,7 +57,10 @@ class Server():
             action = np.random.choice([0,1],p=[action_prob,1-action_prob])
 
             print(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: {action_prob}")
+            if self.state_learning_queries == 0:
+                action = 0
             if action == 1:
+                continue
                 if self.successful_round[i] == 1 :
                     self.state_learning_queries -= 1
                     
@@ -85,14 +90,14 @@ class Server():
                 else:
                     print("Communication round {} failed and no obfuscation".format(i))
             else:
-                self.randomize_eavesdropper_parameters(i)
-                self.eavesdropper_random.train(self.obfuscating_parameters)
-                self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
-                self.eavesdropper_smart.train(self.smart_obfuscating_parameters)
-                evaluations = self.eavesdropper_random.evaluate(self.obfuscating_parameters)
-                evaluations_smart = self.eavesdropper_smart.evaluate(self.smart_obfuscating_parameters)
-                logging.info(f"Communication round {i} Eavesdropper accuracy: {evaluations[0]} F1 {evaluations[1]} Balanced Accuracy {evaluations[2]}")
+                self.eavesdropper_smart.train(self.eavesdropper_smart.get_parameters())
+                self.eavesdropper_without_obf.train(None)                
+                evaluations_smart = self.eavesdropper_smart.evaluate()
+                evaluations_without_obf = self.eavesdropper_without_obf.evaluate()
+
+                # logging.info(f"Communication round {i} Eavesdropper accuracy: {evaluations[0]} F1 {evaluations[1]} Balanced Accuracy {evaluations[2]}")
                 logging.info(f"Communication round {i} SmartEavesdropper accuracy: {evaluations_smart[0]} F1 {evaluations_smart[1]} Balanced Accuracy {evaluations_smart[2]}")
+                logging.info(f"Communication round {i} Without Obf accuracy: {evaluations_without_obf[0]} F1 {evaluations_without_obf[1]} Balanced Accuracy {evaluations_without_obf[2]}")
                 print("Communication round {} failed".format(i))
                 
                 
@@ -138,7 +143,7 @@ class Server():
         return True
     def get_policy(self,generate_policy):
         if generate_policy:
-            self.L = 30
+            self.L = self.state_learning_queries + 1
             self.O = 3
             U = 2
             P_O = self.markovchain.P

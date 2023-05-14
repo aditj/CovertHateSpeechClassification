@@ -36,7 +36,7 @@ def create_datasets_clients(N_device = 100, fraction_of_data = 1,batch_size = 40
     # Filter out the df if list column has 0 
     df_eav = df[df['list'].apply(lambda x: 0 in x)].reset_index(drop=True).iloc[0:N_batch,:].reset_index(drop=True)
     train_df_eav = df_eav.sample(frac=0.8)
-    valid_df_eav = df.drop(train_df_eav.index).reset_index(drop=True).sample(n = int(N_batch*0.4))
+    valid_df_eav = df.drop(train_df_eav.index).reset_index(drop=True).sample(n = int(N_batch*0.1))
     train_df_eav.to_csv(f"./data/client_datasets/client_eav_train.csv",index=False)
     valid_df_eav.to_csv(f"./data/client_datasets/client_eav_valid.csv",index=False)
 

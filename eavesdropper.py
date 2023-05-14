@@ -10,7 +10,7 @@ from transformers import BertTokenizer
 tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-2_H-128_A-2', do_lower_case=True)
 from torch.utils.data import Dataset, DataLoader
 class Eavesdropper():
-    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6):
+    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-05,device = "cuda",n_classes = 6):
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.device = device
@@ -34,12 +34,13 @@ class Eavesdropper():
         self.valid_loader = DataLoader(self.valid_dataset, shuffle = True, batch_size=self.batch_size, num_workers=0)
         print(f'Eavesdropper initialized with {len(self.train_dataset)} training samples and {len(self.valid_dataset)} validation samples')
     def train(self,parameters):
-        self.set_parameters(parameters)
+        if parameters is not None:
+            self.set_parameters(parameters)
         self.model.train()
-        optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.Adam(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
-            # take subset of train  loader from n_batches_start to n_batches_end                    
+            ## take subset of train loader from n_batches_start to n_batches_end                    
             for _,data in enumerate(self.train_loader,0):
                 ids = data['ids'].to(self.device,torch.long)
                 mask = data['mask'].to(self.device,torch.long)
@@ -48,17 +49,21 @@ class Eavesdropper():
                 outputs = self.model(ids, mask, token_type_ids)
                 optimizer.zero_grad()
                 loss = torch.nn.BCEWithLogitsLoss()(outputs, targets)
-                optimizer.zero_grad()
-                loss.backward()
+                
+                ## Get gradients and make them negative
+                loss.backward() 
+                
+                ## Update parameters 
                 optimizer.step()
-    
-    def evaluate(self,parameters):
-        self.set_parameters(parameters)
+                
+    def evaluate(self):
         self.model.eval()
         fin_targets=[]
         fin_outputs=[]
         with torch.no_grad():
             for _, data in enumerate(self.valid_loader):
+                if _ > 10:
+                    break
                 ids = data['ids'].to(self.device,torch.long)
                 mask = data['mask'].to(self.device,torch.long)
                 token_type_ids = data['token_type_ids'].to(self.device,torch.long)
@@ -66,21 +71,30 @@ class Eavesdropper():
                 outputs = self.model(ids, mask, token_type_ids)
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
+                
         outputs = np.array(fin_outputs) >= 0.5
         ## create weights for samples with all 0 classes to avoid bias
         accuracy = metrics.accuracy_score(fin_targets, outputs)
         f1_score = metrics.f1_score(fin_targets, outputs, average='micro')
         balanced_accuracy = metrics.balanced_accuracy_score(fin_targets, outputs)
-        print("Eavesdropper Balanced Accuracy: ",balanced_accuracy)
-        print("Eavesdropper F1 Score: ",f1_score)
+        
         print("Eavesdropper Accuracy: ",accuracy)
         return accuracy,f1_score,balanced_accuracy
     def get_parameters(self):
         return self.model.state_dict()
     def set_parameters(self,parameters_state_dict):
         self.model.load_state_dict(parameters_state_dict, strict=True)
-    
+    def randomize_parameters(self):
+        for layer in self.model.state_dict().keys():
+            self.model.state_dict()[layer] = torch.randn(self.model.state_dict()[layer].shape)
 
-
-    
+    def check_parameters_change(self,parameters_before,parameters_after):
+        for layer in parameters_before:
+            if torch.equal(parameters_before[layer],parameters_after[layer]):
+                continue
+            else:
+                print("Parameters changed")
+                return True
+        print("Parameters did not change")
+        return False
 
