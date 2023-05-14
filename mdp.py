@@ -1,5 +1,6 @@
 import numpy as np
 from utils.solvemdp import solvelp,spsa
+
 class MarkovChain():
     def __init__(self,T = 1000,N_device = 100,N_total = 150000,thresfactor = 4,P = np.array([[0.8,0.2,0],
         [0.3,0.2,0.5],
@@ -62,6 +63,7 @@ class MDP():
         self.C_A = C_A
         self.C_L = C_L
         self.solvemdp(solvemethod)
+        self.generate_greedy_policy()
     def generate_P(self):
         self.P = np.zeros((self.U, self.O*self.L,  self.O*self.L))
         for u in range(self.U):
@@ -103,3 +105,6 @@ class MDP():
             self.policy = spsa(self.P,self.C_A,self.C_L)
         else:
             print("Please enter a valid method")
+    def generate_greedy_policy(self):
+        self.greedy_policy = np.zeros_like(self.policy)
+        np.save("./data/input/greedy_policy.npy",self.greedy_policy)

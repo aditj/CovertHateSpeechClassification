@@ -18,6 +18,7 @@ def main():
     n_classes = 1
     client_parameters = {"learning_rate":0.0001}
     GENERATE_DATA = True
+    
 
     for k in range(1,11):
         seed_everything(k)
@@ -30,9 +31,13 @@ def main():
         parameters = Client(0,model(n_classes)).get_parameters()
         print("Initial Parameters initialized")
         s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY)
-        print("Server initialized")
-        
+        print("Server initialized for non greedy policy")
         s.train()
-        print(f"Training complete for {k} run")
+        print(f"Training complete for {k} run non greedy policy")
+
+        s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True)
+        print("Server initialized for greedy policy")
+        s.train()
+        print(f"Training complete for {k} run greedy policy")
 
 main()
