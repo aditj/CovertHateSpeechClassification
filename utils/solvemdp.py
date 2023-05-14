@@ -111,7 +111,7 @@ def spsa(initial_parameters,delta,n_iter,T,P,D,lamb,epsilon,rho,L,O,A,C_A,C_L,ta
     if i%100==0:
         print(i,C_A_avg)
     parameters_store[i] = parameters
-    tau = 0.999*tau
+    tau = 0.9999*tau
   print(C_A_avg,C_L_avg-D,lamb,parameters)
   return parameters_store
 

@@ -2,6 +2,7 @@
 ## Import libraries
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from solvemdp import spsa
 P_O = np.array([[0.8,0.2,0],
        [0.3,0.2,0.5],
@@ -70,36 +71,37 @@ C_L =  np.tile([1.0,0],O*L).reshape(O*L,A)
 # ]
 C_L[0::L,:] = [0.5,0]
 
-parameter_initial_values = np.arange(4,12)
+parameter_initial_values = np.linspace(6,10,6)
+if False:
 
-
-for p_1 in parameter_initial_values:
-  
-    D = 0.6
-    parameters_initial = np.append(np.tile([p_1,12],O),np.pi/2)
-    n_iter = 6000
-    #delt = np.append(np.repeat(np.pi/2,O*(A)),np.pi/4) #np.power(0.99,(np.arange(1,n_iter+1)))+0.001
-    delt = np.linspace(0.5,0.4,n_iter)
-    T = 1000
-    lamb = 1
-    epsilon = np.linspace(0.4,0,n_iter)
-    rho = 2
-    parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,A,C_A,C_L)
-    np.save("parameters_spsa_"+str(p_1),parameters_spsa)
+    for p_1 in parameter_initial_values:
+    
+        D = 0.6
+        parameters_initial = np.append(np.tile([p_1,12],O),np.pi/2)
+        n_iter = 6000
+        #delt = np.append(np.repeat(np.pi/2,O*(A)),np.pi/4) #np.power(0.99,(np.arange(1,n_iter+1)))+0.001
+        delt = np.linspace(0.5,0.4,n_iter)
+        T = 1000
+        lamb = 1
+        epsilon = np.linspace(0.4,0.2,n_iter)
+        rho = 2
+        parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,A,C_A,C_L)
+        np.save("../data/input/spsa/parameters_spsa_"+str(p_1),parameters_spsa)
 
 ## Plot these parameters  for different initial values and oracle states
 n_iter_sample = 6000
+sns.set_style("darkgrid")
+sns.set_context("paper")
 for p_1 in parameter_initial_values:
-    parameters_spsa = np.load("parameters_spsa_"+str(p_1)+".npy")
-    plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,0],label="$y^O = O_1$")
+    parameters_spsa = np.load("./data/input/spsa/parameters_spsa_"+str(p_1)+".npy")
+    plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,0],color = 'red')
 # plt.plot(np.arange(n_iter),parameters_spsa[:,])
-    plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,2],label="$y^O = O_2$")
-    plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,4],label="$y^O = O_3$")
-plt.legend(fontsize=12)
-plt.legend(fontsize=12)
+    plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,2],color = 'blue')
+    plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,4],color = 'green')
+# plt.legend(fontsize=12)
+# plt.legend(fontsize=12)
 plt.xlabel("Iterations",size = 16)
 plt.ylabel("Threshold Parameter of $y^L$", size = 16)
 plt.xticks(size=16)
 plt.yticks(size=16)
 plt.savefig("fig2.pdf",bbox_inches='tight',pad_inches=0)
-plt.show()
