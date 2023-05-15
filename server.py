@@ -61,7 +61,6 @@ class Server():
                 self.count_learning_queries += 1
                 if self.successful_round[i] == 1 :
                     self.state_learning_queries -= 1
-                    
                     ### Zero the aggregated parameters and loss
                     self.zero_aggregated_parameters() # zero the aggregated parameters
                     self.aggregated_loss = 0 # zero the aggregated loss
@@ -89,13 +88,15 @@ class Server():
                     print("Communication round {} failed and no obfuscation".format(i))
             else:
                 print("Communication round {} Obfuscated".format(i))
-            if self.count_learning_queries/i > 0.5:
+            print(self.count_learning_queries/(i+1))
+            if self.count_learning_queries/(i+1) > 0.5:
                 self.eavesdropper_smart.set_parameters(self.global_parameters)
                 accuracy, f1, balanced_accuracy = self.eavesdropper_smart.evaluate()
                 logging.info(f'Communication round: {i}, Eavesdropper Accuracies: {accuracy}, {f1}, {balanced_accuracy}') # print the loss
             else:
-                self.eavesdropper_smart.train(None)
+                self.eavesdropper_smart.train(self.smart_obfuscating_parameters)
                 evaluations_smart = self.eavesdropper_smart.evaluate()
+                self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
                 logging.info(f"Communication round {i} SmartEavesdropper accuracy: {evaluations_smart[0]} F1 {evaluations_smart[1]} Balanced Accuracy {evaluations_smart[2]}")
                 
             
