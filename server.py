@@ -7,7 +7,6 @@ from tqdm import tqdm
 ## add date and time to log file
 import datetime
 now = datetime.datetime.now()
-import logging                                                     
 from eavesdropper import Eavesdropper
 class Server():
     def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters,generate_policy = False,greedy_policy = False):
@@ -23,13 +22,11 @@ class Server():
         self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
-        
+        ## Create file to write log
+        self.file = f"./data/logs/experiment1/server_{now.strftime('%Y-%m-%d_%H:%M:%S')}_{greedy_policy}.log"
         self.state_learning_queries = 19
         self.get_policy(generate_policy,greedy_policy)
         self.state_oracle = 0
-        LOG = f"./data/logs/experiment1/server_{now.strftime('%Y-%m-%d_%H:%M:%S')}.log"
-        logging.basicConfig(filename=LOG, filemode="w", level=logging.INFO)  
-
         ### FL Client Related ###
         self.clients = []
         self.client_parameters = client_parameters
@@ -82,7 +79,10 @@ class Server():
                     self.aggregated_f1/=len(clients_participating)
                     self.aggregated_balanced_accuracy/=len(clients_participating)
                     self.assign_global_parameters(self.aggregated_parameters) # assign the global parameters to the aggregated parameters
-                    logging.info(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
+                    ### write in self.file
+                    with open(self.file, "a") as f:
+                        f.write(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}')
+                        f.write('\n')
                     print(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}, {self.aggregated_f1}, {self.aggregated_balanced_accuracy}') # print the loss
                 else:
                     print("Communication round {} failed and no obfuscation".format(i))
@@ -92,12 +92,16 @@ class Server():
             if self.count_learning_queries/(i+1) > 0.5:
                 self.eavesdropper_smart.set_parameters(self.global_parameters)
                 accuracy, f1, balanced_accuracy = self.eavesdropper_smart.evaluate()
-                logging.info(f'Communication round: {i}, Eavesdropper Accuracies: {accuracy}, {f1}, {balanced_accuracy}') # print the loss
+                with open(self.file, "a") as f:
+                    f.write(f'Communication round: {i}, Eavesdropper Accuracy: {accuracy}, {f1}, {balanced_accuracy}')
+                    f.write('\n')
             else:
                 self.eavesdropper_smart.train(self.smart_obfuscating_parameters)
                 evaluations_smart = self.eavesdropper_smart.evaluate()
                 self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
-                logging.info(f"Communication round {i} SmartEavesdropper accuracy: {evaluations_smart[0]} F1 {evaluations_smart[1]} Balanced Accuracy {evaluations_smart[2]}")
+                with open(self.file, "a") as f:
+                    f.write(f"Communication round: {i}, Smart Eavesdropper Accuracy: {evaluations_smart[0]}, {evaluations_smart[1]}, {evaluations_smart[2]}")
+                    f.write('\n')
                 
             
     def initialize_clients(self):
