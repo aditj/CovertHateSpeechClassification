@@ -34,7 +34,10 @@ class MarkovChain():
             self.X = np.random.choice(range(3),p = self.P[self.X])
             if self.device_data_matrix[t,:].sum()>self.thres:
                 self.successful_round[t] = 1
-        self.success_prob = self.n_success/self.n_visits
+        self.success_prob = np.zeros((self.P.shape[0],2))
+        for i in range(self.P.shape[0]):
+            self.success_prob[i,0] = 1 - self.n_success[i]/self.n_visits[i]
+            self.success_prob[i,1] = self.n_success[i]/self.n_visits[i]
         print("Success probability for each oracle state: ",self.success_prob)
 def generate_success_prob():
     sucess_probs = []
@@ -53,7 +56,8 @@ class MDP():
     def __init__(self,M,P_O,fs,C_A,C_L,solvemethod = "lp"):
         self.O = P_O.shape[0]
         self.L = M
-        self.X = self.O*self.L
+        self.E = 2
+        self.X = self.O*self.L*self.E
         self.U = 2
         self.D = 0.5
         self.delta = 0.1
@@ -65,28 +69,33 @@ class MDP():
         self.solvemdp(solvemethod)
         self.generate_greedy_policy()
     def generate_P(self):
-        self.P = np.zeros((self.U, self.O*self.L,  self.O*self.L))
-        for u in range(self.U):
+        self.P = np.zeros((self.U,self.O*self.L*self.E,self.O*self.L*self.E))
+        for a in range(self.U):
             for o in range(self.O):
-                f = (self.fs[o])*u # Probability of success for learner state
-                delta = self.delta # Probability of new arrival
-                # Probability transition for learner state
-                P_L = (1-delta)*(f)*np.roll(np.identity(self.L),-1,axis=1) +  ((delta)*(f)+(1-delta)*(1-f))*np.roll(np.identity(self.L),0,axis=1) + delta*(1-f)*np.roll(np.identity(self.L),1,axis=1)# Probability transition for learner state               
-                P_L[0,-1] = 0
-                P_L[-1,0] = 0
-                if ((P_L>0).sum(axis = 1)>3).sum()>0:
-                    print("more learner transitions than required")
-                P_L = P_L/P_L.sum(axis = 1).reshape(self.L,1)
-                self.P[u,o*self.L:(o+1)*self.L,:] = np.tile(P_L,(1,self.O))*np.repeat(self.P_O[o],self.L,axis = 0)
-            self.P[:,self.L-1::self.L,0::self.L] = 0
-            self.P[u,:,:] = self.P[u,:,:]/self.P[u,:,:].sum(axis = 1).reshape(self.O*self.L,1)
-            self.P[u,:,:] = np.around(self.P[u,:,:],decimals = 4)
-        if self.fs.shape != (self.O):
-            print("please correct dimension of fs")
-        if self.P_O.shape != (self.O,self.O):
-            print("please correct dimension of P_O")
-        ### Stochastic Check 
-        if (np.around(self.P.sum(axis = 2),7) != 1).sum() > 0:
+                for l in range(self.L):
+                    for e in range(self.E):
+                        if l == 0:
+                            p_success = 0
+                        else:
+                            p_success = self.fs[o,a]
+                        for o_prime in range(self.O):
+                            p_o_o_prime = self.P_O[o,o_prime]
+                            for l_prime in range(self.L):
+                                l_transition_success = l_prime == l + e - 1
+                                l_transition_failure = l_prime == l + e 
+                                if l==self.L-1: 
+                                    l_transition_success = l_prime == l - 1
+                                    l_transition_failure = l_prime == l
+                                for e_prime in range(self.E):
+                                    p_e_prime = e_prime*self.delta + (1-e_prime)*(1-self.delta)
+                                    if l == self.L-1 or l==self.L-2:
+                                        p_e_prime = 1 - e_prime
+                                    self.P[a,o*self.L*self.E+l*self.E+e,o_prime*self.L*self.E+l_prime*self.E+e_prime] = p_o_o_prime*(l_transition_success*p_success + l_transition_failure*(1-p_success))*p_e_prime 
+                                
+        # check if P is stochastic
+        if (np.around(self.P.sum(axis = 2),4) != 1).sum() > 0:
+            print(np.where(self.P.sum(axis = 2)<0.99)[1])
+            print(self.P.sum(axis = 2))
             print("P is not stochastic")
     def policyfrom(self,probpolicy,X):
         probpolicy += 1e-10
@@ -95,7 +104,7 @@ class MDP():
         return policy
     def solvemdp(self,method):
         if method == "lp":
-            probpolicy = solvelp(self.C_A,self.C_L,self.P,self.X,self.U,self.D)
+            probpolicy = solvelp(self.C_A,self.C_L,self.P,self.X,self.U,self.D,alpha=1)
             self.policy = self.policyfrom(probpolicy,self.X)
             np.save("./data/input/policy.npy",self.policy)
         elif method == "vi":

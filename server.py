@@ -153,19 +153,17 @@ class Server():
             self.L = self.state_learning_queries + 1
             self.O = 3
             U = 2
+            self.E = 2
             P_O = self.markovchain.P
             fs = self.markovchain.success_prob
             ## Advesarial cost
             C_A = [[0,1.6],
                 [0,0.7],
                 [0,0.2]]
-            C_A = np.tile(C_A,self.L).reshape(self.O*self.L,U) # tiling adversarial cost 
+            C_A = np.tile(C_A,self.L*self.E).reshape(self.O*self.L*self.E,U) # tiling adversarial cost 
             ## Learner Cost
-            C_L =  np.tile([1.0,0],self.O*self.L).reshape(self.O*self.L,U)
-            #    [0,1.55,1.75,3],
-            #     [0,1.75,2.25,3],
-            #     [0,2,3,3.25]
-            # ]
+            C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,0.6,self.L),self.E).reshape(-1,1),np.zeros((self.L*self.E,1))],axis=1),self.O).reshape(self.O*self.L*self.E,U)
+
             C_L[0::self.L,:] = [0.5,0]
             mdp = MDP(self.L,P_O,fs,C_A,C_L)
         if greedy_policy:
