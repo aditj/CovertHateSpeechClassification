@@ -2,114 +2,91 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 ### Read lines from cmd.log and plot the accuracies
-accuracies = []
-eavesdropper_accuracies = []
-accuracies_greedy = []
-eavesdropper_accuracies_greedy = []
-import os
-# List files in data/logs/experiment1
+
+import os 
 files = os.listdir("./data/logs/experiment1")
-# open the last file
-print(np.where(np.array(files)=="server_2023-05-14_12:53:03.log"))
-i = 0
-with open("data/logs/experiment1/"+files[-2],"r") as file:
-    for line in file:
-        if "--" in line:
-            break
-        i+=1
-        if "Eavesdropper Accuracies" in line:
-            eavesdropper_accuracies_greedy.append(float(line.split(": ")[2].split(",")[0]))
-        else:
-            if len(eavesdropper_accuracies_greedy) > 0:
-                eavesdropper_accuracies_greedy.append(eavesdropper_accuracies_greedy[-1])
-            else:
-                eavesdropper_accuracies_greedy.append(0)
-        if "Aggregated Accuracies" in line:
-            accuracies_greedy.append(float(line.split(": ")[2].split(",")[0]))
-        else:
-            if len(accuracies_greedy) > 0:
-                accuracies_greedy.append(accuracies_greedy[-1])
-            else:
-                accuracies_greedy.append(0)
+greedy_files = [f for f in files if "True" in f]
+optimal_files = [f for f in files if "False" in f]
+if len(greedy_files) != len(optimal_files):
+    print("Error: number of files not equal")
+    exit(0)
+N_exp = len(greedy_files)
+N_comm = 45
+accuracies = np.zeros((N_exp,N_comm))
+eavesdropper_accuracies =np.zeros((N_exp,N_comm))
+accuracies_greedy =np.zeros((N_exp,N_comm))
+eavesdropper_accuracies_greedy = np.zeros((N_exp,N_comm))
+for i in range(N_exp):
     
-    for j,line in enumerate(file):
-        
-        if "---" in line:
-            break
-        if "Eavesdropper Accuracies" in line:
-            eavesdropper_accuracies.append(float(line.split(": ")[2].split(",")[0]))
-        elif "SmartEavesdropper accuracy" in line:
-            eavesdropper_accuracies.append(float(line.split(": ")[1].split(" ")[0]))
-            print(eavesdropper_accuracies[-1])
-        else:
-            if len(eavesdropper_accuracies) > 0:
-                eavesdropper_accuracies.append(eavesdropper_accuracies[-1])
-            else:
-                eavesdropper_accuracies.append(0)
-        if "Aggregated Accuracies" in line:
-            accuracies.append(float(line.split(": ")[2].split(",")[0]))
-        else:
-            if len(accuracies) > 0:
-                accuracies.append(accuracies[-1])
-            else:
-                accuracies.append(0)
+    with open("./data/logs/experiment1/"+greedy_files[i],"r") as f:
+        for j,line in enumerate(f):
+            ## Take out communication round from "Communication round: 44, "            
+            if "--" in line or "Communication round" not in line:
+                break
+            comm_round = int(line.split("Communication round: ")[1].split(",")[0])
 
-
-# print(accuracies)
-# print(eavesdropper_accuracies)
-# print(accuracies_greedy)
-# print(eavesdropper_accuracies_greedy)    
-# with open("./data/logs/.log") as file:
-#     for line in file:
-#         i += 1
-#         if "Eavesdropper" in line:
-#             eavesdropper_accuracies.append(float(line.split("accuracy: ")[1].split(" ")[0].split(",")[0]))
-#             # Extract F1 score from INFO:root:Communication round 3 Eavesdropper accuracy: 0.8007623007623008 F1 0.8007623007623008 Balanced Accuracy 0.8030884949284756
-#             eavesdropper_f1_scores.append(float(line.split("F1 ")[1].split(" ")[0]))
-#             # Extract Balanced Accuracy from INFO:root:Communication round 3 Eavesdropper accuracy: 0.8007623007623008 F1 0.8007623007623008 Balanced Accuracy 0.8030884949284756
-#             eavesdropper_balanced_accuracies.append(float(line.split("Balanced Accuracy ")[1].split(" ")[0]))
-#         else:
-#             if len(eavesdropper_accuracies) > 0:
-#                 eavesdropper_accuracies.append(eavesdropper_accuracies[-1])
-#                 eavesdropper_f1_scores.append(eavesdropper_f1_scores[-1])
-#                 eavesdropper_balanced_accuracies.append(eavesdropper_balanced_accuracies[-1])
-#             else:
-#                 eavesdropper_accuracies.append(0)
-#                 eavesdropper_f1_scores.append(0)
-#                 eavesdropper_balanced_accuracies.append(0)
-#         if "Accuracies" in line:
+            if "Eavesdropper Accuracy" in line:
+                eavesdropper_accuracies_greedy[i,comm_round] = float(line.split(": ")[2].split(",")[0])
                 
-#             ## append the float after the string "Accuracies: " and before " "
-#             accuracies.append(float(line.split("Accuracies: ")[1].split(" ")[0].split(",")[0]))
-#             # Extract 2nd float from INFO:root:Communication round: 1, Aggregated Accuracies: 0.5235701906412478, 0.410044438170232, 0.05815736902186073
-#             f1_scores.append(float(line.split("Accuracies: ")[1].split(" ")[1].split(",")[0]))
-#             # Extract 3rd float from INFO:root:Communication round: 1, Aggregated Accuracies: 0.5235701906412478, 0.410044438170232, 0.05815736902186073
-#             balanced_accuracies.append(float(line.split("Accuracies: ")[1].split(" ")[2].split(",")[0]))
-#         else:
-#             if len(accuracies) > 0:
-#                 accuracies.append(accuracies[-1])
-#                 f1_scores.append(f1_scores[-1])
-#                 balanced_accuracies.append(balanced_accuracies[-1])
-#             else:
-#                 accuracies.append(0)
-#                 f1_scores.append(0)
-#                 balanced_accuracies.append(0)
+            if "Aggregated Accuracies" in line:
+                accuracies_greedy[i,comm_round] = float(line.split(": ")[2].split(",")[0])
 
-## Latex 
-#plt.rc('text', usetex=True)
+    with open("./data/logs/experiment1/"+optimal_files[i],"r") as f:
+        for j,line in enumerate(f):
+            if "--" in line or "Communication round" not in line:
+                break
+            comm_round = int(line.split("Communication round: ")[1].split(",")[0])
+            if "Eavesdropper Accuracy" in line:
+                eavesdropper_accuracies[i,comm_round] = float(line.split(": ")[2].split(",")[0])
+            
+            if "Aggregated Accuracies" in line:
+                accuracies[i,comm_round] = float(line.split(": ")[2].split(",")[0])
+        
+# replace 0 entries of accuracies,eavesdropper_accuracies,accuracies_greedy,eavesdropper_accuracies_greedy with previous values by looping over
+for i in range(N_exp):
+    for j in range(N_comm):
+        if accuracies[i,j] == 0:
+            accuracies[i,j] = accuracies[i,j-1]
+        if eavesdropper_accuracies[i,j] == 0:
+            eavesdropper_accuracies[i,j] = eavesdropper_accuracies[i,j-1]
+        if accuracies_greedy[i,j] == 0:
+            accuracies_greedy[i,j] = accuracies_greedy[i,j-1]
+        if eavesdropper_accuracies_greedy[i,j] == 0:
+            eavesdropper_accuracies_greedy[i,j] = eavesdropper_accuracies_greedy[i,j-1]
+ 
+# print("Accuracies: ",eavesdropper_accuracies_greedy)
 sns.set_style("darkgrid")
 sns.set_context("paper")
+# Plot average and std of accuracies
+# take min of accuracies and eavesdropper_accuracies
+accuracies_min = np.min(accuracies,axis=0)
+accuracies_greedy_min = np.min(accuracies_greedy,axis=0)
+eavesdropper_accuracies_min = np.min(eavesdropper_accuracies,axis=0)
+eavesdropper_accuracies_greedy_min = np.min(eavesdropper_accuracies_greedy,axis=0)
+# take max of accuracies and eavesdropper_accuracies
+accuracies_max = np.max(accuracies,axis=0)
+accuracies_greedy_max = np.max(accuracies_greedy,axis=0)
+eavesdropper_accuracies_max = np.max(eavesdropper_accuracies,axis=0)
+eavesdropper_accuracies_greedy_max = np.max(eavesdropper_accuracies_greedy,axis=0)
 
-plt.plot(range(i),eavesdropper_accuracies,label="Eavesdropper Score")
-plt.plot(range(i),accuracies,label="Aggregated Score")
-plt.plot(range(i),eavesdropper_accuracies_greedy,label="Eavesdropper Score Greedy")
-plt.plot(range(i),accuracies_greedy,label="Aggregated Score Greedy")
-# plt.plot(range(i),f1_scores,label="Aggregated Model F1")
-# plt.plot(range(i),eavesdropper_balanced_accuracies,label="Eavesdropper Balanced Accuracy")
-# plt.plot(range(i),eavesdropper_f1_scores,label="Eavesdropper F1")
-# plt.plot(range(i),balanced_accuracies,label="Aggregated Model Balanced Accuracy")
-plt.xlabel("Communication Round",fontsize=16)
-plt.ylabel("Accuracy Score",fontsize=16)
+accuracies = np.mean(accuracies,axis=0)
+eavesdropper_accuracies = np.mean(eavesdropper_accuracies,axis=0)
+eavesdropper_accuracies_greedy = np.mean(eavesdropper_accuracies_greedy,axis=0)
+accuracies_greedy = np.mean(accuracies_greedy,axis=0)
+plt.figure(figsize=(8,6))
+plt.fill_between(range(N_comm),accuracies_min,accuracies_max,alpha=0.2)
+plt.fill_between(range(N_comm),accuracies_greedy_min,accuracies_greedy_max,alpha=0.2)
+plt.fill_between(range(N_comm),eavesdropper_accuracies_min,eavesdropper_accuracies_max,alpha=0.2)
+plt.fill_between(range(N_comm),eavesdropper_accuracies_greedy_min,eavesdropper_accuracies_greedy_max,alpha=0.2)
+
+# Make the eavesdropper lines dotted
+plt.plot(range(N_comm),eavesdropper_accuracies,label="$\mathcal{E}$ acc. under Optimal Policy",linestyle='dashed')
+plt.plot(range(N_comm),accuracies,label="$\mathcal{L}$ acc. under Optimal Policy")
+plt.plot(range(N_comm),eavesdropper_accuracies_greedy,label="$\mathcal{E}$ acc. under Greedy Policy",linestyle='dashed')
+plt.plot(range(N_comm),accuracies_greedy,label="$\mathcal{L}$ acc. under Greedy Policy")
+
+plt.xlabel("Communication Round",fontsize=18)
+plt.ylabel("Accuracy Score",fontsize=18)
 plt.xticks(size=16)
 plt.yticks(size=16)
 plt.legend(fontsize=16)

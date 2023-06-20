@@ -34,9 +34,14 @@ def create_datasets_clients(N_device = 100, fraction_of_data = 1,batch_size = 40
     print("Datasets created for ",N_device," clients")
     ## Create dataset for eavesdropper
     # Filter out the df if list column has 0 
-    df_eav = df[df['list'].apply(lambda x: 0 in x)].reset_index(drop=True).iloc[0:N_batch,:].reset_index(drop=True)
-    train_df_eav = df_eav.sample(frac=0.8)
-    valid_df_eav = df.drop(train_df_eav.index).reset_index(drop=True).sample(n = int(N_batch*0.1))
+    # have 10% 0 and 90% 1
+    df_eav_1 = df[df['list'].apply(lambda x: 1 in x)].sample(frac=0.1)
+    df_eav_0 = df[df['list'].apply(lambda x: 0 in x)].sample(frac=0.9)
+    df_eav = pd.concat([df_eav_1,df_eav_0])
+    train_df_eav = df_eav.sample(n = int(N_batch*0.8))
+    valid_df_eav = df.drop(train_df_eav.index).reset_index(drop=True).sample(n = int(N_batch*0.2))
+    train_df_eav = train_df_eav.reset_index(drop=True)
+    print("Eavesdropper dataset created with shape: ",train_df_eav.shape,valid_df_eav.shape)
     train_df_eav.to_csv(f"./data/client_datasets/client_eav_train.csv",index=False)
     valid_df_eav.to_csv(f"./data/client_datasets/client_eav_valid.csv",index=False)
 
