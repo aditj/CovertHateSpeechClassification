@@ -88,6 +88,7 @@ class Server():
                     print("Communication round {} failed and no obfuscation".format(i))
             else:
                 print("Communication round {} Obfuscated".format(i))
+                
             print(self.count_learning_queries/(i+1))
             if self.count_learning_queries/(i+1) > 0.5:
                 self.eavesdropper_smart.set_parameters(self.global_parameters)
@@ -102,8 +103,10 @@ class Server():
                 with open(self.file, "a") as f:
                     f.write(f"Communication round: {i}, Smart Eavesdropper Accuracy: {evaluations_smart[0]}, {evaluations_smart[1]}, {evaluations_smart[2]}")
                     f.write('\n')
-                
             
+        with open(self.file, "a") as f:
+            f.write('-'*100)
+            f.write('\n')
     def initialize_clients(self):
         for i in range(self.n_clients): # for each client
             self.clients.append(Client(i,self.model(self.n_classes),n_classes=self.n_classes,learning_rate=self.client_parameters["learning_rate"])) # initialize a client
