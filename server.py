@@ -4,6 +4,7 @@ from models import BERTClass,CNNBERTClass
 import numpy as np
 from mdp import MDP,MarkovChain
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 ## add date and time to log file
 import datetime
 now = datetime.datetime.now()
@@ -24,7 +25,7 @@ class Server():
         self.device_data_matrix = self.markovchain.device_data_matrix
         ## Create file to write log
         self.file = f"./data/logs/experiment1/server_{now.strftime('%Y-%m-%d_%H:%M:%S')}_{greedy_policy}.log"
-        self.state_learning_queries = 19
+        self.state_learning_queries = 16
         self.get_policy(generate_policy,greedy_policy)
         self.state_oracle = 0
         ### FL Client Related ###
@@ -49,7 +50,7 @@ class Server():
         self.count_learning_queries = 0
         for i in tqdm(range(self.n_communications)):
             self.state_oracle = self.markovchain.oracle_states[i]
-            action_prob = self.policy[int(self.state_oracle*self.L + self.state_learning_queries)]
+            action_prob = self.policy[int(self.state_oracle*self.L + self.E*self.state_learning_queries)]
             action = np.random.choice([0,1],p=[action_prob,1-action_prob])
             print(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: {action_prob}")
             if self.state_learning_queries == 0:
@@ -153,21 +154,32 @@ class Server():
             self.L = self.state_learning_queries + 1
             self.O = 3
             U = 2
+            D = 0.3
             self.E = 2
             P_O = self.markovchain.P
             fs = self.markovchain.success_prob
             ## Advesarial cost
-            C_A = [[0,1.6],
-                [0,0.7],
-                [0,0.2]]
+            C_A = [[0,1.8],
+                [0,0.8],
+                [0,0.3]]
             C_A = np.tile(C_A,self.L*self.E).reshape(self.O*self.L*self.E,U) # tiling adversarial cost 
             ## Learner Cost
-            C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,0.6,self.L),self.E).reshape(-1,1),np.zeros((self.L*self.E,1))],axis=1),self.O).reshape(self.O*self.L*self.E,U)
+            C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,5,self.L),self.E).reshape(-1,1),np.zeros((self.L*self.E,1))],axis=1),self.O).reshape(self.O*self.L*self.E,U)
 
-            C_L[0::self.L,:] = [0.5,0]
-            mdp = MDP(self.L,P_O,fs,C_A,C_L)
+            C_L[0::self.L*self.E,:] = [0,0]
+            C_L[1::self.L*self.E,:] = [0,0]
+            C_L[self.L*self.E-2::self.L*self.E,:] = [1e10,0]
+            C_L[self.L*self.E-1::self.L*self.E,:] = [1e10,0]
+            mdp = MDP(self.L,P_O,fs,C_A,C_L,D,"lplagrange")
+            
+
         if greedy_policy:
             self.policy = np.load('./data/input/greedy_policy.npy') 
             return
         self.policy = np.load("./data/input/policy.npy")
+        # Plot the policy
+        plt.figure(figsize=(10,10))
+        plt.plot(np.arange(self.policy.shape[0]),self.policy[:],label='Obfuscate')
+        plt.savefig('./data/plots/policy.png')
+        plt.close()
         

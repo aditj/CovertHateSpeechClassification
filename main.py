@@ -28,14 +28,15 @@ def main():
 
         parameters = Client(0,model(n_classes)).get_parameters() # Get parameters from client
         print("Initial Parameters initialized")
+        
+        s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY)
+        print("Server initialized for non greedy policy")
+        s_nongreedy.train()
+        print(f"Training complete for {k} run non greedy policy")
+        
         ## Greedy Policy ##
         s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True)
         print("Server initialized for greedy policy")
-        #s.train()
-        print(f"Training complete for {k} run greedy policy")
-        s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY)
-        print("Server initialized for non greedy policy")
         s.train()
-        print(f"Training complete for {k} run non greedy policy")
-        
+        print(f"Training complete for {k} run greedy policy")
 main()

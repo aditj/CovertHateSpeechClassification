@@ -1,10 +1,10 @@
 import numpy as np
-from utils.solvemdp import solvelp,spsa
+from utils.solvemdp import solvelp,spsa,solvelp_generalcost
 
 class MarkovChain():
-    def __init__(self,T = 1000,N_device = 100,N_total = 150000,thresfactor = 4,P = np.array([[0.8,0.2,0],
-        [0.3,0.2,0.5],
-        [0,0.2,0.8]])):
+    def __init__(self,T = 1000,N_device = 100,N_total = 150000,thresfactor = 4,P = np.array([[0.7,0.3,0],
+       [0.15,0.7,0.15],
+       [0.0,0.15,0.85]])):
         self.T = T
         self.N_device = N_device
         self.N_total = N_total
@@ -14,7 +14,7 @@ class MarkovChain():
         self.N_batch_per_device = self.N_batches//self.N_device
         self.thres = self.N_batches//self.thresfactor
         self.P = P
-        self.N_choices = np.array([ N_device//2.5, N_device//1.75, N_device//1.25],dtype=int)
+        self.N_choices = np.array([ N_device//2.25, N_device//1.75, N_device//1.1],dtype=int)
         self.N_window = N_device//5 -1
         self.n_success = np.zeros(self.N_choices.shape[0])
         self.n_visits = np.zeros(self.N_choices.shape[0])
@@ -53,14 +53,14 @@ def generate_success_prob():
 
 # function for generating device data matrix
 class MDP():
-    def __init__(self,M,P_O,fs,C_A,C_L,solvemethod = "lp"):
+    def __init__(self,M,P_O,fs,C_A,C_L,D,solvemethod = "lp"):
         self.O = P_O.shape[0]
         self.L = M
         self.E = 2
         self.X = self.O*self.L*self.E
         self.U = 2
-        self.D = 0.5
-        self.delta = 0.1
+        self.D = D
+        self.delta = 0.2
         self.P_O = P_O
         self.fs = fs
         self.generate_P()
@@ -110,10 +110,49 @@ class MDP():
         elif method == "vi":
             print("vi not defined")
           #  self.V = solvevi(self.P,self.C_A,self.C_L)
+        elif method=="lplagrange":
+            C_lamb = lambda lambd: self.C_A + (lambd)*self.C_L
+            
+            running_c = 0
+            lambds = np.linspace(0.2,0.4,10)
+            avgcost = np.zeros(len(lambds))
+
+            for i,lamb in enumerate(lambds):
+                probpolicy = solvelp_generalcost(C_lamb(lamb),self.P,self.O*self.E*self.L,self.U,)
+                avgcost[i] = self.occupation_measure(probpolicy,self.C_L,self.O,self.L,self.E,self.U)
+                print(lamb,avgcost[i])
+
+                probpolicy = probpolicy/(1e-10+ np.sum(probpolicy,axis = 1).reshape(self.O*self.L*self.E,1))
+                
+                policy2 = probpolicy
+                if avgcost[i] < self.D:
+                    break
+                policy1 = probpolicy
+            lamb1 = lambds[i-1]
+            # policy1 = solvelp(C_A + lamb1*C_L,P,O*E*L,U)
+            occupation1 = avgcost[i-1]
+            # policy1 = policy1/(np.sum(policy1,axis = 1).reshape(O*L*E,1))
+            policy1[self.L*self.E-1::self.L*self.E,:] = [0,1]
+            lamb2 = lambds[i]
+            # policy2 = solvelp(C_A + lamb2*C_L,P,O*E*L,U)
+            policy2[self.L*self.E-1::self.L*self.E,:] = [0,1]
+            occupation2 = avgcost[i]
+            # policy2 = policy2/(np.sum(policy2,axis = 1).reshape(O*L*E,1))
+            alpha = (self.D - occupation2)/(occupation1 - occupation2)
+            print(alpha,occupation1,occupation2)
+            probpolicy = alpha*policy1 + (1-alpha)*policy2
+            self.policy = self.policyfrom(probpolicy,self.X)
+            np.save("./data/input/policy.npy",self.policy)
         elif method == "spsa":
             self.policy = spsa(self.P,self.C_A,self.C_L)
         else:
             print("Please enter a valid method")
+    def occupation_measure(self,probpolicy,C,O,L,E,U):
+        c = 0
+        for i in range(O*L*E):
+            for u in range(U):
+                c += C[i,u]*probpolicy[i,u]
+        return c
     def generate_greedy_policy(self):
         self.greedy_policy = np.zeros_like(self.policy)
         np.save("./data/input/greedy_policy.npy",self.greedy_policy)

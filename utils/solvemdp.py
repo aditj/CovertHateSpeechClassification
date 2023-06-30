@@ -62,6 +62,53 @@ def solvelp(C_A,C_L,P,X,U,D,alpha = 1):
     print(solver.Objective().Value())
     print(solver.ComputeConstraintActivities()[0])
     return probpolicy
+def solvelp_generalcost(C,P,X,U,alpha = 1):
+    solver = pywraplp.Solver.CreateSolver('GLOP')
+    infinity = solver.infinity()
+    pi = {}
+    for i in range(X):
+        for u in range(U): 
+            pi[i,u] =  solver.NumVar(0,infinity, 'pi[%i][%i]'%(i,u))
+    objective = solver.Objective()
+
+    for i in range(X): 
+        for u in range(U):  
+            objective.SetCoefficient(pi[i,u], C[i][u])
+    if alpha == 1:
+        prob_constraint = [pi[i,u] for i in range(X) for u in range(U)]
+        solver.Add(sum(prob_constraint) == 1)
+    O = 3
+    E = 2
+    L = X//O//E
+    for j in range(X):
+        transition_constraint_left = [P[u][i][j]*pi[i,u] for u in range(U) for i in range(X)]
+        
+        transition_constraint_right = [pi[j,u] for u in range(U) ] #(1-alpha)*1/X# [P[u][i][j]*pi[i,u] for i in range(X) for u in range(U)]
+        solver.Add(sum(transition_constraint_left) == sum(transition_constraint_right))
+
+    objective.SetMinimization()
+
+    status = solver.Solve()
+    
+    probpolicy = np.zeros((X,U))
+    if status == pywraplp.Solver.OPTIMAL:
+        for i in range(X):
+            for u in range(U):
+                probpolicy[i,u] =  pi[i,u].solution_value()
+    else:
+        print('The problem does not have an optimal solution.')
+
+    try:
+        index = np.where(probpolicy[:,0]==1)[0][0]
+        print(index)
+        O = 3
+        E = 2
+        L = X//O//E
+        print(solver.ComputeConstraintActivities())
+    except:
+        pass
+    
+    return probpolicy
 
 def sigmoid(x,thres=0,scale=1,tau=1):
     return scale/(1 + np.exp(-(x-thres)/tau))
