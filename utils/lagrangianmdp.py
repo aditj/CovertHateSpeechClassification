@@ -2,6 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ortools.linear_solver import pywraplp
 from solvemdp import spsa
+import seaborn as sns
+import tqdm as tqdm
+
+PLOT_DIR = './data/plots/'
+
 def solvelp(C,P,X,U,alpha = 1):
     solver = pywraplp.Solver.CreateSolver('GLOP')
     infinity = solver.infinity()
@@ -65,18 +70,36 @@ U = 2
 A = U
 X = O*L
 E = 2
-P_O = np.array([[0.85,0.15,0],
+P_O = np.array([[0.7,0.2,0.1],
        [0.15,0.7,0.15],
-       [0.0,0.15,0.85]])
+       [0.1,0.2,0.7]])
 
 ### Complete Probability Transition Kernel
 P = np.zeros((A, O*L, O*L))
-### Probability of Failure for different states and action pairs
-fs = np.array([[0,0.3],[0,0.75],[0,0.95]])
+### Probability of Success for different states and action pairs
+fs = np.array([[0,0.1],[0,0.4],[0,0.95]])
 
 ### MAKE P have transitions from either -1 or M-1 or M
-M= 10
-delta = 0.18# Arrival rate 
+M= 4
+delta = 0.15# Arrival rate 
+#### Cost
+## Advesarial cost
+C_A = [[0,1.8],
+     [0,1.3],
+     [0,0.3]]
+C_A = np.tile(C_A,L*E).reshape(O*L*E,A) # tiling adversarial cost 
+## Learner Cost
+C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,10,L),E).reshape(-1,1),np.zeros((L*E,1))],axis=1),[O,1])
+# C_L = [[0.6,0],
+#     [0.6,0],
+#     [0.6,0]
+# ]
+# C_L = np.tile(C_L,L*E).reshape(O*L*E,A) # tiling learner cost
+C_L[0::L*E,:] = [0,0]
+C_L[1::L*E,:] = [0,0]
+# C_L[L*E-2::L*E,:] = [1,0]
+# C_L[L*E-1::L*E,:] = [1,0]
+D = 0.4
 
 # Create threedimensional probability transition matrix for each action with proper tests
 P = np.zeros((A,O*L*E,O*L*E))
@@ -118,109 +141,106 @@ for a in range(A):
     plt.imshow(P[a,:,:])
     plt.colorbar()
     plt.title("P for action {}".format(a))
-    plt.savefig("P_{}.png".format(a))
+    plt.savefig(PLOT_DIR + "P_{}.png".format(a))
+    plt.close()
 
-#### Cost
-## Advesarial cost
-C_A = [[0,1.8],
-     [0,0.8],
-     [0,0.3]]
-C_A = np.tile(C_A,L*E).reshape(O*L*E,A) # tiling adversarial cost 
-## Learner Cost
-C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,10,L),E).reshape(-1,1),np.zeros((L*E,1))],axis=1),[O,1])
-# C_L = [[0.8,0],
-#     [0.7,0],
-#     [0.6,0]
-# ]
-# C_L = np.tile(C_L,L*E).reshape(O*L*E,A) # tiling learner cost
-# C_L = np.tile(C_L,L).reshape(O*L,A) # tiling learner cost
-C_L[0::L*E,:] = [0,0]
-C_L[1::L*E,:] = [0,0]
-# C_L[L*E-2::L*E,:] = [1,0]
-# C_L[L*E-1::L*E,:] = [1,0]
 
-D = 0.4
+
+## Check constraints
 print(delta*M/fs[0,1]<(1 - (D/C_L[2,0])))
 
-print(delta*M/fs[0,1],(1 - (D/C_L[2,0])))
-C_lamb = lambda lambd: C_A + (lambd)*C_L
-def occupation_measure(probpolicy,C,O,L,E,U):
-    c = 0
-    for i in range(O*L*E):
-        for u in range(U):
-            c += C[i,u]*probpolicy[i,u]
-    return c
-running_c = 0
-lambds = np.linspace(0.2,0.4,10)
-avgcost = np.zeros(len(lambds))
+do_lagrange_method = False
+if do_lagrange_method:
+    C_lamb = lambda lambd: C_A + (lambd)*C_L
+    def occupation_measure(probpolicy,C,O,L,E,U):
+        c = 0
+        for i in range(O*L*E):
+            for u in range(U):
+                c += C[i,u]*probpolicy[i,u]
+        return c
+    running_c = 0
+    lambds = np.linspace(0.2,0.4,10)
+    avgcost = np.zeros(len(lambds))
 
-for i,lamb in enumerate(lambds):
-    probpolicy =solvelp(C_lamb(lamb),P,O*E*L,U)
-    avgcost[i] = occupation_measure(probpolicy,C_L,O,L,E,U)
-    print(lamb,avgcost[i])
-    probpolicy = probpolicy/(np.sum(probpolicy,axis = 1).reshape(O*L*E,1))
-    policy2 = probpolicy
-    if avgcost[i] < D:
-        break
-    policy1 = probpolicy
-lamb1 = lambds[i-1]
-# policy1 = solvelp(C_A + lamb1*C_L,P,O*E*L,U)
-occupation1 = avgcost[i-1]
-# policy1 = policy1/(np.sum(policy1,axis = 1).reshape(O*L*E,1))
-policy1[L*E-1::L*E,:] = [0,1]
+    for i,lamb in enumerate(lambds):
+        probpolicy =solvelp(C_lamb(lamb),P,O*E*L,U)
+        avgcost[i] = occupation_measure(probpolicy,C_L,O,L,E,U)
+        print(lamb,avgcost[i])
+        probpolicy = probpolicy/(np.sum(probpolicy,axis = 1).reshape(O*L*E,1))
+        policy2 = probpolicy
+        if avgcost[i] < D:
+            break
+        policy1 = probpolicy
+    lamb1 = lambds[i-1]
+    # policy1 = solvelp(C_A + lamb1*C_L,P,O*E*L,U)
+    occupation1 = avgcost[i-1]
+    # policy1 = policy1/(np.sum(policy1,axis = 1).reshape(O*L*E,1))
 
-lamb2 = lambds[i]
-# policy2 = solvelp(C_A + lamb2*C_L,P,O*E*L,U)
-policy2[L*E-1::L*E,:] = [0,1]
-occupation2 = avgcost[i]
-# policy2 = policy2/(np.sum(policy2,axis = 1).reshape(O*L*E,1))
-alpha = (D - occupation2)/(occupation1 - occupation2)
-print(alpha,occupation1,occupation2)
-policy = alpha*policy1 + (1-alpha)*policy2
-# make three subplots
-fig, axs = plt.subplots(3, 1)
-axs[0].plot(np.arange(O*L),policy1[0::2,1])
-axs[1].plot(np.arange(O*L),policy2[0::2,1])
-axs[2].plot(np.arange(O*L),policy[0::2,1])
-axs[0].set_title('Policy 1')
-axs[1].set_title('Policy 2')
-axs[2].set_title('Policy')
-# add vlines on each plot at L*E intervals
-for o in range(O+1):
-    axs[0].axvline(x=L*o,color='r')
-    axs[1].axvline(x=L*o,color='r')
-    axs[2].axvline(x=L*o,color='r')
-plt.savefig("policy.png")
-
-parameter_initial_values = np.linspace(7,10,5)
+    policy1[L*E-1::L*E,:] = [0,1]
+    lamb2 = lambds[i]
+    # policy2 = solvelp(C_A + lamb2*C_L,P,O*E*L,U)
+    policy2[L*E-1::L*E,:] = [0,1]
+    occupation2 = avgcost[i]
+    # policy2 = policy2/(np.sum(policy2,axis = 1).reshape(O*L*E,1))
+    alpha = (D - occupation2)/(occupation1 - occupation2)
+    print(alpha,occupation1,occupation2)
+    policy = alpha*policy1 + (1-alpha)*policy2
+    # make three subplots
+    fig, axs = plt.subplots(3, 1)
+    axs[0].plot(np.arange(O*L),policy1[0::2,1])
+    axs[1].plot(np.arange(O*L),policy2[0::2,1])
+    axs[2].plot(np.arange(O*L),policy[0::2,1])
+    axs[0].set_title('Policy 1')
+    axs[1].set_title('Policy 2')
+    axs[2].set_title('Policy')
+    # add vlines on each plot at L*E intervals
+    for o in range(O+1):
+        axs[0].axvline(x=L*o,color='r')
+        axs[1].axvline(x=L*o,color='r')
+        axs[2].axvline(x=L*o,color='r')
+    axs[0].set_xticks(np.tile(np.arange(L),O))
+    plt.savefig(PLOT_DIR + "policy.png")
+    plt.close()
+do_spsa_method = True
 n_iter = 4000
-if True:
-    for p_1 in parameter_initial_values:
-    
-        parameters_initial = np.append(np.tile([p_1,12],O*E),np.pi/2)
-        delt = np.linspace(0.5,0.4,n_iter)
-        T = 1000
-        lamb = 1
-        epsilon = np.linspace(0.4,0.2,n_iter)
-        rho = 2
-        parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L)
-        np.save("./data/input/spsa/parameters_spsa_"+str(p_1),parameters_spsa)
+if do_spsa_method:
+    parameter_initial_values = [0,0]
+    n_samples = 100
+    parameters_spsa = np.zeros((n_samples,n_iter,2*O*E+1))
+    delt = np.linspace(0.9,0.9,n_iter)
+    delt[n_iter//3:2*n_iter//3]*=0.9
+    delt[2*n_iter//3:]*=0.8
+    # delt[8*n_iter//9:]*=0.9
+    epsilon = np.linspace(0.3,0.3,n_iter)
 
-## Plot these parameters  for different initial values and oracle states
-if True:
-  n_iter_sample = n_iter
-  sns.set_style("darkgrid")
-  sns.set_context("paper")
-  for p_1 in parameter_initial_values:
-      parameters_spsa = np.load("./data/input/spsa/parameters_spsa_"+str(p_1)+".npy")
-      plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,0],color = 'red')
-  # plt.plot(np.arange(n_iter),parameters_spsa[:,])
-      plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,2],color = 'blue')
-      plt.plot(np.arange(n_iter_sample),parameters_spsa[:n_iter_sample,4],color = 'green')
-  # plt.legend(fontsize=12)
-  #plt.legend(fontsize=12)
-  plt.xlabel("Iterations",size = 16)
-  plt.ylabel("Threshold Parameter of $y^L$", size = 16)
-  plt.xticks(size=16)
-  plt.yticks(size=16)
-  plt.savefig("fig2.pdf",bbox_inches='tight',pad_inches=0)
+    T = 100
+    lamb = 1
+    rho = 2e1
+    parameters_initial = np.append(np.tile(parameter_initial_values,O*E),np.pi/4)
+    for i in tqdm.tqdm(range(n_samples)):    
+        np.random.seed(i)
+        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.5)
+        np.save("./data/input/spsa/parameters_spsa",parameters_spsa)
+        print("Sample: ",i)
+
+plot_spsa = True
+
+if plot_spsa:
+    n_iter_plot = 3000
+    parameters_spsa = np.load("./data/input/spsa/parameters_spsa.npy")
+    parameters_spsa_o_1 = np.sort(parameters_spsa[:,:n_iter_plot,0:2],axis = 2)[:,:,1].mean(axis = 0)
+    parameters_spsa_o_2 = np.sort(parameters_spsa[:,:n_iter_plot,4:6],axis = 2)[:,:,1].mean(axis = 0)
+    parameters_spsa_o_3 = np.sort(parameters_spsa[:,:n_iter_plot,8:10],axis = 2)[:,:,1].mean(axis = 0)
+    plt.figure()
+    sns.set_style("darkgrid")
+    plt.plot(np.arange(n_iter_plot),parameters_spsa_o_1,label = r"$\theta_2 \ O = 1$",color="red")
+    plt.plot(np.arange(n_iter_plot),parameters_spsa_o_2,label = r"$\theta_2 \ O = 2$",color="black")
+    plt.plot(np.arange(n_iter_plot),parameters_spsa_o_3,label = r"$\theta_2 \ O = 3$",color="blue")
+    plt.scatter(n_iter_plot,8,label="$\phi_2 \ O = 1$",color="red")
+    plt.scatter(n_iter_plot,1,label="$\phi_2 \ O = 2$",color="black")
+    plt.scatter(n_iter_plot,0,label="$\phi_2 \ O = 3$",color="blue")
+    plt.legend(fontsize=14)
+    plt.xlabel("Iterations",fontsize = 16)
+    plt.ylabel("Parameters",fontsize = 16)
+    plt.savefig("./data/plots/figspsa.pdf")
+

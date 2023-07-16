@@ -36,3 +36,5 @@ and run using ```python main.py```.
 Figures can be generated using ```python utils/generateplotforspsa.py``` and ```python utils/generateplotfromlog.py```.
 
 ####
+- Doburishin Coefficient 
+- Assumption might be strong for 

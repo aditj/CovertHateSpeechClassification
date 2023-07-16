@@ -4,18 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import seaborn as sns
 from solvemdp import spsa,solvelp
-
-
 # check if P_O is 1st order stochastic dominant
-
 O = 3
-L = 20
+L = 40
 U = 2
 A = U
 X = O*L
 E = 2
-
-
 
 #### Probability transition kernel 
 ### Oracle
@@ -32,7 +27,7 @@ P = np.zeros((A, O*L, O*L))
 fs = np.array([[0,0.3],[0,0.5],[0,0.9]])
 
 ### MAKE P have transitions from either -1 or M-1 or M
-M= 1
+M = 5
 delta = 0.2# Arrival rate 
 
 # Create threedimensional probability transition matrix for each action with proper tests
@@ -150,11 +145,10 @@ plt.savefig("./data/plots/figure_policy.png")
 
 # clear plot
 
-parameter_initial_values = np.linspace(7,10,5)
+parameter_initial_values = np.linspace(7,7,1)
 n_iter = 4000
-if False:
+if True:
     for p_1 in parameter_initial_values:
-    
         parameters_initial = np.append(np.tile([p_1,12],O),np.pi/2)
         #delt = np.append(np.repeat(np.pi/2,O*(A)),np.pi/4) #np.power(0.99,(np.arange(1,n_iter+1)))+0.001
         delt = np.linspace(0.5,0.4,n_iter)
@@ -162,7 +156,7 @@ if False:
         lamb = 1
         epsilon = np.linspace(0.4,0.2,n_iter)
         rho = 2
-        parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,A,C_A,C_L)
+        parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L)
         np.save("./data/input/spsa/parameters_spsa_"+str(p_1),parameters_spsa)
 
 ## Plot these parameters  for different initial values and oracle states

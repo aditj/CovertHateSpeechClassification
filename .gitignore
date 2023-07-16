@@ -7,3 +7,4 @@ __pycache__/*
 yes.pub
 yes 
 utils/__pycache__/*
+additional_results/mnsit/data/*
