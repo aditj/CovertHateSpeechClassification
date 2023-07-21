@@ -7,7 +7,10 @@ def create_datasets_clients(N_device = 100, fraction_of_data = 1,batch_size = 40
     df = pd.read_csv("./data/df_treated_comment.csv")
 
 ##    df = df.sample(frac=fraction_of_data).reset_index(drop=True)
+    ## Composition before balancing the dataset
     df['target'] = np.where(df['target'] >= 0.5, 1, 0)
+    print("Composition of dataset before balancing: ",df['target'].value_counts())
+
     ## Balance the dataset
     df_1 = df[df['target'] == 1]
     df_0 = df[df['target'] == 0].sample(n=df_1.shape[0]).reset_index(drop=True)

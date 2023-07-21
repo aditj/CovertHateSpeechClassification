@@ -2,7 +2,7 @@ import numpy as np
 from utils.solvemdp import solvelp,spsa,solvelp_generalcost
 
 class MarkovChain():
-    def __init__(self,T = 1000,N_device = 100,N_total = 150000,thresfactor = 4,P = np.array([[0.7,0.3,0],
+    def __init__(self,T = 1000,N_device = 100,N_total = 16000,thresfactor = 4,P = np.array([[0.8,0.2,0],
        [0.15,0.7,0.15],
        [0.0,0.15,0.85]])):
         self.T = T
@@ -14,7 +14,7 @@ class MarkovChain():
         self.N_batch_per_device = self.N_batches//self.N_device
         self.thres = self.N_batches//self.thresfactor
         self.P = P
-        self.N_choices = np.array([ N_device//2.25, N_device//1.75, N_device//1.1],dtype=int)
+        self.N_choices = np.array([ N_device//2, N_device//1.75, N_device//1.1],dtype=int)
         self.N_window = N_device//5 -1
         self.n_success = np.zeros(self.N_choices.shape[0])
         self.n_visits = np.zeros(self.N_choices.shape[0])
@@ -26,7 +26,10 @@ class MarkovChain():
     def generate_device_data_matrix(self):
         for t in range(self.T):
             no_of_devices_selected = int(np.random.uniform(self.N_choices[self.X] - self.N_window, self.N_choices[self.X] + self.N_window))
+
+            no_of_devices_selected = self.N_choices[self.X]
             devices_selected = np.random.choice(range(self.N_device),size=no_of_devices_selected,replace=False)
+
             self.device_data_matrix[t,devices_selected] = np.random.randint(0,self.N_batch_per_device,size = no_of_devices_selected)
             self.n_success[self.X] += self.device_data_matrix[t,:].sum()>self.thres
             self.n_visits[self.X] += 1
@@ -114,7 +117,7 @@ class MDP():
             C_lamb = lambda lambd: self.C_A + (lambd)*self.C_L
             
             running_c = 0
-            lambds = np.linspace(0.2,0.4,10)
+            lambds = np.linspace(0.1,0.4,10)
             avgcost = np.zeros(len(lambds))
 
             for i,lamb in enumerate(lambds):

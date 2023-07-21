@@ -1,24 +1,20 @@
 # create an eavesdropper client
 
 from client import Client,CustomDataset
-from models import BERTClass
+from models import CNNImage
 from sklearn import metrics
 import torch
 import pandas as pd
 import numpy as np
-from transformers import BertTokenizer
-tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-2_H-128_A-2', do_lower_case=True)
 from torch.utils.data import Dataset, DataLoader
 class Eavesdropper():
-    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-04,device = "cuda",n_classes = 6):
+    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 5e-04,device = "cuda",n_classes = 10):
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.device = device
-        self.max_len = max_len
         self.batch_size = batch_size
         self.n_batches_per_client = n_batches_per_client
-        self.max_len = max_len
-        self.model = BERTClass(n_classes=n_classes)
+        self.model = CNNImage()
         self.load_data()
         self.model.to(self.device)
     def load_data(self):
@@ -43,11 +39,13 @@ class Eavesdropper():
             ## compute number of batches
             ## take subset of train loader from n_batches_start to n_batches_end                    
             for _,data in enumerate(self.train_loader,0):
-                pixels = data['pixels'].to(self.device,torch.int64)
-                targets = data['labels'].to(self.device,torch.float)
+                pixels = data['pixels'].to(self.device,torch.float)
+                targets = data['targets'].to(self.device,torch.float)
+                # reshape pixels to (batch_size,1,28,28)
+                pixels = pixels.reshape(-1,1,28,28)
                 outputs = self.model(pixels)
                 optimizer.zero_grad()
-                loss = torch.nn.BCEWithLogitsLoss()(outputs, targets)
+                loss = torch.nn.CrossEntropyLoss()(outputs,targets.long())
                 
                 ## Get gradients and make them negative
                 loss.backward() 
@@ -63,22 +61,20 @@ class Eavesdropper():
             for _, data in enumerate(self.valid_loader):
                 if _ > 10:
                     break
-                ids = data['ids'].to(self.device,torch.long)
-                mask = data['mask'].to(self.device,torch.long)
-                token_type_ids = data['token_type_ids'].to(self.device,torch.long)
+                pixels = data['pixels'].to(self.device,torch.float)
+                pixels = pixels.reshape(-1,1,28,28)
                 targets = data['targets'].to(self.device,torch.float)
-                outputs = self.model(ids, mask, token_type_ids)
+                outputs = self.model(pixels)
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
-                
-        outputs = np.array(fin_outputs) >= 0.5
         ## create weights for samples with all 0 classes to avoid bias
-        accuracy = metrics.accuracy_score(fin_targets, outputs)
-        f1_score = metrics.f1_score(fin_targets, outputs, average='micro')
-        balanced_accuracy = metrics.balanced_accuracy_score(fin_targets, outputs)
-        
+        fin_outputs = np.array(fin_outputs)
+        fin_outputs = np.argmax(fin_outputs,axis=1)    
+
+        accuracy = metrics.accuracy_score(fin_targets, fin_outputs)
+
         print("Eavesdropper Accuracy: ",accuracy)
-        return accuracy,f1_score,balanced_accuracy
+        return accuracy
     def get_parameters(self):
         return self.model.state_dict()
     def set_parameters(self,parameters_state_dict):

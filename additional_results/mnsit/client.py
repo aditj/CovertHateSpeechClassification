@@ -17,10 +17,10 @@ class CustomDataset(Dataset):
     def __init__(self, dataframe):
         
         self.pixels = dataframe.pixels
-        self.targets = self.data['label']
+        self.targets = dataframe.label
 
     def __len__(self):
-        return len(self.comment_text)
+        return len(self.pixels)
 
     def __getitem__(self, index):
         # get list of pixels from string of list
@@ -35,7 +35,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6):
+    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-05,device = "cuda",n_classes = 6):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -83,8 +83,10 @@ class Client():
                     continue
                 if _ > n_batches_end:
                     break
-                pixels = data['pixels'].to(self.device,torch.int64)
+                pixels = data['pixels'].to(self.device,torch.float)
                 targets = data['targets'].to(self.device,torch.float)
+                # reshape pixels to (batch_size,28,28,1)
+                pixels = pixels.reshape(-1,1,28,28)
                 outputs = self.model(pixels)
                 optimizer.zero_grad()
                 ### Add weights for samples with all 0 classes to avoid bias
@@ -102,19 +104,20 @@ class Client():
         loss = []
         with torch.no_grad():
             for _, data in enumerate(self.valid_loader):
-                pixels = data['pixels'].to(self.device,torch.int64)
+                pixels = data['pixels'].to(self.device,torch.float)
+                pixels = pixels.reshape(-1,1,28,28)
                 targets = data['targets'].to(self.device,torch.float)
                 outputs = self.model(pixels)
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs = np.array(fin_outputs) 
+        outputs = np.argmax(outputs, axis=1)
         fin_targets = np.array(fin_targets)
         ## create weights for samples with all 0 classes to avoid bias
-        f1_score = metrics.f1_score(fin_targets, outputs, average='weighted',zero_division=1)
         accuracy = metrics.accuracy_score(fin_targets, outputs)
-        balanced_accuracy = metrics.balanced_accuracy_score(fin_targets, outputs, adjusted=True)       
-        print("Client: ",self.cid," Accuracy: ",accuracy)
-        return accuracy,f1_score,balanced_accuracy
+    
+        # print("Client: ",self.cid," Accuracy: ",accuracy)
+        return accuracy
     def get_parameters(self):
         return self.model.state_dict()
     def set_parameters(self,parameters_state_dict):

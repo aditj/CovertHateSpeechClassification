@@ -7,7 +7,7 @@ import torch.nn as nn
 logging.set_verbosity_error()
 
 class CNNImage(torch.nn.Module):
-    def __init__(self,input_size,output_size):
+    def __init__(self,input_size=784,output_size = 10):
         super(CNNImage, self).__init__()
         self.l1 = nn.Conv2d(1, 32, kernel_size=5,stride=1)
         self.l2 = nn.ReLU()
