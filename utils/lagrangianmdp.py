@@ -71,17 +71,17 @@ A = U
 X = O*L
 E = 2
 P_O = np.array([[0.7,0.2,0.1],
-       [0.15,0.7,0.15],
+       [0.1,0.7,0.2],
        [0.1,0.2,0.7]])
 
 ### Complete Probability Transition Kernel
 P = np.zeros((A, O*L, O*L))
 ### Probability of Success for different states and action pairs
-fs = np.array([[0,0.1],[0,0.4],[0,0.95]])
+fs = np.array([[0,0.15],[0,0.3],[0,0.95]])
 
 ### MAKE P have transitions from either -1 or M-1 or M
-M= 4
-delta = 0.15# Arrival rate 
+M=4
+delta = 0.09 # Arrival rate 
 #### Cost
 ## Advesarial cost
 C_A = [[0,1.8],
@@ -89,17 +89,20 @@ C_A = [[0,1.8],
      [0,0.3]]
 C_A = np.tile(C_A,L*E).reshape(O*L*E,A) # tiling adversarial cost 
 ## Learner Cost
-C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,10,L),E).reshape(-1,1),np.zeros((L*E,1))],axis=1),[O,1])
+C_L = np.tile(np.concatenate([np.repeat(np.linspace(.8,5,L),E).reshape(-1,1),np.zeros((L*E,1))],axis=1),[O,1])
+C_L[0::L*E,:] = [0,0]
+C_L[1::L*E,:] = [0,0]
 # C_L = [[0.6,0],
 #     [0.6,0],
 #     [0.6,0]
 # ]
 # C_L = np.tile(C_L,L*E).reshape(O*L*E,A) # tiling learner cost
-C_L[0::L*E,:] = [0,0]
-C_L[1::L*E,:] = [0,0]
-# C_L[L*E-2::L*E,:] = [1,0]
-# C_L[L*E-1::L*E,:] = [1,0]
-D = 0.4
+# Each oracle section is L*E length, hence the last two states of each oracle section are absorbing states with high cost for not learning 
+# the index of the last two states of each oracle section is L*E-2 and L*E-1 ( corresponding to l = L-1)
+C_L[L*E-2::L*E,:] = [1e2,0]
+C_L[L*E-1::L*E,:] = [1e2,0]
+## Learning constraint
+D = 0.3
 
 # Create threedimensional probability transition matrix for each action with proper tests
 P = np.zeros((A,O*L*E,O*L*E))
@@ -107,24 +110,24 @@ for a in range(A):
   for o in range(O):
       for l in range(L):
         for e in range(E):
-          if l == 0:
+          if l == 0: # if the learner state is 0 then the learner can only go to 1
             p_success = 0
           else:
             p_success = fs[o,a]
           for o_prime in range(O):
-              p_o_o_prime = P_O[o,o_prime]
+              p_o_o_prime = P_O[o,o_prime] # probability of transition to o_prime from o
               for l_prime in range(L):
-                l_transition_success = l_prime == l + e - 1
-                l_transition_failure = l_prime == l + e 
-                if l==L-1: 
-                    l_transition_success = l_prime == l - 1
-                    l_transition_failure = l_prime == l
+                l_transition_success = l_prime == l + e*M - 1
+                l_transition_failure = l_prime == l + e*M 
+                if l>=L-M: 
+                    l_transition_success = l_prime == min(l+M-1,L-2)
+                    l_transition_failure = l_prime == min(l+M,L-1)
                 for e_prime in range(E):
                     p_e_prime = e_prime*delta + (1-e_prime)*(1-delta)
-                    if l == L-1 or l==L-2:
+                    if l >= L-M:
                         p_e_prime = 1 - e_prime
                     P[a,o*L*E+l*E+e,o_prime*L*E+l_prime*E+e_prime] = p_o_o_prime*(l_transition_success*p_success + l_transition_failure*(1-p_success))*p_e_prime 
-                  
+
 # check if P is stochastic
 if (np.around(P.sum(axis = 2),4) != 1).sum() > 0:
   print(np.where(P.sum(axis = 2)<0.99)[1])
@@ -150,6 +153,7 @@ for a in range(A):
 print(delta*M/fs[0,1]<(1 - (D/C_L[2,0])))
 
 do_lagrange_method = False
+lambds = np.linspace(.1,.4,10)
 if do_lagrange_method:
     C_lamb = lambda lambd: C_A + (lambd)*C_L
     def occupation_measure(probpolicy,C,O,L,E,U):
@@ -159,7 +163,6 @@ if do_lagrange_method:
                 c += C[i,u]*probpolicy[i,u]
         return c
     running_c = 0
-    lambds = np.linspace(0.2,0.4,10)
     avgcost = np.zeros(len(lambds))
 
     for i,lamb in enumerate(lambds):
@@ -201,17 +204,17 @@ if do_lagrange_method:
     axs[0].set_xticks(np.tile(np.arange(L),O))
     plt.savefig(PLOT_DIR + "policy.png")
     plt.close()
-do_spsa_method = True
-n_iter = 4000
+do_spsa_method = False
+n_iter = 6000
 if do_spsa_method:
     parameter_initial_values = [0,0]
     n_samples = 100
     parameters_spsa = np.zeros((n_samples,n_iter,2*O*E+1))
     delt = np.linspace(0.9,0.9,n_iter)
-    delt[n_iter//3:2*n_iter//3]*=0.9
-    delt[2*n_iter//3:]*=0.8
+    delt[n_iter//3:2*n_iter//3]*=0.90
+    delt[2*n_iter//3:]*=0.9
     # delt[8*n_iter//9:]*=0.9
-    epsilon = np.linspace(0.3,0.3,n_iter)
+    epsilon = np.linspace(0.4,0.4,n_iter)
 
     T = 100
     lamb = 1
@@ -219,28 +222,45 @@ if do_spsa_method:
     parameters_initial = np.append(np.tile(parameter_initial_values,O*E),np.pi/4)
     for i in tqdm.tqdm(range(n_samples)):    
         np.random.seed(i)
-        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.5)
-        np.save("./data/input/spsa/parameters_spsa",parameters_spsa)
+        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.6)
         print("Sample: ",i)
+    np.save("./data/input/spsa/parameters_spsa",parameters_spsa)
 
 plot_spsa = True
 
 if plot_spsa:
-    n_iter_plot = 3000
+    n_iter_plot = 6000
     parameters_spsa = np.load("./data/input/spsa/parameters_spsa.npy")
+    # negative is set to zero
+    parameters_spsa[parameters_spsa<0] = 0
+    parameters_spsa[parameters_spsa>10 ] = 10
     parameters_spsa_o_1 = np.sort(parameters_spsa[:,:n_iter_plot,0:2],axis = 2)[:,:,1].mean(axis = 0)
+    
     parameters_spsa_o_2 = np.sort(parameters_spsa[:,:n_iter_plot,4:6],axis = 2)[:,:,1].mean(axis = 0)
     parameters_spsa_o_3 = np.sort(parameters_spsa[:,:n_iter_plot,8:10],axis = 2)[:,:,1].mean(axis = 0)
-    plt.figure()
+    # Standard deviation
+    parameters_spsa_o_1_std = np.sort(parameters_spsa[:,:n_iter_plot,0:2],axis = 2)[:,:,1].std(axis = 0)
+    parameters_spsa_o_2_std = np.sort(parameters_spsa[:,:n_iter_plot,4:6],axis = 2)[:,:,1].std(axis = 0)
+    parameters_spsa_o_3_std = np.sort(parameters_spsa[:,:n_iter_plot,8:10],axis = 2)[:,:,1].std(axis = 0)
+    # plot the mean
+    plt.figure(figsize=(7.5,5))
     sns.set_style("darkgrid")
     plt.plot(np.arange(n_iter_plot),parameters_spsa_o_1,label = r"$\theta_2 \ O = 1$",color="red")
+    # plot shaded standard deviation area around the mean
+    plt.fill_between(np.arange(n_iter_plot),parameters_spsa_o_1-parameters_spsa_o_1_std,parameters_spsa_o_1+parameters_spsa_o_1_std,alpha=0.3,color="red")
+
     plt.plot(np.arange(n_iter_plot),parameters_spsa_o_2,label = r"$\theta_2 \ O = 2$",color="black")
+    plt.fill_between(np.arange(n_iter_plot),parameters_spsa_o_2-parameters_spsa_o_2_std,parameters_spsa_o_2+parameters_spsa_o_2_std,alpha=0.3,color="black")
     plt.plot(np.arange(n_iter_plot),parameters_spsa_o_3,label = r"$\theta_2 \ O = 3$",color="blue")
-    plt.scatter(n_iter_plot,8,label="$\phi_2 \ O = 1$",color="red")
-    plt.scatter(n_iter_plot,1,label="$\phi_2 \ O = 2$",color="black")
+    plt.fill_between(np.arange(n_iter_plot),parameters_spsa_o_3-parameters_spsa_o_3_std,parameters_spsa_o_3+parameters_spsa_o_3_std,alpha=0.3,color="blue")
+    plt.scatter(n_iter_plot,7,label="$\phi_2 \ O = 1$",color="red")
+    plt.scatter(n_iter_plot,2,label="$\phi_2 \ O = 2$",color="black")
     plt.scatter(n_iter_plot,0,label="$\phi_2 \ O = 3$",color="blue")
-    plt.legend(fontsize=14)
+    plt.legend(fontsize=14,loc="upper left")
+    
     plt.xlabel("Iterations",fontsize = 16)
     plt.ylabel("Parameters",fontsize = 16)
+    # tight layout
+    plt.tight_layout()
     plt.savefig("./data/plots/figspsa.pdf")
 
