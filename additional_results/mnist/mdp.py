@@ -4,7 +4,7 @@ from utils.solvemdp import solvelp,spsa,solvelp_generalcost
 class MarkovChain():
     def __init__(self,T = 1000,N_device = 100,N_total = 16000,thresfactor = 4,P = np.array([[0.8,0.2,0],
        [0.15,0.7,0.15],
-       [0.0,0.15,0.85]])):
+       [0.0,0.15,0.85]]),N_choices = None):
         self.T = T
         self.N_device = N_device
         self.N_total = N_total
@@ -14,11 +14,15 @@ class MarkovChain():
         self.N_batch_per_device = self.N_batches//self.N_device
         self.thres = self.N_batches//self.thresfactor
         self.P = P
-        self.N_choices = np.array([ N_device//2, N_device//1.75, N_device//1.1],dtype=int)
+        if N_choices is None:
+            self.N_choices = np.array([ N_device//2, N_device//1.75, N_device//1.1],dtype=int)
+        else:
+            self.N_choices = N_choices
         self.N_window = N_device//5 -1
         self.n_success = np.zeros(self.N_choices.shape[0])
         self.n_visits = np.zeros(self.N_choices.shape[0])
         self.X = 0
+        self.O = self.P.shape[0]
         self.device_data_matrix = np.zeros((T, N_device),dtype=np.int16)
         self.successful_round = np.zeros(T,dtype=np.int16)
         ## Parameters of MDP
@@ -34,7 +38,7 @@ class MarkovChain():
             self.n_success[self.X] += self.device_data_matrix[t,:].sum()>self.thres
             self.n_visits[self.X] += 1
             self.oracle_states[t] = self.X
-            self.X = np.random.choice(range(3),p = self.P[self.X])
+            self.X = np.random.choice(range(self.O),p = self.P[self.X])
             if self.device_data_matrix[t,:].sum()>self.thres:
                 self.successful_round[t] = 1
         self.success_prob = np.zeros((self.P.shape[0],2))
