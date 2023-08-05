@@ -1,6 +1,6 @@
 # Convert logs to csv files
 import pandas as pd
-filename = "./data/logs/cummulative_experiment_results.txt"
+filename = "./data/logs/cummulative_experiment_results_MDP.txt"
 output_filename = "./data/logs/cummulative_experiment_results.csv"
 
 rows = [   ]

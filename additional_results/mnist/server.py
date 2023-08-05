@@ -17,7 +17,8 @@ class Server():
                  experiment_condition = "test",N_successful = 30,cumm_exp_res_file="./data.log"
                  ,P_O = np.array([[0.8,0.2,0],
        [0.15,0.7,0.15],
-       [0.0,0.15,0.85]])):
+       [0.0,0.15,0.85]]),
+       N_choices = None,policy_type = None):
         ### FL Server Related ###
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
@@ -27,7 +28,7 @@ class Server():
         
         ### MDP Related ###
         self.n_total = 15000 
-        self.markovchain = MarkovChain(N_device=self.n_clients,N_total=self.n_total,P = P_O)
+        self.markovchain = MarkovChain(N_device=self.n_clients,N_total=self.n_total,P = P_O,N_choices = N_choices)
         self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
@@ -36,7 +37,7 @@ class Server():
         self.file = f"./data/logs/experiment1/{now.strftime('%Y-%m-%d_%H:%M:%S')}" + self.experiment_condition + ".log"
 
         self.state_learning_queries = N_successful
-        self.get_policy(generate_policy,greedy_policy)
+        self.get_policy(generate_policy,greedy_policy,policy_type)
         self.state_oracle = 0
         ### FL Client Related ###
         self.clients = []
@@ -168,20 +169,26 @@ class Server():
             if not torch.equal(self.obfuscating_parameters[layer],parameters[layer]):
                 return False
         return True
-    def get_policy(self,generate_policy,greedy_policy):
+    def get_policy(self,generate_policy,greedy_policy,policy_type):
 
         if generate_policy:
             self.L = self.state_learning_queries + 1
             self.O = self.markovchain.P.shape[0]
             U = 2
-            D = 0.3
+            D = 0.16
             self.E = 2
             P_O = self.markovchain.P
             fs = self.markovchain.success_prob
             ## Advesarial cost
-            C_A = [[0,1.8],
-                [0,0.8],
-                [0,0.3]]
+            C_A = [[
+                                [0,1.8],
+                                [0,1.4],
+                                [0,1.1],
+                                [0,0.8],
+                                [0,0.5],
+                                [0,0.3],
+                                [0,0.1],
+                        ]]
             C_A = np.tile(C_A,self.L*self.E).reshape(self.O*self.L*self.E,U) # tiling adversarial cost 
             ## Learner Cost
             C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,10,self.L),self.E).reshape(-1,1),np.zeros((self.L*self.E,1))],axis=1),self.O).reshape(self.O*self.L*self.E,U)
@@ -196,6 +203,10 @@ class Server():
         if greedy_policy:
             self.policy = np.load('./data/input/greedy_policy.npy') 
             return
+        if policy_type == "random":
+            self.policy = np.load('./data/input/random_policy.npy')
+        elif policy_type == "all":
+            self.policy = np.load('./data/input/all_policy.npy')
         self.policy = np.load("./data/input/policy.npy")
         # Plot the policy
         plt.figure(figsize=(10,10))
