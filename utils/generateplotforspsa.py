@@ -160,7 +160,7 @@ if True:
         np.save("./data/input/spsa/parameters_spsa_"+str(p_1),parameters_spsa)
 
 ## Plot these parameters  for different initial values and oracle states
-if False:
+if True:
   n_iter_sample = n_iter
   sns.set_style("darkgrid")
   sns.set_context("paper")

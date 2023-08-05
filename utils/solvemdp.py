@@ -153,13 +153,15 @@ def averagecost_randompolicy(cost,n_iter,P,policy,X_0 = 0):
   return averagecost.mean()
 
 ### SPSA algorithm for solving MDPs
-def spsa(initial_parameters,delta,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau):
+def spsa(initial_parameters,delta,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau,P_change = None,change_iter = None):
   m = initial_parameters.shape[0]
   
   parameters = initial_parameters.copy().reshape(m)
   #policies = np.zeros((n_iter,L*O,2))
   parameters_store = np.zeros((n_iter,m))
   for i in tqdm(range(n_iter)):
+    if change_iter is not None and i>change_iter:
+        P = P_change
     
     pertub = np.random.binomial(1,0.5,(m))
     

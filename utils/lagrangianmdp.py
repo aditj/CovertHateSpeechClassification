@@ -7,6 +7,31 @@ import tqdm as tqdm
 
 PLOT_DIR = './data/plots/'
 
+def createP(O,L,E,P_O,fs,M,delta):
+    P = np.zeros((A,O*L*E,O*L*E))
+    for a in range(A):
+        for o in range(O):
+            for l in range(L):
+                for e in range(E):
+                    if l == 0: # if the learner state is 0 then the learner can only go to 1
+                        p_success = 0
+                    else:
+                        p_success = fs[o,a]
+                    for o_prime in range(O):
+                        p_o_o_prime = P_O[o,o_prime] # probability of transition to o_prime from o
+                        for l_prime in range(L):
+                            l_transition_success = l_prime == l + e*M - 1
+                            l_transition_failure = l_prime == l + e*M 
+                            if l>=L-M: 
+                                l_transition_success = l_prime == min(l+M-1,L-2)
+                                l_transition_failure = l_prime == min(l+M,L-1)
+                            for e_prime in range(E):
+                                p_e_prime = e_prime*delta + (1-e_prime)*(1-delta)
+                                if l >= L-M:
+                                    p_e_prime = 1 - e_prime
+                                P[a,o*L*E+l*E+e,o_prime*L*E+l_prime*E+e_prime] = p_o_o_prime*(l_transition_success*p_success + l_transition_failure*(1-p_success))*p_e_prime 
+    return P
+
 def solvelp(C,P,X,U,alpha = 1):
     solver = pywraplp.Solver.CreateSolver('GLOP')
     infinity = solver.infinity()
@@ -15,7 +40,6 @@ def solvelp(C,P,X,U,alpha = 1):
         for u in range(U): 
             pi[i,u] =  solver.NumVar(0,infinity, 'pi[%i][%i]'%(i,u))
     objective = solver.Objective()
-
     for i in range(X): 
         for u in range(U):  
             objective.SetCoefficient(pi[i,u], C[i][u])
@@ -78,7 +102,7 @@ P_O = np.array([[0.7,0.2,0.1],
 P = np.zeros((A, O*L, O*L))
 ### Probability of Success for different states and action pairs
 fs = np.array([[0,0.15],[0,0.3],[0,0.95]])
-
+fs_change = np.array([[0,0.3],[0,0.5],[0,0.95]])
 ### MAKE P have transitions from either -1 or M-1 or M
 M=4
 delta = 0.09 # Arrival rate 
@@ -105,29 +129,8 @@ C_L[L*E-1::L*E,:] = [1e2,0]
 D = 0.3
 
 # Create threedimensional probability transition matrix for each action with proper tests
-P = np.zeros((A,O*L*E,O*L*E))
-for a in range(A):
-  for o in range(O):
-      for l in range(L):
-        for e in range(E):
-          if l == 0: # if the learner state is 0 then the learner can only go to 1
-            p_success = 0
-          else:
-            p_success = fs[o,a]
-          for o_prime in range(O):
-              p_o_o_prime = P_O[o,o_prime] # probability of transition to o_prime from o
-              for l_prime in range(L):
-                l_transition_success = l_prime == l + e*M - 1
-                l_transition_failure = l_prime == l + e*M 
-                if l>=L-M: 
-                    l_transition_success = l_prime == min(l+M-1,L-2)
-                    l_transition_failure = l_prime == min(l+M,L-1)
-                for e_prime in range(E):
-                    p_e_prime = e_prime*delta + (1-e_prime)*(1-delta)
-                    if l >= L-M:
-                        p_e_prime = 1 - e_prime
-                    P[a,o*L*E+l*E+e,o_prime*L*E+l_prime*E+e_prime] = p_o_o_prime*(l_transition_success*p_success + l_transition_failure*(1-p_success))*p_e_prime 
-
+P = createP(O,L,E,P_O,fs,M,delta)
+P_change = createP(O,L,E,P_O,fs_change,M,delta)
 # check if P is stochastic
 if (np.around(P.sum(axis = 2),4) != 1).sum() > 0:
   print(np.where(P.sum(axis = 2)<0.99)[1])
@@ -204,11 +207,12 @@ if do_lagrange_method:
     axs[0].set_xticks(np.tile(np.arange(L),O))
     plt.savefig(PLOT_DIR + "policy.png")
     plt.close()
-do_spsa_method = False
-n_iter = 6000
+do_spsa_method = True
+n_iter = 4000
+change_iter = 2000
 if do_spsa_method:
     parameter_initial_values = [0,0]
-    n_samples = 100
+    n_samples = 10
     parameters_spsa = np.zeros((n_samples,n_iter,2*O*E+1))
     delt = np.linspace(0.9,0.9,n_iter)
     delt[n_iter//3:2*n_iter//3]*=0.90
@@ -222,14 +226,14 @@ if do_spsa_method:
     parameters_initial = np.append(np.tile(parameter_initial_values,O*E),np.pi/4)
     for i in tqdm.tqdm(range(n_samples)):    
         np.random.seed(i)
-        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.6)
+        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.6,P_change = P_change, change_iter = change_iter)
         print("Sample: ",i)
     np.save("./data/input/spsa/parameters_spsa",parameters_spsa)
 
 plot_spsa = True
 
 if plot_spsa:
-    n_iter_plot = 6000
+    n_iter_plot = 4000
     parameters_spsa = np.load("./data/input/spsa/parameters_spsa.npy")
     # negative is set to zero
     parameters_spsa[parameters_spsa<0] = 0
@@ -254,8 +258,13 @@ if plot_spsa:
     plt.plot(np.arange(n_iter_plot),parameters_spsa_o_3,label = r"$\theta_2 \ O = 3$",color="blue")
     plt.fill_between(np.arange(n_iter_plot),parameters_spsa_o_3-parameters_spsa_o_3_std,parameters_spsa_o_3+parameters_spsa_o_3_std,alpha=0.3,color="blue")
     plt.scatter(n_iter_plot,7,label="$\phi_2 \ O = 1$",color="red")
-    plt.scatter(n_iter_plot,2,label="$\phi_2 \ O = 2$",color="black")
-    plt.scatter(n_iter_plot,0,label="$\phi_2 \ O = 3$",color="blue")
+    plt.scatter(n_iter_plot//2,4,color="red")
+
+    plt.scatter(n_iter_plot//2,3,label="$\phi_2 \ O = 2$",color="black")
+    plt.scatter(n_iter_plot,2,color="black")
+    plt.scatter(n_iter_plot//2,0,label="$\phi_2 \ O = 3$",color="blue")
+    plt.scatter(n_iter_plot,0,color="blue")
+    plt.vlines(x=n_iter_plot//2,color="black",ymin=0,ymax = 10,linestyle="--",alpha=0.5)
     plt.legend(fontsize=14,loc="upper left")
     
     plt.xlabel("Iterations",fontsize = 16)

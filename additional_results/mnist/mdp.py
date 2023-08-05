@@ -117,7 +117,7 @@ class MDP():
             C_lamb = lambda lambd: self.C_A + (lambd)*self.C_L
             
             running_c = 0
-            lambds = np.linspace(0.1,0.4,10)
+            lambds = np.linspace(0.1,0.9,10)
             avgcost = np.zeros(len(lambds))
 
             for i,lamb in enumerate(lambds):

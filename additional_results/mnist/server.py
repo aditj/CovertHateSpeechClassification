@@ -12,7 +12,12 @@ from client import Client
 from eavesdropper import Eavesdropper
 
 class Server():
-    def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters,generate_policy = False,greedy_policy = False,experiment_condition = "test",N_successful = 30,cumm_exp_res_file="./data.log"):
+    def __init__(self,n_clients,n_communications,parameters,n_classes,
+                 client_parameters,generate_policy = False,greedy_policy = False,
+                 experiment_condition = "test",N_successful = 30,cumm_exp_res_file="./data.log"
+                 ,P_O = np.array([[0.8,0.2,0],
+       [0.15,0.7,0.15],
+       [0.0,0.15,0.85]])):
         ### FL Server Related ###
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
@@ -22,7 +27,7 @@ class Server():
         
         ### MDP Related ###
         self.n_total = 15000 
-        self.markovchain = MarkovChain(N_device=self.n_clients,N_total=self.n_total)
+        self.markovchain = MarkovChain(N_device=self.n_clients,N_total=self.n_total,P = P_O)
         self.markovchain.generate_device_data_matrix()
         self.successful_round = self.markovchain.successful_round
         self.device_data_matrix = self.markovchain.device_data_matrix
@@ -167,7 +172,7 @@ class Server():
 
         if generate_policy:
             self.L = self.state_learning_queries + 1
-            self.O = 3
+            self.O = self.markovchain.P.shape[0]
             U = 2
             D = 0.3
             self.E = 2
