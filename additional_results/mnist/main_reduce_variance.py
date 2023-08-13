@@ -14,7 +14,8 @@ from utils.randomseed import seed_everything
 from tqdm import tqdm
 import logging
 def main():
-    cumm_exp_res_file = "./data/logs/cummulative_experiment_results_left.txt"
+    cumm_exp_res_file = "./data/logs/cummulative_experiment_results_variance_reduce.txt"
+    client_dataset_path = "./data/client_datasets_variance_reduce/"
     # Get experiment conditions which have been done
     experiment_conditions_done = []
     with open(cumm_exp_res_file,"r") as f:
@@ -41,10 +42,10 @@ def main():
     GENERATE_DATA = True # Generate data or not
     GENERATE_POLICY = True # Generate policy or not
 
-    N_device_range = [20,50]
-    eavesdropper_training_size_range = [0.1]#,0.4,1] # Proportion of data available with the eavesdropper wrt another user
-    eavesdropper_training_classes_range = [2]#,5,8] # Number of good classes available with the eavesdropper
-    eavesdropper_training_prop_range = [0.99,0.9]#,"normal"] # ratio of good classes to bad classes in the eavesdropper dataset
+    N_device_range = [50]
+    eavesdropper_training_size_range = [0.1,0.4,1] # Proportion of data available with the eavesdropper wrt another user
+    eavesdropper_training_classes_range = [2,5,8] # Number of good classes available with the eavesdropper
+    eavesdropper_training_prop_range = [0.99,0.9,"normal"] # ratio of good classes to bad classes in the eavesdropper dataset
     for N_device in N_device_range:
         for eavesdropper_training_size in eavesdropper_training_size_range:
             for eavesdropper_training_classes in eavesdropper_training_classes_range:
@@ -53,14 +54,14 @@ def main():
                         eavesdropper_training_prop = eavesdropper_training_classes/10
                     
                     experiment_condition = str(N_device)+"_"+str(N_successful)+"_"+str(N_communication_rounds) +  "_" + str(eavesdropper_training_size) + "_" + str(eavesdropper_training_classes) + "_" + str(eavesdropper_training_prop) # Experiment condition
-                    N_exp_runs = 10 # Number of experiment runs
+                    N_exp_runs = 50 # Number of experiment runs
 
                     if experiment_condition in experiment_conditions_done.index:
-                        if experiment_conditions_done[experiment_condition] >= 2*N_exp_runs:
+                        if experiment_conditions_done[experiment_condition] >= N_exp_runs:
                             print(f"Experiment {experiment_condition} condition already done")
                             continue                        
                         else: 
-                            N_exp_runs = N_exp_runs - (experiment_conditions_done[experiment_condition]//2)
+                            N_exp_runs = N_exp_runs - (experiment_conditions_done[experiment_condition])
                             print(f"Experiment {experiment_condition} condition done incompletely, continuing with {N_exp_runs} more runs")
                     else:
                         print(f"Experiment {experiment_condition} condition not done, continuing with {N_exp_runs} runs")
@@ -69,25 +70,25 @@ def main():
                             seed_everything(k) # Set seed
                             
                             if GENERATE_DATA:
-                                create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data,eavesdropper_training_size=eavesdropper_training_size,eavesdropper_training_classes=eavesdropper_training_classes,eavesdropper_training_prop=eavesdropper_training_prop)
+                                create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data,eavesdropper_training_size=eavesdropper_training_size,eavesdropper_training_classes=eavesdropper_training_classes,eavesdropper_training_prop=eavesdropper_training_prop, client_dataset_path= client_dataset_path)
                                 tqdm.write("Datasets created")    
                             
 
                             parameters = Client(0,model(n_classes)).get_parameters() # Get parameters from client
                             tqdm.write("Initial Parameters initialized")
                             
-                            s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file)
+                            s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file, client_dataset_path = client_dataset_path)
                             tqdm.write("Server initialized for non greedy policy")
 
                             s_nongreedy.train()
                             tqdm.write(f"Training complete for {k} run non greedy policy")
                             
-                            ## Greedy Policy ##
-                            s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file)
-                            tqdm.write("Server initialized for greedy policy")
+                            # ## Greedy Policy ##
+                            # s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file)
+                            # tqdm.write("Server initialized for greedy policy")
                             
-                            s.train()
-                            tqdm.write(f"Training complete for {k} run greedy policy")
+                            # s.train()
+                            # tqdm.write(f"Training complete for {k} run greedy policy")
                     except UnboundLocalError:
                         continue
 main()

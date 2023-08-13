@@ -35,7 +35,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-05,device = "cuda",n_classes = 6):
+    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6,client_dataset_path = "./data/client_datasets/"):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -44,6 +44,7 @@ class Client():
         self.device = device
         self.max_len = max_len
         self.n_classes = n_classes 
+        self.client_dataset_path = client_dataset_path
         self.load_data()
         self.model = network
         self.model.to(self.device)
@@ -51,7 +52,7 @@ class Client():
         print("Client", self.cid, "initialized with ",len(self.train_dataset),"train samples and ",len(self.valid_dataset),"valid samples")
 
     def load_data(self):
-        df = pd.read_csv(f'./data/client_datasets/client_{self.cid}.csv')
+        df = pd.read_csv(f'{self.client_dataset_path}client_{self.cid}.csv')
         df['pixels'] = df['pixels'].apply(lambda x: x.strip('][').split(','))
         df['pixels'] = df['pixels'].apply(lambda x: [int(i) for i in x])
         train_df = df.sample(frac=0.8, random_state=200)
@@ -66,9 +67,9 @@ class Client():
         self.set_parameters(parameters)
         self.model.train()
         ## Adam with weight decay AdamW
-        optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
+        # optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
         ## SGD
-        #optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
             n_batches = len(self.train_loader)

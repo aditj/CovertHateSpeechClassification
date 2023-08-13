@@ -8,23 +8,24 @@ import pandas as pd
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 class Eavesdropper():
-    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 5e-04,device = "cuda",n_classes = 10):
+    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 5e-04,device = "cuda",n_classes = 10,client_dataset_path = "./data/client_datasets/"):
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.device = device
         self.batch_size = batch_size
         self.n_batches_per_client = n_batches_per_client
         self.model = CNNImage()
+        self.client_dataset_path = client_dataset_path
         self.load_data()
         self.model.to(self.device)
     def load_data(self):
-        train_df = pd.read_csv('./data/client_datasets/client_eav_train.csv')
+        train_df = pd.read_csv(f'{self.client_dataset_path}client_eav_train.csv')
 
         train_df['pixels'] = train_df['pixels'].apply(lambda x: x.strip('][').split(','))
         train_df['pixels'] = train_df['pixels'].apply(lambda x: [int(i) for i in x])
         self.train_dataset = CustomDataset(train_df)
         self.train_loader = DataLoader(self.train_dataset, shuffle = True, batch_size=self.batch_size, num_workers=0)
-        valid_df = pd.read_csv('./data/client_datasets/client_eav_valid.csv')
+        valid_df = pd.read_csv(f'{self.client_dataset_path}client_eav_valid.csv')
         valid_df['pixels'] = valid_df['pixels'].apply(lambda x: x.strip('][').split(','))
         valid_df['pixels'] = valid_df['pixels'].apply(lambda x: [int(i) for i in x])
         self.valid_dataset = CustomDataset(valid_df)
@@ -34,7 +35,8 @@ class Eavesdropper():
         if parameters is not None:
             self.set_parameters(parameters)
         self.model.train()
-        optimizer = torch.optim.Adam(params =  self.model.parameters(), lr=self.learning_rate)
+        # optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
             ## take subset of train loader from n_batches_start to n_batches_end                    

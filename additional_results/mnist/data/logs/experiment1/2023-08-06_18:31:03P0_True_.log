@@ -1,0 +1,29 @@
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.08181818181818182 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.08863636363636364 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.08863636363636364 3 1
+Communication round: 3, Eavesdropper Accuracy: 0.08636363636363636 4 1
+Communication round: 4, Eavesdropper Accuracy: 0.09090909090909091 5 1
+Communication round: 5, Aggregated Accuracies: 0.14214285714285715 6
+Communication round: 5, Eavesdropper Accuracy: 0.17954545454545454 6 1
+Communication round: 6, Aggregated Accuracies: 0.1514285714285715 7
+Communication round: 6, Eavesdropper Accuracy: 0.1590909090909091 7 1
+Communication round: 7, Aggregated Accuracies: 0.16857142857142862 8
+Communication round: 7, Eavesdropper Accuracy: 0.13863636363636364 8 1
+Communication round: 8, Aggregated Accuracies: 0.20190476190476198 9
+Communication round: 8, Eavesdropper Accuracy: 0.18181818181818182 9 1
+Communication round: 9, Aggregated Accuracies: 0.21654761904761904 10
+Communication round: 9, Eavesdropper Accuracy: 0.2159090909090909 10 1
+Communication round: 10, Aggregated Accuracies: 0.23630952380952372 11
+Communication round: 10, Eavesdropper Accuracy: 0.21136363636363636 11 1
+Communication round: 11, Eavesdropper Accuracy: 0.21363636363636362 12 1
+Communication round: 12, Aggregated Accuracies: 0.23976190476190476 13
+Communication round: 12, Eavesdropper Accuracy: 0.2340909090909091 13 1
+Communication round: 13, Aggregated Accuracies: 0.24833333333333335 14
+Communication round: 13, Eavesdropper Accuracy: 0.2409090909090909 14 1
+Communication round: 14, Aggregated Accuracies: 0.2598809523809524 15
+Communication round: 14, Eavesdropper Accuracy: 0.26590909090909093 15 1
+Communication round: 15, Aggregated Accuracies: 0.27321428571428574 16
+Communication round: 15, Eavesdropper Accuracy: 0.2590909090909091 16 1
