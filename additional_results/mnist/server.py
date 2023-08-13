@@ -17,8 +17,12 @@ class Server():
                  experiment_condition = "test",N_successful = 30,cumm_exp_res_file="./data.log"
                  ,P_O = np.array([[0.8,0.2,0],
        [0.15,0.7,0.15],
-       [0.0,0.15,0.85]]),
-       N_choices = None,policy_type = None):
+       [0.0,0.15,0.85]], 
+           ),
+       N_choices = None,policy_type = None,
+       client_dataset_path = "./data/client_datasets/", C_A = [[0,1.8],
+                   [0,0.8],
+                   [0,0.3]]):
         ### FL Server Related ###
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
@@ -37,13 +41,14 @@ class Server():
         self.file = f"./data/logs/experiment1/{now.strftime('%Y-%m-%d_%H:%M:%S')}" + self.experiment_condition + ".log"
 
         self.state_learning_queries = N_successful
+        self.C_A = C_A
         self.get_policy(generate_policy,greedy_policy,policy_type)
         self.state_oracle = 0
         ### FL Client Related ###
         self.clients = []
         self.client_parameters = client_parameters
         self.model = CNNImage
-        self.initialize_clients()
+        self.initialize_clients(client_dataset_path)
         self.n_batch_per_client = self.clients[0].n_batch_per_client
         self.train_batch_size = self.clients[0].train_batch_size
         self.count_learning_queries = 0
@@ -51,11 +56,11 @@ class Server():
         self.cumm_exp_res_file = cumm_exp_res_file
 
         ### Eavesdropper Related ###
-        self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes,learning_rate=client_parameters["learning_rate"])
+        self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes,learning_rate=client_parameters["learning_rate"],client_dataset_path=client_dataset_path)
         self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
         self.zero_aggregated_parameters()
         
-        self.eavesdropper_without_obf = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes,learning_rate=client_parameters["learning_rate"])
+        self.eavesdropper_without_obf = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes,learning_rate=client_parameters["learning_rate"],client_dataset_path=client_dataset_path)
         self.eavesdropper_without_obf.set_parameters(self.global_parameters)
         
         print("Server initialized")
@@ -129,9 +134,9 @@ class Server():
             f.write(datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')+": "+ self.experiment_condition + "acc: " + str(accuracy) + ", " + str(evaluations_smart) + ", " + str(self.aggregated_loss))
             f.write('\n')
         
-    def initialize_clients(self):
+    def initialize_clients(self,client_dataset_path):
         for i in range(self.n_clients): # for each client
-            self.clients.append(Client(i,self.model(),n_classes=self.n_classes,learning_rate=self.client_parameters["learning_rate"])) # initialize a client
+            self.clients.append(Client(i,self.model(),n_classes=self.n_classes,learning_rate=self.client_parameters["learning_rate"],client_dataset_path=client_dataset_path)) # initialize a client
     def select_clients(self,i):
         # All Clients
         #clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 
@@ -180,16 +185,8 @@ class Server():
             P_O = self.markovchain.P
             fs = self.markovchain.success_prob
             ## Advesarial cost
-            C_A = [[
-                                [0,1.8],
-                                [0,1.4],
-                                [0,1.1],
-                                [0,0.8],
-                                [0,0.5],
-                                [0,0.3],
-                                [0,0.1],
-                        ]]
-            C_A = np.tile(C_A,self.L*self.E).reshape(self.O*self.L*self.E,U) # tiling adversarial cost 
+            
+            C_A = np.tile(self.C_A,self.L*self.E).reshape(self.O*self.L*self.E,U) # tiling adversarial cost 
             ## Learner Cost
             C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,10,self.L),self.E).reshape(-1,1),np.zeros((self.L*self.E,1))],axis=1),self.O).reshape(self.O*self.L*self.E,U)
 

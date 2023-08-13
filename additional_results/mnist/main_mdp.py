@@ -45,6 +45,16 @@ def main():
     N_device = 40
     N_choices = np.array([N_device//10,N_device//8,N_device//6,N_device//4,N_device//2,N_device//1.5,N_device//1.1],dtype=int)
 
+    C_A = [[
+                                [0,1.8],
+                                [0,1.4],
+                                [0,1.1],
+                                [0,0.8],
+                                [0,0.5],
+                                [0,0.3],
+                                [0,0.1],
+                        ]]
+
     eavesdropper_training_size = 0.1 # Proportion of data available with the eavesdropper wrt another user
     eavesdropper_training_classes = 4 # Number of good classes available with the eavesdropper
     eavesdropper_training_prop = 0.9  # ratio of good classes to bad classes in the eavesdropper dataset
@@ -52,7 +62,7 @@ def main():
     for P in Ps:         
         experiment_condition = "P" + str(exp_no) # Experiment condition
         exp_no += 1
-        N_exp_runs = 10 # Number of experiment runs
+        N_exp_runs = 30 # Number of experiment runs
 
         if experiment_condition in experiment_conditions_done.index:
             if experiment_conditions_done[experiment_condition] >= 2*N_exp_runs:
@@ -73,13 +83,13 @@ def main():
                 parameters = Client(0,model(n_classes)).get_parameters() # Get parameters from client
                 tqdm.write("Initial Parameters initialized")
                 
-                s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O=P,N_choices = N_choices)
+                s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O=P,N_choices = N_choices,C_A = C_A)
                 tqdm.write("Server initialized for non greedy policy")
                 s_nongreedy.train()
                 tqdm.write(f"Training complete for {k} run non greedy policy")
                 
                 ## Greedy Policy ##
-                s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices)
+                s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices,C_A = C_A)
                 tqdm.write("Server initialized for greedy policy")
                 s.train()
                 tqdm.write(f"Training complete for {k} run greedy policy")
