@@ -4,7 +4,11 @@ from ortools.linear_solver import pywraplp
 from solvemdp import spsa
 import seaborn as sns
 import tqdm as tqdm
-
+import sys
+# get these from arguments
+args = sys.argv
+do_lagrange_method, do_spsa_method, plot_spsa = int(args[1]), int(args[2]), int(args[3])
+print(do_lagrange_method, do_spsa_method, plot_spsa)
 PLOT_DIR = './data/plots/'
 
 def createP(O,L,E,P_O,fs,M,delta):
@@ -89,7 +93,7 @@ def average_cost(probpolicy,C,P,T):
 
 
 O = 3
-L = 20
+L = 60
 U = 2
 A = U
 X = O*L
@@ -101,19 +105,24 @@ P_O = np.array([[0.7,0.2,0.1],
 ### Complete Probability Transition Kernel
 P = np.zeros((A, O*L, O*L))
 ### Probability of Success for different states and action pairs
-fs = np.array([[0,0.15],[0,0.3],[0,0.95]])
-fs_change = np.array([[0,0.3],[0,0.5],[0,0.95]])
+fs = np.array([[0,0.1],[0,0.6],[0,0.9]])
+fs_change = np.array([[0,0.1],[0,0.6],[0,0.9]])
 ### MAKE P have transitions from either -1 or M-1 or M
-M=4
-delta = 0.09 # Arrival rate 
+
+
+M= 10
+delta = 0.03 # Arrival rate 
+M_change = 4
+delta_change = 0.1
+
 #### Cost
 ## Advesarial cost
 C_A = [[0,1.8],
-     [0,1.3],
+     [0,0.8],
      [0,0.3]]
 C_A = np.tile(C_A,L*E).reshape(O*L*E,A) # tiling adversarial cost 
 ## Learner Cost
-C_L = np.tile(np.concatenate([np.repeat(np.linspace(.8,5,L),E).reshape(-1,1),np.zeros((L*E,1))],axis=1),[O,1])
+C_L = np.tile(np.concatenate([np.repeat(np.linspace(0.6,10,L),E).reshape(-1,1),np.zeros((L*E,1))],axis=1),[O,1])
 C_L[0::L*E,:] = [0,0]
 C_L[1::L*E,:] = [0,0]
 # C_L = [[0.6,0],
@@ -126,11 +135,11 @@ C_L[1::L*E,:] = [0,0]
 C_L[L*E-2::L*E,:] = [1e2,0]
 C_L[L*E-1::L*E,:] = [1e2,0]
 ## Learning constraint
-D = 0.3
+D = 0.4
 
 # Create threedimensional probability transition matrix for each action with proper tests
 P = createP(O,L,E,P_O,fs,M,delta)
-P_change = createP(O,L,E,P_O,fs_change,M,delta)
+P_change = createP(O,L,E,P_O,fs_change,M_change,delta_change)
 # check if P is stochastic
 if (np.around(P.sum(axis = 2),4) != 1).sum() > 0:
   print(np.where(P.sum(axis = 2)<0.99)[1])
@@ -155,7 +164,6 @@ for a in range(A):
 ## Check constraints
 print(delta*M/fs[0,1]<(1 - (D/C_L[2,0])))
 
-do_lagrange_method = False
 lambds = np.linspace(.1,.4,10)
 if do_lagrange_method:
     C_lamb = lambda lambd: C_A + (lambd)*C_L
@@ -192,7 +200,7 @@ if do_lagrange_method:
     print(alpha,occupation1,occupation2)
     policy = alpha*policy1 + (1-alpha)*policy2
     # make three subplots
-    fig, axs = plt.subplots(3, 1)
+    fig, axs = plt.subplots(3, 1,figsize=(20,10))
     axs[0].plot(np.arange(O*L),policy1[0::2,1])
     axs[1].plot(np.arange(O*L),policy2[0::2,1])
     axs[2].plot(np.arange(O*L),policy[0::2,1])
@@ -205,41 +213,39 @@ if do_lagrange_method:
         axs[1].axvline(x=L*o,color='r')
         axs[2].axvline(x=L*o,color='r')
     axs[0].set_xticks(np.tile(np.arange(L),O))
+    # rotate the tick labels and set their alignment.
+    plt.setp(axs[0].get_xticklabels(), rotation=90)
     plt.savefig(PLOT_DIR + "policy.png")
     plt.close()
-do_spsa_method = True
 n_iter = 4000
 change_iter = 2000
 if do_spsa_method:
-    parameter_initial_values = [0,0]
-    n_samples = 10
+    parameter_initial_values = [10,5]
+    n_samples = 100
     parameters_spsa = np.zeros((n_samples,n_iter,2*O*E+1))
-    delt = np.linspace(0.9,0.9,n_iter)
-    delt[n_iter//3:2*n_iter//3]*=0.90
-    delt[2*n_iter//3:]*=0.9
+    delt = np.linspace(3,3,n_iter)#*np.pi/8
+    delt[n_iter//3:2*n_iter//3]*=1
+    delt[2*n_iter//3:]*=1
     # delt[8*n_iter//9:]*=0.9
-    epsilon = np.linspace(0.4,0.4,n_iter)
-
-    T = 100
-    lamb = 1
+    epsilon = np.linspace(1.5,1.5,n_iter)
+    T = 200
+    lamb = 10
     rho = 2e1
     parameters_initial = np.append(np.tile(parameter_initial_values,O*E),np.pi/4)
     for i in tqdm.tqdm(range(n_samples)):    
         np.random.seed(i)
-        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.6,P_change = P_change, change_iter = change_iter)
+        parameters_spsa[i] = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.5,P_change = P_change, change_iter = change_iter)
         print("Sample: ",i)
     np.save("./data/input/spsa/parameters_spsa",parameters_spsa)
 
-plot_spsa = True
 
 if plot_spsa:
-    n_iter_plot = 4000
+    n_iter_plot = n_iter
     parameters_spsa = np.load("./data/input/spsa/parameters_spsa.npy")
     # negative is set to zero
     parameters_spsa[parameters_spsa<0] = 0
-    parameters_spsa[parameters_spsa>10 ] = 10
+    parameters_spsa[parameters_spsa>50 ] = 50
     parameters_spsa_o_1 = np.sort(parameters_spsa[:,:n_iter_plot,0:2],axis = 2)[:,:,1].mean(axis = 0)
-    
     parameters_spsa_o_2 = np.sort(parameters_spsa[:,:n_iter_plot,4:6],axis = 2)[:,:,1].mean(axis = 0)
     parameters_spsa_o_3 = np.sort(parameters_spsa[:,:n_iter_plot,8:10],axis = 2)[:,:,1].mean(axis = 0)
     # Standard deviation
@@ -257,14 +263,14 @@ if plot_spsa:
     plt.fill_between(np.arange(n_iter_plot),parameters_spsa_o_2-parameters_spsa_o_2_std,parameters_spsa_o_2+parameters_spsa_o_2_std,alpha=0.3,color="black")
     plt.plot(np.arange(n_iter_plot),parameters_spsa_o_3,label = r"$\theta_2 \ O = 3$",color="blue")
     plt.fill_between(np.arange(n_iter_plot),parameters_spsa_o_3-parameters_spsa_o_3_std,parameters_spsa_o_3+parameters_spsa_o_3_std,alpha=0.3,color="blue")
-    plt.scatter(n_iter_plot,7,label="$\phi_2 \ O = 1$",color="red")
-    plt.scatter(n_iter_plot//2,4,color="red")
+    plt.scatter(n_iter_plot,16,label="$\phi_2 \ O = 1$",color="red")
+    plt.scatter(n_iter_plot//2,11,color="red")
 
     plt.scatter(n_iter_plot//2,3,label="$\phi_2 \ O = 2$",color="black")
     plt.scatter(n_iter_plot,2,color="black")
     plt.scatter(n_iter_plot//2,0,label="$\phi_2 \ O = 3$",color="blue")
     plt.scatter(n_iter_plot,0,color="blue")
-    plt.vlines(x=n_iter_plot//2,color="black",ymin=0,ymax = 10,linestyle="--",alpha=0.5)
+    plt.vlines(x=n_iter_plot//2,color="black",ymin=0,ymax = 20,linestyle="--",alpha=0.5)
     plt.legend(fontsize=14,loc="upper left")
     
     plt.xlabel("Iterations",fontsize = 16)

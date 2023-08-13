@@ -30,7 +30,6 @@ def solvelp(C_A,C_L,P,X,U,D,alpha = 1):
     for j in range(X):
         transition_constraint_left = [P[u][i][j]*pi[i,u] for u in range(U) for i in range(X)]
         # for i in range(X):
-
             # if i%(L*E)==0 or (i-1)%(L*E)==0:
             #     transition_constraint_left += [pi[i,0]*(int(j==i)-alpha*P[0][i][j]) ]
             # else:
@@ -155,13 +154,14 @@ def averagecost_randompolicy(cost,n_iter,P,policy,X_0 = 0):
 ### SPSA algorithm for solving MDPs
 def spsa(initial_parameters,delta,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau,P_change = None,change_iter = None):
   m = initial_parameters.shape[0]
-  
+  X_0 = L*E*2 + (L-30)*E
   parameters = initial_parameters.copy().reshape(m)
-  #policies = np.zeros((n_iter,L*O,2))
+  P_transition = P.copy()
+    #policies = np.zeros((n_iter,L*O,2))
   parameters_store = np.zeros((n_iter,m))
   for i in tqdm(range(n_iter)):
-    if change_iter is not None and i>change_iter:
-        P = P_change
+    if change_iter is not None and P_change is not None and i>change_iter:
+        P_transition = P_change.copy()
     
     pertub = np.random.binomial(1,0.5,(m))
     
@@ -172,13 +172,13 @@ def spsa(initial_parameters,delta,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,
     policy = policy_from_sigmoid2d(parameters,L,O,E,A,tau)
     policy_plus = policy_from_sigmoid2d(parameters_plus,L,O,E,A,tau,)
     policy_minus = policy_from_sigmoid2d(parameters_minus,L,O,E,A,tau)
-    C_A_plus = averagecost_randompolicy(C_A,T,P,policy_plus)
-    C_A_minus = averagecost_randompolicy(C_A,T,P,policy_minus)
-    C_L_plus = averagecost_randompolicy(C_L,T,P,policy_plus)
-    C_L_minus = averagecost_randompolicy(C_L,T,P,policy_minus)
+    C_A_plus = averagecost_randompolicy(C_A,T,P_transition,policy_plus,X_0)
+    C_A_minus = averagecost_randompolicy(C_A,T,P_transition,policy_minus,X_0)
+    C_L_plus = averagecost_randompolicy(C_L,T,P_transition,policy_plus,X_0)
+    C_L_minus = averagecost_randompolicy(C_L,T,P_transition,policy_minus,X_0)
+    C_L_avg = averagecost_randompolicy(C_L,T,P_transition,policy,X_0)
+    C_A_avg = averagecost_randompolicy(C_A,T,P_transition,policy,X_0)
 
-    C_L_avg = averagecost_randompolicy(C_L,T,P,policy)
-    C_A_avg = averagecost_randompolicy(C_A,T,P,policy)
    # print(C_L_plus,C_L_minus)
     del_C_A = np.zeros(pertub.shape[0])
     del_C_L = np.zeros(pertub.shape[0])
@@ -194,12 +194,12 @@ def spsa(initial_parameters,delta,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,
     parameters = parameters - epsilon[i]*(del_C_A + del_C_L*np.max([0,lamb + rho*(C_L_avg-D) ]))
     lamb = np.max([(1-epsilon[i]/rho)*lamb, lamb + epsilon[i]*(C_L_avg - D)])
     if i%100==0:
-        print("Iteration: ",i," Thresholds 1 ",parameters[:-1:4],"Threshold 2 ",parameters[1::4]," q ",np.sin(parameters[-1])**2,tau)
+        print("Iteration: ",i," Thresholds 1 ",parameters[:-1:4],"Threshold 2 ",parameters[1::4]," q ",np.sin(parameters[-1])**2)
     parameters_store[i] = parameters
     
     # if i%100==0:
     #     plotfromsigmoidpolicy(policy,O,L,E)
-    tau = 0.9999*tau
+    # tau = 0.9999*tau
 #   print(C_A_avg,C_L_avg-D,lamb,parameters)
   return parameters_store
 
