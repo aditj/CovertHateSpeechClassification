@@ -156,3 +156,4 @@ class MDP():
     def generate_greedy_policy(self):
         self.greedy_policy = np.zeros_like(self.policy)
         np.save("./data/input/greedy_policy.npy",self.greedy_policy)
+    

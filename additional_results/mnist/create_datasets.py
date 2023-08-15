@@ -4,7 +4,15 @@ import pandas as pd
 import os
 import numpy as np
 ## Function to create datasets
-def create_datasets_clients(N_device = 10, fraction_of_data = 1,batch_size = 40,eavesdropper_training_size = 1,eavesdropper_training_classes = 5,eavesdropper_training_prop = 0.1,client_dataset_path= "./data/client_datasets/"):
+def create_datasets_clients(N_device = 10, 
+                            fraction_of_data = 1,
+                            batch_size = 40,
+                            eavesdropper_training_size = 1,
+                            eavesdropper_training_classes = 5,
+                            eavesdropper_training_prop = 0.1,
+                            client_dataset_path= "./data/client_datasets/",
+                            validation_size_ratio = 2,
+                            ):
     # check if client_datasets folder exists
     if not os.path.exists(client_dataset_path):
         os.makedirs(client_dataset_path)
@@ -47,7 +55,7 @@ def create_datasets_clients(N_device = 10, fraction_of_data = 1,batch_size = 40,
     train_df_eav = train_df_eav.reset_index(drop=True)
 
     valid_df_eav = df.drop(train_df_eav.index).reset_index(drop=True)
-    valid_df_eav = valid_df_eav.sample(n = int(N_batch)).reset_index(drop=True)
+    valid_df_eav = valid_df_eav.sample(n = int(N_batch)*validation_size_ratio).reset_index(drop=True)
     print("Eavesdropper dataset created with shape: ",train_df_eav.shape,valid_df_eav.shape)
     train_df_eav.to_csv(f"{client_dataset_path}client_eav_train.csv",index=False)
     valid_df_eav.to_csv(f"{client_dataset_path}client_eav_valid.csv",index=False)
