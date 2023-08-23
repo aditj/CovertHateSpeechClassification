@@ -1,0 +1,21 @@
+----------------------------------------------------------------------------------------------------
+20_30_120_0.1_2_0.9_randomrandom_True_ RANDOM POLICY 
+----------------------------------------------------------------------------------------------------
+Communication round: 2, Aggregated Accuracies: 0.12619047619047621 1
+Communication round: 7, Aggregated Accuracies: 0.1470238095238095 4
+Communication round: 30, Aggregated Accuracies: 0.22678571428571428 9
+Communication round: 32, Aggregated Accuracies: 0.275 10
+Communication round: 35, Aggregated Accuracies: 0.3416666666666667 11
+Communication round: 39, Aggregated Accuracies: 0.37142857142857144 12
+Communication round: 48, Aggregated Accuracies: 0.4238095238095239 14
+Communication round: 55, Aggregated Accuracies: 0.4458333333333334 17
+Communication round: 62, Aggregated Accuracies: 0.48452380952380947 18
+Communication round: 66, Aggregated Accuracies: 0.5226190476190475 19
+Communication round: 70, Aggregated Accuracies: 0.5535714285714286 20
+Communication round: 72, Aggregated Accuracies: 0.5898809523809525 21
+Communication round: 73, Aggregated Accuracies: 0.5988095238095237 22
+Communication round: 75, Aggregated Accuracies: 0.6136904761904762 23
+Communication round: 90, Aggregated Accuracies: 0.6482142857142857 25
+Communication round: 93, Aggregated Accuracies: 0.6672619047619047 26
+Communication round: 104, Aggregated Accuracies: 0.6982142857142859 29
+----------------------------------------------------------------------------------------------------
