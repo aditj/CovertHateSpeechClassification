@@ -67,7 +67,6 @@ for k in range(10):
         # count number of successful rounds and simulate
         n_communications = 100 
         count_learning_queries = 0
-        print(mdp.policy)
         policy = mdp.policy
         num_good_oracle_states = 0
         for i in tqdm(range(n_communications)):
