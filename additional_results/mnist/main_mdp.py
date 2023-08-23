@@ -14,15 +14,14 @@ import logging
 def main():
     cumm_exp_res_file = "./data/logs/cummulative_experiment_results_MDP.txt"
     Ps = [np.array([
-       [0.7, 0.2, 0.05, 0.03,  0.01, 0.01, 0],
-       [0.6, 0.2, 0.04, 0.02,  0.01, 0.0, 0.13],
-       [0.5, 0.2, 0.04, 0.02,  0.0, 0.01, 0.23],
-       [0.4, 0.2, 0.04, 0.02,  0.01, 0.01, 0.32],
-       [0.3, 0.2, 0.03, 0.015, 0.01, 0.015, 0.43],
-       [0.2, 0.2, 0.03, 0.015, 0.01, 0.015, 0.53],
-       [0.1, 0.2, 0.03, 0.015, 0.015, 0.01, 0.63]
-    ]),]
-
+       [0.7, 0.2, 0.05, 0.03,  0.02, 0.0, 0],
+       [0.4, 0.42, 0.05, 0.03,  0.05, 0.05, 0],
+       [0.2, 0.3, 0.37, 0.02,  0.04, 0.04, 0.03],
+       [0.025, 0.1, 0.2, 0.35,  0.2, 0.1, 0.025],
+       [0.03, 0.04, 0.04, 0.02, 0.37, 0.3, 0.2],
+       [0, 0.05, 0.05, 0.03, 0.05, 0.42, 0.4],
+       [0, 0.0, 0.02, 0.03, 0.05, 0.2, 0.7]
+    ]) ,]
     # Get experiment conditions which have been done
     experiment_conditions_done = []
     with open(cumm_exp_res_file,"r") as f:
@@ -32,19 +31,18 @@ def main():
             experiment_conditions_done.append(line.split(":")[3].replace("_True_acc","").replace("_False_acc","").split("_MNIST")[0].replace(" ",""))
     # get value counts of experiment_conditions_done
     experiment_conditions_done = pd.Series(experiment_conditions_done).value_counts()
-    N_communication_rounds = 100 # Number of communication rounds
+    N_communication_rounds = 120 # Number of communication rounds
     N_successful = 30 # Number of successful communication roundss
     model = CNNImage # Model to be used
     dataset = "MNIST" # Dataset to be used
     n_classes = 10 # Number of classe
     fraction_of_data = 1 # Fraction of data to be used
     # Filename to store all "final" results of use with date
-    client_parameters = {"learning_rate":0.0001} # Parameters for the client
+    client_parameters = {"learning_rate":0.001} # Parameters for the client
     GENERATE_DATA = True # Generate data or not
     GENERATE_POLICY = True # Generate policy or not
-    N_device = 40
-    N_choices = np.array([N_device//10,N_device//8,N_device//6,N_device//4,N_device//2,N_device//1.5,N_device//1.1],dtype=int)
-
+    N_device = 100
+    N_choices = np.array([N_device//2.75,N_device//2.4,N_device//2.2,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
     C_A = [[
                                 [0,1.8],
                                 [0,1.4],
@@ -55,14 +53,19 @@ def main():
                                 [0,0.1],
                         ]]
 
-    eavesdropper_training_size = 0.1 # Proportion of data available with the eavesdropper wrt another user
-    eavesdropper_training_classes = 4 # Number of good classes available with the eavesdropper
-    eavesdropper_training_prop = 0.9  # ratio of good classes to bad classes in the eavesdropper dataset
+    eavesdropper_training_size = 1 # Proportion of data available with the eavesdropper wrt another user
+    eavesdropper_training_classes = 2 # Number of good classes available with the eavesdropper
+    eavesdropper_training_prop = 0.99  # ratio of good classes to bad classes in the eavesdropper dataset
+    validation_size_ratio = 20
+
     exp_no = 0 
+
+    thres_factor = 8
+
     for P in Ps:         
         experiment_condition = "P" + str(exp_no) # Experiment condition
         exp_no += 1
-        N_exp_runs = 30 # Number of experiment runs
+        N_exp_runs = 10 # Number of experiment runs
 
         if experiment_condition in experiment_conditions_done.index:
             if experiment_conditions_done[experiment_condition] >= 2*N_exp_runs:
@@ -78,22 +81,23 @@ def main():
                 seed_everything(k) # Set seed
                 
                 if GENERATE_DATA:
-                    create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data,eavesdropper_training_size=eavesdropper_training_size,eavesdropper_training_classes=eavesdropper_training_classes,eavesdropper_training_prop=eavesdropper_training_prop)
+                    create_datasets_clients(N_device = N_device, fraction_of_data = fraction_of_data,eavesdropper_training_size=eavesdropper_training_size,eavesdropper_training_classes=eavesdropper_training_classes,eavesdropper_training_prop=eavesdropper_training_prop,validation_size_ratio = validation_size_ratio)
                     tqdm.write("Datasets created")    
                 parameters = Client(0,model(n_classes)).get_parameters() # Get parameters from client
                 tqdm.write("Initial Parameters initialized")
                 
-                s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O=P,N_choices = N_choices,C_A = C_A)
+                s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O=P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
                 tqdm.write("Server initialized for non greedy policy")
                 s_nongreedy.train()
                 tqdm.write(f"Training complete for {k} run non greedy policy")
                 
                 ## Greedy Policy ##
-                s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices,C_A = C_A)
+                s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
                 tqdm.write("Server initialized for greedy policy")
                 s.train()
                 tqdm.write(f"Training complete for {k} run greedy policy")
 
         except UnboundLocalError:
+            print("Unbound Local")
             continue
 main()

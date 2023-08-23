@@ -67,9 +67,9 @@ class Client():
         self.set_parameters(parameters)
         self.model.train()
         ## Adam with weight decay AdamW
-        # optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
         ## SGD
-        optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
+        # optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
             n_batches = len(self.train_loader)

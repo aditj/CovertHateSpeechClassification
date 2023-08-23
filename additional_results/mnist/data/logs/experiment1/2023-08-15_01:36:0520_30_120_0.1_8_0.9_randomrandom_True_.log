@@ -1,0 +1,34 @@
+----------------------------------------------------------------------------------------------------
+20_30_120_0.1_8_0.9_randomrandom_True_ RANDOM POLICY 
+----------------------------------------------------------------------------------------------------
+Communication round: 8, Aggregated Accuracies: 0.1488095238095238 1
+Communication round: 12, Aggregated Accuracies: 0.17083333333333334 2
+Communication round: 15, Aggregated Accuracies: 0.19642857142857145 3
+Communication round: 20, Aggregated Accuracies: 0.2529761904761906 4
+Communication round: 21, Aggregated Accuracies: 0.29047619047619044 5
+Communication round: 22, Aggregated Accuracies: 0.3458333333333333 6
+Communication round: 25, Aggregated Accuracies: 0.3839285714285714 7
+Communication round: 39, Aggregated Accuracies: 0.4404761904761904 8
+Communication round: 42, Aggregated Accuracies: 0.49404761904761896 9
+Communication round: 45, Aggregated Accuracies: 0.5267857142857142 10
+Communication round: 50, Aggregated Accuracies: 0.5583333333333333 11
+Communication round: 55, Aggregated Accuracies: 0.5785714285714285 12
+Communication round: 57, Aggregated Accuracies: 0.5869047619047619 13
+Communication round: 61, Aggregated Accuracies: 0.6297619047619049 14
+Communication round: 66, Aggregated Accuracies: 0.6255952380952381 15
+Communication round: 69, Aggregated Accuracies: 0.6553571428571429 16
+Communication round: 71, Aggregated Accuracies: 0.681547619047619 17
+Communication round: 79, Aggregated Accuracies: 0.7214285714285713 18
+Communication round: 81, Aggregated Accuracies: 0.7357142857142857 19
+Communication round: 85, Aggregated Accuracies: 0.7428571428571429 20
+Communication round: 86, Aggregated Accuracies: 0.7577380952380952 21
+Communication round: 94, Aggregated Accuracies: 0.7636904761904761 22
+Communication round: 95, Aggregated Accuracies: 0.7494047619047619 23
+Communication round: 100, Aggregated Accuracies: 0.7803571428571429 24
+Communication round: 104, Aggregated Accuracies: 0.7946428571428571 25
+Communication round: 108, Aggregated Accuracies: 0.7922619047619046 26
+Communication round: 112, Aggregated Accuracies: 0.8059523809523809 27
+Communication round: 115, Aggregated Accuracies: 0.8095238095238095 28
+Communication round: 116, Aggregated Accuracies: 0.8142857142857143 29
+Communication round: 118, Aggregated Accuracies: 0.8267857142857142 30
+----------------------------------------------------------------------------------------------------

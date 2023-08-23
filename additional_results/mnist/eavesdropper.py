@@ -35,8 +35,8 @@ class Eavesdropper():
         if parameters is not None:
             self.set_parameters(parameters)
         self.model.train()
-        # optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
-        optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.AdamW(params =  self.model.parameters(), lr=self.learning_rate)
+        # optimizer = torch.optim.SGD(params =  self.model.parameters(), lr=self.learning_rate)
         for epoch in range(self.epochs):
             ## compute number of batches
             ## take subset of train loader from n_batches_start to n_batches_end                    
