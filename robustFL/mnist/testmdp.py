@@ -86,14 +86,11 @@ for k in range(10):
                                         num_good_oracle_states += 1
                                 state_learning_queries -= 1
                 if count_learning_queries/(i+1) > 0.5:
-                        print(f"Not Private {i}",count_learning_queries,action,state_learning_queries)
+                        print(f"{i}",count_learning_queries,action,state_learning_queries)
                 else:
-                        print(f"Private {i}",count_learning_queries,action,state_learning_queries)
+                        print(f"{i}",count_learning_queries,action,state_learning_queries)
                         if i == n_communications - 1:
                                 num_private_end += 1
                                 end_query_count[k] = state_learning_queries
-        plt.figure(figsize=(10,10))
-        plt.plot(np.arange(policy.shape[0]//2),policy[::2],label='Obfuscate')
-        plt.savefig('./data/plots/policy.png')
-        plt.close()
+        
         print(k,num_private_end,end_query_count[:k].mean(),num_good_oracle_states)

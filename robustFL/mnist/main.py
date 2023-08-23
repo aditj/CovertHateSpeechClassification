@@ -26,7 +26,7 @@ def main():
     experiment_conditions_done = pd.Series(experiment_conditions_done).value_counts()
     print(experiment_conditions_done)
     N_communication_rounds = 100 # Number of communication rounds
-    N_successful = 30 # Number of successful communication roundss
+    N_successful = 20 # Number of successful communication roundss
     model = CNNImage # Model to be used
     dataset = "MNIST" # Dataset to be used
 

@@ -31,8 +31,8 @@ def main():
             experiment_conditions_done.append(line.split(":")[3].replace("_True_acc","").replace("_False_acc","").split("_MNIST")[0].replace(" ",""))
     # get value counts of experiment_conditions_done
     experiment_conditions_done = pd.Series(experiment_conditions_done).value_counts()
-    N_communication_rounds = 120 # Number of communication rounds
-    N_successful = 25 # Number of successful communication roundss
+    N_communication_rounds = 100 # Number of communication rounds
+    N_successful = 20 # Number of successful communication roundss
     model = CNNImage # Model to be used
     dataset = "MNIST" # Dataset to be used
     n_classes = 10 # Number of classe
