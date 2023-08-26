@@ -1,0 +1,532 @@
+Communication round: 0, Eavesdropper Accuracy: 0.12857142857142856 1 1
+Communication round: 1, Aggregated Accuracies: 0.21785714285714283 2
+Communication round: 1, Eavesdropper Accuracy: 0.42857142857142855 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.42857142857142855 2 0
+Communication round: 3, Smart Eavesdropper Accuracy: 0.44285714285714284 2 0
+Communication round: 4, Eavesdropper Accuracy: 0.42857142857142855 3 1
+Communication round: 5, Eavesdropper Accuracy: 0.42857142857142855 4 1
+Communication round: 6, Eavesdropper Accuracy: 0.42857142857142855 4 0
+Communication round: 7, Smart Eavesdropper Accuracy: 0.43333333333333335 4 0
+Communication round: 8, Eavesdropper Accuracy: 0.42857142857142855 5 1
+Communication round: 9, Eavesdropper Accuracy: 0.42857142857142855 6 1
+Communication round: 10, Eavesdropper Accuracy: 0.42857142857142855 6 0
+Communication round: 11, Smart Eavesdropper Accuracy: 0.4238095238095238 6 0
+Communication round: 12, Smart Eavesdropper Accuracy: 0.4714285714285714 6 0
+Communication round: 13, Smart Eavesdropper Accuracy: 0.4666666666666667 6 0
+Communication round: 14, Smart Eavesdropper Accuracy: 0.47619047619047616 6 0
+Communication round: 15, Smart Eavesdropper Accuracy: 0.48095238095238096 6 0
+Communication round: 16, Smart Eavesdropper Accuracy: 0.4714285714285714 6 0
+Communication round: 17, Aggregated Accuracies: 0.4207142857142857 7
+Communication round: 17, Smart Eavesdropper Accuracy: 0.4666666666666667 7 1
+Communication round: 18, Smart Eavesdropper Accuracy: 0.48095238095238096 7 0
+Communication round: 19, Aggregated Accuracies: 0.6497619047619047 8
+Communication round: 19, Smart Eavesdropper Accuracy: 0.47619047619047616 8 1
+Communication round: 20, Smart Eavesdropper Accuracy: 0.48095238095238096 8 0
+Communication round: 21, Smart Eavesdropper Accuracy: 0.49523809523809526 8 0
+Communication round: 22, Smart Eavesdropper Accuracy: 0.5047619047619047 8 0
+Communication round: 23, Aggregated Accuracies: 0.7335714285714284 9
+Communication round: 23, Smart Eavesdropper Accuracy: 0.5095238095238095 9 1
+Communication round: 24, Aggregated Accuracies: 0.7959523809523812 10
+Communication round: 24, Smart Eavesdropper Accuracy: 0.5 10 1
+Communication round: 25, Smart Eavesdropper Accuracy: 0.5 10 0
+Communication round: 26, Smart Eavesdropper Accuracy: 0.5047619047619047 11 1
+Communication round: 27, Smart Eavesdropper Accuracy: 0.5238095238095238 11 0
+Communication round: 28, Aggregated Accuracies: 0.8266666666666668 12
+Communication round: 28, Smart Eavesdropper Accuracy: 0.5333333333333333 12 1
+Communication round: 29, Smart Eavesdropper Accuracy: 0.5380952380952381 12 0
+Communication round: 30, Smart Eavesdropper Accuracy: 0.5476190476190477 12 0
+Communication round: 31, Aggregated Accuracies: 0.833809523809524 13
+Communication round: 31, Smart Eavesdropper Accuracy: 0.5619047619047619 13 1
+Communication round: 32, Aggregated Accuracies: 0.8578571428571431 14
+Communication round: 32, Smart Eavesdropper Accuracy: 0.5714285714285714 14 1
+Communication round: 33, Aggregated Accuracies: 0.8826190476190477 15
+Communication round: 33, Smart Eavesdropper Accuracy: 0.5761904761904761 15 1
+Communication round: 34, Aggregated Accuracies: 0.8926190476190479 16
+Communication round: 34, Smart Eavesdropper Accuracy: 0.5857142857142857 16 1
+Communication round: 35, Aggregated Accuracies: 0.9052380952380954 17
+Communication round: 35, Smart Eavesdropper Accuracy: 0.580952380952381 17 1
+Communication round: 36, Smart Eavesdropper Accuracy: 0.5904761904761905 17 0
+Communication round: 37, Smart Eavesdropper Accuracy: 0.6047619047619047 17 0
+Communication round: 38, Aggregated Accuracies: 0.913809523809524 18
+Communication round: 38, Smart Eavesdropper Accuracy: 0.6095238095238096 18 1
+Communication round: 39, Aggregated Accuracies: 0.9097619047619048 19
+Communication round: 39, Smart Eavesdropper Accuracy: 0.6142857142857143 19 1
+Communication round: 40, Smart Eavesdropper Accuracy: 0.6190476190476191 19 0
+Communication round: 41, Smart Eavesdropper Accuracy: 0.6285714285714286 19 0
+Communication round: 42, Smart Eavesdropper Accuracy: 0.6333333333333333 19 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.6333333333333333 19 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.6476190476190476 19 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.023809523809523808 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.023809523809523808 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.023809523809523808 3 1
+Communication round: 3, Eavesdropper Accuracy: 0.023809523809523808 4 1
+Communication round: 4, Aggregated Accuracies: 0.18071428571428574 5
+Communication round: 4, Eavesdropper Accuracy: 0.3047619047619048 5 1
+Communication round: 5, Aggregated Accuracies: 0.4616666666666666 6
+Communication round: 5, Eavesdropper Accuracy: 0.6571428571428571 6 1
+Communication round: 6, Aggregated Accuracies: 0.6388095238095238 7
+Communication round: 6, Eavesdropper Accuracy: 0.8285714285714286 7 1
+Communication round: 7, Aggregated Accuracies: 0.7535714285714287 8
+Communication round: 7, Eavesdropper Accuracy: 0.8523809523809524 8 1
+Communication round: 8, Eavesdropper Accuracy: 0.8523809523809524 8 0
+Communication round: 9, Aggregated Accuracies: 0.8002380952380953 9
+Communication round: 9, Eavesdropper Accuracy: 0.8857142857142857 9 1
+Communication round: 10, Aggregated Accuracies: 0.8290476190476191 10
+Communication round: 10, Eavesdropper Accuracy: 0.8952380952380953 10 1
+Communication round: 11, Aggregated Accuracies: 0.8492857142857145 11
+Communication round: 11, Eavesdropper Accuracy: 0.8857142857142857 11 1
+Communication round: 12, Aggregated Accuracies: 0.8883333333333334 12
+Communication round: 12, Eavesdropper Accuracy: 0.9047619047619048 12 1
+Communication round: 13, Aggregated Accuracies: 0.8871428571428572 13
+Communication round: 13, Eavesdropper Accuracy: 0.9095238095238095 13 1
+Communication round: 14, Eavesdropper Accuracy: 0.9095238095238095 13 0
+Communication round: 15, Eavesdropper Accuracy: 0.9095238095238095 13 0
+Communication round: 16, Eavesdropper Accuracy: 0.9095238095238095 13 0
+Communication round: 17, Eavesdropper Accuracy: 0.9095238095238095 13 0
+Communication round: 18, Aggregated Accuracies: 0.8976190476190478 14
+Communication round: 18, Eavesdropper Accuracy: 0.9095238095238095 14 1
+Communication round: 19, Aggregated Accuracies: 0.9064285714285715 15
+Communication round: 19, Eavesdropper Accuracy: 0.919047619047619 15 1
+Communication round: 20, Aggregated Accuracies: 0.9071428571428571 16
+Communication round: 20, Eavesdropper Accuracy: 0.9380952380952381 16 1
+Communication round: 21, Aggregated Accuracies: 0.9192857142857143 17
+Communication round: 21, Eavesdropper Accuracy: 0.9428571428571428 17 1
+Communication round: 22, Aggregated Accuracies: 0.9292857142857143 18
+Communication round: 22, Eavesdropper Accuracy: 0.9428571428571428 18 1
+Communication round: 23, Eavesdropper Accuracy: 0.9428571428571428 18 0
+Communication round: 24, Eavesdropper Accuracy: 0.9428571428571428 18 0
+Communication round: 25, Aggregated Accuracies: 0.9333333333333333 19
+Communication round: 25, Eavesdropper Accuracy: 0.9523809523809523 19 1
+Communication round: 26, Aggregated Accuracies: 0.921904761904762 20
+Communication round: 26, Eavesdropper Accuracy: 0.9523809523809523 20 1
+Communication round: 27, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 28, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 29, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 30, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 31, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 32, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 33, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 34, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 35, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 36, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 37, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 38, Eavesdropper Accuracy: 0.9523809523809523 20 0
+Communication round: 39, Smart Eavesdropper Accuracy: 0.9476190476190476 20 0
+Communication round: 40, Smart Eavesdropper Accuracy: 0.9476190476190476 20 0
+Communication round: 41, Smart Eavesdropper Accuracy: 0.9428571428571428 20 0
+Communication round: 42, Smart Eavesdropper Accuracy: 0.9428571428571428 20 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.9428571428571428 20 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.9380952380952381 20 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Aggregated Accuracies: 0.23357142857142854 1
+Communication round: 0, Eavesdropper Accuracy: 0.3476190476190476 1 1
+Communication round: 1, Smart Eavesdropper Accuracy: 0.3904761904761905 1 0
+Communication round: 2, Aggregated Accuracies: 0.4502380952380952 2
+Communication round: 2, Eavesdropper Accuracy: 0.5523809523809524 2 1
+Communication round: 3, Smart Eavesdropper Accuracy: 0.5380952380952381 2 0
+Communication round: 4, Smart Eavesdropper Accuracy: 0.5238095238095238 2 0
+Communication round: 5, Smart Eavesdropper Accuracy: 0.5238095238095238 2 0
+Communication round: 6, Smart Eavesdropper Accuracy: 0.5190476190476191 2 0
+Communication round: 7, Smart Eavesdropper Accuracy: 0.5142857142857142 2 0
+Communication round: 8, Smart Eavesdropper Accuracy: 0.5190476190476191 3 1
+Communication round: 9, Smart Eavesdropper Accuracy: 0.5428571428571428 4 1
+Communication round: 10, Smart Eavesdropper Accuracy: 0.5428571428571428 5 1
+Communication round: 11, Smart Eavesdropper Accuracy: 0.5571428571428572 5 0
+Communication round: 12, Smart Eavesdropper Accuracy: 0.5523809523809524 5 0
+Communication round: 13, Smart Eavesdropper Accuracy: 0.5714285714285714 6 1
+Communication round: 14, Smart Eavesdropper Accuracy: 0.5619047619047619 7 1
+Communication round: 15, Smart Eavesdropper Accuracy: 0.5619047619047619 8 1
+Communication round: 16, Eavesdropper Accuracy: 0.5523809523809524 9 1
+Communication round: 17, Smart Eavesdropper Accuracy: 0.5380952380952381 9 0
+Communication round: 18, Smart Eavesdropper Accuracy: 0.5285714285714286 9 0
+Communication round: 19, Aggregated Accuracies: 0.624047619047619 10
+Communication round: 19, Smart Eavesdropper Accuracy: 0.5238095238095238 10 1
+Communication round: 20, Smart Eavesdropper Accuracy: 0.5047619047619047 10 0
+Communication round: 21, Smart Eavesdropper Accuracy: 0.5285714285714286 11 1
+Communication round: 22, Smart Eavesdropper Accuracy: 0.5142857142857142 11 0
+Communication round: 23, Smart Eavesdropper Accuracy: 0.5142857142857142 11 0
+Communication round: 24, Smart Eavesdropper Accuracy: 0.5190476190476191 11 0
+Communication round: 25, Smart Eavesdropper Accuracy: 0.5428571428571428 11 0
+Communication round: 26, Smart Eavesdropper Accuracy: 0.5380952380952381 12 1
+Communication round: 27, Aggregated Accuracies: 0.7285714285714284 13
+Communication round: 27, Smart Eavesdropper Accuracy: 0.5619047619047619 13 1
+Communication round: 28, Aggregated Accuracies: 0.806904761904762 14
+Communication round: 28, Smart Eavesdropper Accuracy: 0.5619047619047619 14 1
+Communication round: 29, Smart Eavesdropper Accuracy: 0.5571428571428572 14 0
+Communication round: 30, Smart Eavesdropper Accuracy: 0.5714285714285714 14 0
+Communication round: 31, Smart Eavesdropper Accuracy: 0.5666666666666667 15 1
+Communication round: 32, Aggregated Accuracies: 0.8150000000000002 16
+Communication round: 32, Smart Eavesdropper Accuracy: 0.5857142857142857 16 1
+Communication round: 33, Aggregated Accuracies: 0.8304761904761907 17
+Communication round: 33, Smart Eavesdropper Accuracy: 0.5952380952380952 17 1
+Communication round: 34, Smart Eavesdropper Accuracy: 0.5904761904761905 17 0
+Communication round: 35, Aggregated Accuracies: 0.8664285714285714 18
+Communication round: 35, Smart Eavesdropper Accuracy: 0.5952380952380952 18 1
+Communication round: 36, Aggregated Accuracies: 0.8769047619047621 19
+Communication round: 36, Eavesdropper Accuracy: 0.9047619047619048 19 1
+Communication round: 37, Aggregated Accuracies: 0.896904761904762 20
+Communication round: 37, Eavesdropper Accuracy: 0.9238095238095239 20 1
+Communication round: 38, Eavesdropper Accuracy: 0.9238095238095239 20 0
+Communication round: 39, Eavesdropper Accuracy: 0.9238095238095239 21 1
+Communication round: 40, Aggregated Accuracies: 0.9047619047619049 22
+Communication round: 40, Eavesdropper Accuracy: 0.9238095238095239 22 1
+Communication round: 41, Eavesdropper Accuracy: 0.9238095238095239 22 0
+Communication round: 42, Eavesdropper Accuracy: 0.9238095238095239 22 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.9238095238095239 22 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.919047619047619 22 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.0761904761904762 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.0761904761904762 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.0761904761904762 3 1
+Communication round: 3, Aggregated Accuracies: 0.1954761904761905 4
+Communication round: 3, Eavesdropper Accuracy: 0.3333333333333333 4 1
+Communication round: 4, Aggregated Accuracies: 0.4083333333333334 5
+Communication round: 4, Eavesdropper Accuracy: 0.5190476190476191 5 1
+Communication round: 5, Aggregated Accuracies: 0.5819047619047619 6
+Communication round: 5, Eavesdropper Accuracy: 0.7619047619047619 6 1
+Communication round: 6, Eavesdropper Accuracy: 0.7619047619047619 7 1
+Communication round: 7, Aggregated Accuracies: 0.6907142857142857 8
+Communication round: 7, Eavesdropper Accuracy: 0.8238095238095238 8 1
+Communication round: 8, Aggregated Accuracies: 0.7609523809523809 9
+Communication round: 8, Eavesdropper Accuracy: 0.8571428571428571 9 1
+Communication round: 9, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 10, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 11, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 12, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 13, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 14, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 15, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 16, Eavesdropper Accuracy: 0.8571428571428571 9 0
+Communication round: 17, Smart Eavesdropper Accuracy: 0.8523809523809524 9 0
+Communication round: 18, Smart Eavesdropper Accuracy: 0.8285714285714286 9 0
+Communication round: 19, Smart Eavesdropper Accuracy: 0.8238095238095238 9 0
+Communication round: 20, Smart Eavesdropper Accuracy: 0.819047619047619 9 0
+Communication round: 21, Aggregated Accuracies: 0.8042857142857145 10
+Communication round: 21, Smart Eavesdropper Accuracy: 0.819047619047619 10 1
+Communication round: 22, Smart Eavesdropper Accuracy: 0.8095238095238095 11 1
+Communication round: 23, Aggregated Accuracies: 0.8297619047619049 12
+Communication round: 23, Smart Eavesdropper Accuracy: 0.8047619047619048 12 1
+Communication round: 24, Aggregated Accuracies: 0.8654761904761907 13
+Communication round: 24, Eavesdropper Accuracy: 0.9 13 1
+Communication round: 25, Aggregated Accuracies: 0.8659523809523811 14
+Communication round: 25, Eavesdropper Accuracy: 0.9 14 1
+Communication round: 26, Aggregated Accuracies: 0.8933333333333335 15
+Communication round: 26, Eavesdropper Accuracy: 0.9142857142857143 15 1
+Communication round: 27, Aggregated Accuracies: 0.8945238095238098 16
+Communication round: 27, Eavesdropper Accuracy: 0.9285714285714286 16 1
+Communication round: 28, Aggregated Accuracies: 0.900952380952381 17
+Communication round: 28, Eavesdropper Accuracy: 0.9142857142857143 17 1
+Communication round: 29, Aggregated Accuracies: 0.9135714285714288 18
+Communication round: 29, Eavesdropper Accuracy: 0.9380952380952381 18 1
+Communication round: 30, Aggregated Accuracies: 0.9192857142857143 19
+Communication round: 30, Eavesdropper Accuracy: 0.9428571428571428 19 1
+Communication round: 31, Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 32, Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 33, Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 34, Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 35, Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 36, Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 37, Smart Eavesdropper Accuracy: 0.9428571428571428 19 0
+Communication round: 38, Smart Eavesdropper Accuracy: 0.9523809523809523 19 0
+Communication round: 39, Smart Eavesdropper Accuracy: 0.9476190476190476 19 0
+Communication round: 40, Smart Eavesdropper Accuracy: 0.9523809523809523 19 0
+Communication round: 41, Smart Eavesdropper Accuracy: 0.9523809523809523 19 0
+Communication round: 42, Smart Eavesdropper Accuracy: 0.9523809523809523 19 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.9476190476190476 19 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.9476190476190476 19 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.11428571428571428 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.11428571428571428 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.11428571428571428 3 1
+Communication round: 3, Aggregated Accuracies: 0.19047619047619047 4
+Communication round: 3, Eavesdropper Accuracy: 0.36666666666666664 4 1
+Communication round: 4, Eavesdropper Accuracy: 0.36666666666666664 4 0
+Communication round: 5, Eavesdropper Accuracy: 0.36666666666666664 5 1
+Communication round: 6, Eavesdropper Accuracy: 0.36666666666666664 6 1
+Communication round: 7, Eavesdropper Accuracy: 0.36666666666666664 7 1
+Communication round: 8, Eavesdropper Accuracy: 0.36666666666666664 8 1
+Communication round: 9, Aggregated Accuracies: 0.34190476190476193 9
+Communication round: 9, Eavesdropper Accuracy: 0.5333333333333333 9 1
+Communication round: 10, Eavesdropper Accuracy: 0.5333333333333333 9 0
+Communication round: 11, Aggregated Accuracies: 0.6250000000000001 10
+Communication round: 11, Eavesdropper Accuracy: 0.7571428571428571 10 1
+Communication round: 12, Aggregated Accuracies: 0.7271428571428572 11
+Communication round: 12, Eavesdropper Accuracy: 0.8142857142857143 11 1
+Communication round: 13, Aggregated Accuracies: 0.818809523809524 12
+Communication round: 13, Eavesdropper Accuracy: 0.8571428571428571 12 1
+Communication round: 14, Eavesdropper Accuracy: 0.8571428571428571 12 0
+Communication round: 15, Aggregated Accuracies: 0.8433333333333335 13
+Communication round: 15, Eavesdropper Accuracy: 0.8761904761904762 13 1
+Communication round: 16, Aggregated Accuracies: 0.8692857142857143 14
+Communication round: 16, Eavesdropper Accuracy: 0.919047619047619 14 1
+Communication round: 17, Aggregated Accuracies: 0.884761904761905 15
+Communication round: 17, Eavesdropper Accuracy: 0.919047619047619 15 1
+Communication round: 18, Aggregated Accuracies: 0.8914285714285715 16
+Communication round: 18, Eavesdropper Accuracy: 0.919047619047619 16 1
+Communication round: 19, Aggregated Accuracies: 0.9061904761904763 17
+Communication round: 19, Eavesdropper Accuracy: 0.9238095238095239 17 1
+Communication round: 20, Aggregated Accuracies: 0.9078571428571429 18
+Communication round: 20, Eavesdropper Accuracy: 0.9238095238095239 18 1
+Communication round: 21, Aggregated Accuracies: 0.9221428571428572 19
+Communication round: 21, Eavesdropper Accuracy: 0.919047619047619 19 1
+Communication round: 22, Aggregated Accuracies: 0.9280952380952382 20
+Communication round: 22, Eavesdropper Accuracy: 0.9285714285714286 20 1
+Communication round: 23, Aggregated Accuracies: 0.9292857142857143 21
+Communication round: 23, Eavesdropper Accuracy: 0.9238095238095239 21 1
+Communication round: 24, Aggregated Accuracies: 0.9326190476190476 22
+Communication round: 24, Eavesdropper Accuracy: 0.9380952380952381 22 1
+Communication round: 25, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 26, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 27, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 28, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 29, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 30, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 31, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 32, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 33, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 34, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 35, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 36, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 37, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 38, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 39, Eavesdropper Accuracy: 0.9380952380952381 22 0
+Communication round: 40, Aggregated Accuracies: 0.9326190476190476 23
+Communication round: 40, Eavesdropper Accuracy: 0.9380952380952381 23 1
+Communication round: 41, Eavesdropper Accuracy: 0.9380952380952381 23 0
+Communication round: 42, Eavesdropper Accuracy: 0.9380952380952381 23 0
+Communication round: 43, Eavesdropper Accuracy: 0.9380952380952381 23 0
+Communication round: 44, Eavesdropper Accuracy: 0.9380952380952381 23 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.05238095238095238 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.05238095238095238 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.05238095238095238 3 1
+Communication round: 3, Eavesdropper Accuracy: 0.05238095238095238 4 1
+Communication round: 4, Eavesdropper Accuracy: 0.05238095238095238 5 1
+Communication round: 5, Eavesdropper Accuracy: 0.05238095238095238 6 1
+Communication round: 6, Eavesdropper Accuracy: 0.05238095238095238 7 1
+Communication round: 7, Eavesdropper Accuracy: 0.05238095238095238 8 1
+Communication round: 8, Eavesdropper Accuracy: 0.05238095238095238 9 1
+Communication round: 9, Eavesdropper Accuracy: 0.05238095238095238 10 1
+Communication round: 10, Eavesdropper Accuracy: 0.05238095238095238 11 1
+Communication round: 11, Eavesdropper Accuracy: 0.05238095238095238 12 1
+Communication round: 12, Eavesdropper Accuracy: 0.05238095238095238 13 1
+Communication round: 13, Eavesdropper Accuracy: 0.05238095238095238 14 1
+Communication round: 14, Eavesdropper Accuracy: 0.05238095238095238 15 1
+Communication round: 15, Aggregated Accuracies: 0.1811904761904762 16
+Communication round: 15, Eavesdropper Accuracy: 0.17142857142857143 16 1
+Communication round: 16, Eavesdropper Accuracy: 0.17142857142857143 16 0
+Communication round: 17, Eavesdropper Accuracy: 0.17142857142857143 16 0
+Communication round: 18, Aggregated Accuracies: 0.3714285714285714 17
+Communication round: 18, Eavesdropper Accuracy: 0.5238095238095238 17 1
+Communication round: 19, Eavesdropper Accuracy: 0.5238095238095238 17 0
+Communication round: 20, Eavesdropper Accuracy: 0.5238095238095238 18 1
+Communication round: 21, Aggregated Accuracies: 0.6335714285714286 19
+Communication round: 21, Eavesdropper Accuracy: 0.7333333333333333 19 1
+Communication round: 22, Aggregated Accuracies: 0.7245238095238096 20
+Communication round: 22, Eavesdropper Accuracy: 0.7619047619047619 20 1
+Communication round: 23, Eavesdropper Accuracy: 0.7619047619047619 21 1
+Communication round: 24, Eavesdropper Accuracy: 0.7619047619047619 21 0
+Communication round: 25, Aggregated Accuracies: 0.7980952380952382 22
+Communication round: 25, Eavesdropper Accuracy: 0.8047619047619048 22 1
+Communication round: 26, Aggregated Accuracies: 0.8283333333333335 23
+Communication round: 26, Eavesdropper Accuracy: 0.8238095238095238 23 1
+Communication round: 27, Aggregated Accuracies: 0.8509523809523811 24
+Communication round: 27, Eavesdropper Accuracy: 0.8428571428571429 24 1
+Communication round: 28, Eavesdropper Accuracy: 0.8428571428571429 25 1
+Communication round: 29, Aggregated Accuracies: 0.8678571428571431 26
+Communication round: 29, Eavesdropper Accuracy: 0.861904761904762 26 1
+Communication round: 30, Aggregated Accuracies: 0.8952380952380954 27
+Communication round: 30, Eavesdropper Accuracy: 0.8809523809523809 27 1
+Communication round: 31, Aggregated Accuracies: 0.903809523809524 28
+Communication round: 31, Eavesdropper Accuracy: 0.8904761904761904 28 1
+Communication round: 32, Eavesdropper Accuracy: 0.8904761904761904 28 0
+Communication round: 33, Aggregated Accuracies: 0.9076190476190478 29
+Communication round: 33, Eavesdropper Accuracy: 0.9 29 1
+Communication round: 34, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 35, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 36, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 37, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 38, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 39, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 40, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 41, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 42, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 43, Eavesdropper Accuracy: 0.9 29 0
+Communication round: 44, Aggregated Accuracies: 0.9116666666666667 30
+Communication round: 44, Eavesdropper Accuracy: 0.9 30 1
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.1 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.1 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.1 3 1
+Communication round: 3, Aggregated Accuracies: 0.18404761904761907 4
+Communication round: 3, Eavesdropper Accuracy: 0.2714285714285714 4 1
+Communication round: 4, Eavesdropper Accuracy: 0.2714285714285714 4 0
+Communication round: 5, Eavesdropper Accuracy: 0.2714285714285714 4 0
+Communication round: 6, Aggregated Accuracies: 0.36 5
+Communication round: 6, Eavesdropper Accuracy: 0.5714285714285714 5 1
+Communication round: 7, Aggregated Accuracies: 0.6342857142857142 6
+Communication round: 7, Eavesdropper Accuracy: 0.8 6 1
+Communication round: 8, Eavesdropper Accuracy: 0.8 6 0
+Communication round: 9, Eavesdropper Accuracy: 0.8 6 0
+Communication round: 10, Eavesdropper Accuracy: 0.8 6 0
+Communication round: 11, Smart Eavesdropper Accuracy: 0.7571428571428571 6 0
+Communication round: 12, Smart Eavesdropper Accuracy: 0.7142857142857143 6 0
+Communication round: 13, Smart Eavesdropper Accuracy: 0.7 7 1
+Communication round: 14, Aggregated Accuracies: 0.7683333333333334 8
+Communication round: 14, Eavesdropper Accuracy: 0.8476190476190476 8 1
+Communication round: 15, Aggregated Accuracies: 0.8000000000000002 9
+Communication round: 15, Eavesdropper Accuracy: 0.8761904761904762 9 1
+Communication round: 16, Eavesdropper Accuracy: 0.8761904761904762 9 0
+Communication round: 17, Aggregated Accuracies: 0.8426190476190477 10
+Communication round: 17, Eavesdropper Accuracy: 0.9095238095238095 10 1
+Communication round: 18, Eavesdropper Accuracy: 0.9095238095238095 10 0
+Communication round: 19, Smart Eavesdropper Accuracy: 0.9047619047619048 10 0
+Communication round: 20, Smart Eavesdropper Accuracy: 0.8857142857142857 10 0
+Communication round: 21, Smart Eavesdropper Accuracy: 0.8761904761904762 10 0
+Communication round: 22, Aggregated Accuracies: 0.8702380952380955 11
+Communication round: 22, Smart Eavesdropper Accuracy: 0.8761904761904762 11 1
+Communication round: 23, Smart Eavesdropper Accuracy: 0.8857142857142857 11 0
+Communication round: 24, Smart Eavesdropper Accuracy: 0.8857142857142857 11 0
+Communication round: 25, Smart Eavesdropper Accuracy: 0.8809523809523809 11 0
+Communication round: 26, Smart Eavesdropper Accuracy: 0.8809523809523809 11 0
+Communication round: 27, Aggregated Accuracies: 0.8907142857142858 12
+Communication round: 27, Smart Eavesdropper Accuracy: 0.8904761904761904 12 1
+Communication round: 28, Aggregated Accuracies: 0.891904761904762 13
+Communication round: 28, Smart Eavesdropper Accuracy: 0.8904761904761904 13 1
+Communication round: 29, Aggregated Accuracies: 0.9090476190476192 14
+Communication round: 29, Smart Eavesdropper Accuracy: 0.8809523809523809 14 1
+Communication round: 30, Smart Eavesdropper Accuracy: 0.8809523809523809 14 0
+Communication round: 31, Smart Eavesdropper Accuracy: 0.8857142857142857 14 0
+Communication round: 32, Smart Eavesdropper Accuracy: 0.8904761904761904 14 0
+Communication round: 33, Smart Eavesdropper Accuracy: 0.8952380952380953 14 0
+Communication round: 34, Smart Eavesdropper Accuracy: 0.8809523809523809 14 0
+Communication round: 35, Smart Eavesdropper Accuracy: 0.8809523809523809 14 0
+Communication round: 36, Aggregated Accuracies: 0.9126190476190477 15
+Communication round: 36, Smart Eavesdropper Accuracy: 0.8857142857142857 15 1
+Communication round: 37, Aggregated Accuracies: 0.9216666666666666 16
+Communication round: 37, Smart Eavesdropper Accuracy: 0.8904761904761904 16 1
+Communication round: 38, Smart Eavesdropper Accuracy: 0.8857142857142857 16 0
+Communication round: 39, Aggregated Accuracies: 0.9223809523809525 17
+Communication round: 39, Smart Eavesdropper Accuracy: 0.8857142857142857 17 1
+Communication round: 40, Smart Eavesdropper Accuracy: 0.8809523809523809 17 0
+Communication round: 41, Smart Eavesdropper Accuracy: 0.8857142857142857 17 0
+Communication round: 42, Smart Eavesdropper Accuracy: 0.8904761904761904 17 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.8904761904761904 17 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.8952380952380953 17 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.08095238095238096 1 1
+Communication round: 1, Eavesdropper Accuracy: 0.08095238095238096 2 1
+Communication round: 2, Eavesdropper Accuracy: 0.08095238095238096 3 1
+Communication round: 3, Eavesdropper Accuracy: 0.08095238095238096 4 1
+Communication round: 4, Aggregated Accuracies: 0.18261904761904763 5
+Communication round: 4, Eavesdropper Accuracy: 0.2 5 1
+Communication round: 5, Eavesdropper Accuracy: 0.2 6 1
+Communication round: 6, Eavesdropper Accuracy: 0.2 6 0
+Communication round: 7, Aggregated Accuracies: 0.4314285714285714 7
+Communication round: 7, Eavesdropper Accuracy: 0.6571428571428571 7 1
+Communication round: 8, Eavesdropper Accuracy: 0.6571428571428571 7 0
+Communication round: 9, Eavesdropper Accuracy: 0.6571428571428571 7 0
+Communication round: 10, Aggregated Accuracies: 0.6185714285714285 8
+Communication round: 10, Eavesdropper Accuracy: 0.7761904761904762 8 1
+Communication round: 11, Eavesdropper Accuracy: 0.7761904761904762 8 0
+Communication round: 12, Eavesdropper Accuracy: 0.7761904761904762 8 0
+Communication round: 13, Eavesdropper Accuracy: 0.7761904761904762 9 1
+Communication round: 14, Aggregated Accuracies: 0.7483333333333332 10
+Communication round: 14, Eavesdropper Accuracy: 0.8380952380952381 10 1
+Communication round: 15, Aggregated Accuracies: 0.8090476190476192 11
+Communication round: 15, Eavesdropper Accuracy: 0.8761904761904762 11 1
+Communication round: 16, Aggregated Accuracies: 0.8483333333333334 12
+Communication round: 16, Eavesdropper Accuracy: 0.9095238095238095 12 1
+Communication round: 17, Eavesdropper Accuracy: 0.9095238095238095 12 0
+Communication round: 18, Eavesdropper Accuracy: 0.9095238095238095 12 0
+Communication round: 19, Aggregated Accuracies: 0.8683333333333335 13
+Communication round: 19, Eavesdropper Accuracy: 0.9142857142857143 13 1
+Communication round: 20, Aggregated Accuracies: 0.8811904761904763 14
+Communication round: 20, Eavesdropper Accuracy: 0.9380952380952381 14 1
+Communication round: 21, Aggregated Accuracies: 0.8978571428571429 15
+Communication round: 21, Eavesdropper Accuracy: 0.9380952380952381 15 1
+Communication round: 22, Aggregated Accuracies: 0.9023809523809524 16
+Communication round: 22, Eavesdropper Accuracy: 0.9380952380952381 16 1
+Communication round: 23, Aggregated Accuracies: 0.9111904761904762 17
+Communication round: 23, Eavesdropper Accuracy: 0.9523809523809523 17 1
+Communication round: 24, Eavesdropper Accuracy: 0.9523809523809523 17 0
+Communication round: 25, Eavesdropper Accuracy: 0.9523809523809523 17 0
+Communication round: 26, Aggregated Accuracies: 0.9157142857142857 18
+Communication round: 26, Eavesdropper Accuracy: 0.9523809523809523 18 1
+Communication round: 27, Eavesdropper Accuracy: 0.9523809523809523 18 0
+Communication round: 28, Aggregated Accuracies: 0.9204761904761904 19
+Communication round: 28, Eavesdropper Accuracy: 0.9619047619047619 19 1
+Communication round: 29, Eavesdropper Accuracy: 0.9619047619047619 19 0
+Communication round: 30, Eavesdropper Accuracy: 0.9619047619047619 19 0
+Communication round: 31, Eavesdropper Accuracy: 0.9619047619047619 19 0
+Communication round: 32, Aggregated Accuracies: 0.9302380952380952 20
+Communication round: 32, Eavesdropper Accuracy: 0.9714285714285714 20 1
+Communication round: 33, Aggregated Accuracies: 0.924047619047619 21
+Communication round: 33, Eavesdropper Accuracy: 0.9666666666666667 21 1
+Communication round: 34, Eavesdropper Accuracy: 0.9666666666666667 21 0
+Communication round: 35, Eavesdropper Accuracy: 0.9666666666666667 21 0
+Communication round: 36, Eavesdropper Accuracy: 0.9666666666666667 21 0
+Communication round: 37, Eavesdropper Accuracy: 0.9666666666666667 21 0
+Communication round: 38, Aggregated Accuracies: 0.9321428571428573 22
+Communication round: 38, Eavesdropper Accuracy: 0.9761904761904762 22 1
+Communication round: 39, Eavesdropper Accuracy: 0.9761904761904762 22 0
+Communication round: 40, Eavesdropper Accuracy: 0.9761904761904762 22 0
+Communication round: 41, Eavesdropper Accuracy: 0.9761904761904762 22 0
+Communication round: 42, Eavesdropper Accuracy: 0.9761904761904762 22 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.9714285714285714 22 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.9761904761904762 22 0
+----------------------------------------------------------------------------------------------------
+Communication round: 0, Eavesdropper Accuracy: 0.09047619047619047 1 1
+Communication round: 1, Aggregated Accuracies: 0.1719047619047619 2
+Communication round: 1, Eavesdropper Accuracy: 0.2 2 1
+Communication round: 2, Aggregated Accuracies: 0.34976190476190483 3
+Communication round: 2, Eavesdropper Accuracy: 0.5238095238095238 3 1
+Communication round: 3, Aggregated Accuracies: 0.5623809523809523 4
+Communication round: 3, Eavesdropper Accuracy: 0.7238095238095238 4 1
+Communication round: 4, Aggregated Accuracies: 0.684047619047619 5
+Communication round: 4, Eavesdropper Accuracy: 0.8238095238095238 5 1
+Communication round: 5, Eavesdropper Accuracy: 0.8238095238095238 6 1
+Communication round: 6, Eavesdropper Accuracy: 0.8238095238095238 7 1
+Communication round: 7, Eavesdropper Accuracy: 0.8238095238095238 8 1
+Communication round: 8, Aggregated Accuracies: 0.7502380952380953 9
+Communication round: 8, Eavesdropper Accuracy: 0.9047619047619048 9 1
+Communication round: 9, Eavesdropper Accuracy: 0.9047619047619048 9 0
+Communication round: 10, Eavesdropper Accuracy: 0.9047619047619048 9 0
+Communication round: 11, Eavesdropper Accuracy: 0.9047619047619048 9 0
+Communication round: 12, Eavesdropper Accuracy: 0.9047619047619048 9 0
+Communication round: 13, Eavesdropper Accuracy: 0.9047619047619048 9 0
+Communication round: 14, Eavesdropper Accuracy: 0.9047619047619048 10 1
+Communication round: 15, Eavesdropper Accuracy: 0.9047619047619048 10 0
+Communication round: 16, Eavesdropper Accuracy: 0.9047619047619048 10 0
+Communication round: 17, Aggregated Accuracies: 0.771904761904762 11
+Communication round: 17, Eavesdropper Accuracy: 0.8904761904761904 11 1
+Communication round: 18, Aggregated Accuracies: 0.8230952380952383 12
+Communication round: 18, Eavesdropper Accuracy: 0.9285714285714286 12 1
+Communication round: 19, Eavesdropper Accuracy: 0.9285714285714286 12 0
+Communication round: 20, Eavesdropper Accuracy: 0.9285714285714286 12 0
+Communication round: 21, Eavesdropper Accuracy: 0.9285714285714286 12 0
+Communication round: 22, Eavesdropper Accuracy: 0.9285714285714286 12 0
+Communication round: 23, Smart Eavesdropper Accuracy: 0.9 12 0
+Communication round: 24, Smart Eavesdropper Accuracy: 0.8809523809523809 12 0
+Communication round: 25, Smart Eavesdropper Accuracy: 0.8523809523809524 12 0
+Communication round: 26, Smart Eavesdropper Accuracy: 0.861904761904762 12 0
+Communication round: 27, Smart Eavesdropper Accuracy: 0.8523809523809524 12 0
+Communication round: 28, Smart Eavesdropper Accuracy: 0.8523809523809524 12 0
+Communication round: 29, Smart Eavesdropper Accuracy: 0.8571428571428571 12 0
+Communication round: 30, Smart Eavesdropper Accuracy: 0.8523809523809524 12 0
+Communication round: 31, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 32, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 33, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 34, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 35, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 36, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 37, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 38, Smart Eavesdropper Accuracy: 0.861904761904762 12 0
+Communication round: 39, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+Communication round: 40, Smart Eavesdropper Accuracy: 0.861904761904762 12 0
+Communication round: 41, Smart Eavesdropper Accuracy: 0.8714285714285714 12 0
+Communication round: 42, Smart Eavesdropper Accuracy: 0.8714285714285714 12 0
+Communication round: 43, Smart Eavesdropper Accuracy: 0.8714285714285714 12 0
+Communication round: 44, Smart Eavesdropper Accuracy: 0.8666666666666667 12 0
+----------------------------------------------------------------------------------------------------
