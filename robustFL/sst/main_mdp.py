@@ -2,7 +2,7 @@
 ### Now create the server and clients
 from server import Server
 from client import Client 
-from models import CNNImage
+from models import BERTClass
 import os
 import numpy as np
 import pandas as pd
@@ -34,7 +34,7 @@ def main():
     experiment_conditions_done = pd.Series(experiment_conditions_done).value_counts()
     N_communication_rounds = 100 # Number of communication rounds
     N_successful = 20 # Number of successful communication roundss
-    model = CNNImage # Model to be used
+    model = BERTClass # Model to be used
     dataset = "MNIST" # Dataset to be used
     n_classes = 10 # Number of classe
     fraction_of_data = 1 # Fraction of data to be used
