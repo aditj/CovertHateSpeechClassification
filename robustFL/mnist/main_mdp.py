@@ -12,7 +12,7 @@ from utils.randomseed import seed_everything
 from tqdm import tqdm
 import logging
 def main():
-    cumm_exp_res_file = "./data/logs/cummulative_experiment_results_MDP.txt"
+    cumm_exp_res_file = "./data/logs/cummulative_experiment_results_MDP_7.txt"
     Ps = [np.array([
        [0.7, 0.2, 0.05, 0.03,  0.02, 0.0, 0],
        [0.4, 0.42, 0.05, 0.03,  0.05, 0.05, 0],
@@ -60,16 +60,16 @@ def main():
     thres_factor = 8
 
     for P in Ps:         
-        experiment_condition = "P" + str(exp_no) # Experiment condition
+        experiment_condition = "P" + str(exp_no) + "random" # Experiment condition
         exp_no += 1
         N_exp_runs = 10 # Number of experiment runs
 
         if experiment_condition in experiment_conditions_done.index:
-            if experiment_conditions_done[experiment_condition] >= 2*N_exp_runs:
+            if experiment_conditions_done[experiment_condition] >= N_exp_runs:
                 print(f"Experiment {experiment_condition} condition already done")
                 continue                        
             else: 
-                N_exp_runs = N_exp_runs - (experiment_conditions_done[experiment_condition]//2)
+                N_exp_runs = N_exp_runs - (experiment_conditions_done[experiment_condition])
                 print(f"Experiment {experiment_condition} condition done incompletely, continuing with {N_exp_runs} more runs")
         else:
             print(f"Experiment {experiment_condition} condition not done, continuing with {N_exp_runs} runs")
@@ -83,16 +83,22 @@ def main():
                 parameters = Client(0,model(n_classes)).get_parameters() # Get parameters from client
                 tqdm.write("Initial Parameters initialized")
                 
-                s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O=P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
-                tqdm.write("Server initialized for non greedy policy")
-                s_nongreedy.train()
-                tqdm.write(f"Training complete for {k} run non greedy policy")
+                # s_nongreedy = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,generate_policy = GENERATE_POLICY,experiment_condition=experiment_condition,greedy_policy= False,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O=P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
+                # tqdm.write("Server initialized for non greedy policy")
+                # s_nongreedy.train()
+                # tqdm.write(f"Training complete for {k} run non greedy policy")
                 
-                ## Greedy Policy ##
-                s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
-                tqdm.write("Server initialized for greedy policy")
-                s.train()
-                tqdm.write(f"Training complete for {k} run greedy policy")
+                # ## Greedy Policy ##
+                # s = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
+                # tqdm.write("Server initialized for greedy policy")
+                # s.train()
+                # tqdm.write(f"Training complete for {k} run greedy policy")
+
+                s_random = Server(N_device,N_communication_rounds,parameters,n_classes=n_classes,client_parameters=client_parameters,greedy_policy= True,experiment_condition=experiment_condition,N_successful=N_successful,cumm_exp_res_file=cumm_exp_res_file,P_O = P,N_choices = N_choices,C_A = C_A,thres_factor = thres_factor)
+                tqdm.write("Server initialized for random policy")
+                s_random.train_randomly()
+
+
 
         except UnboundLocalError:
             print("Unbound Local")
