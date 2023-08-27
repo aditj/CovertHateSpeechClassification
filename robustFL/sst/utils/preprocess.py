@@ -112,9 +112,9 @@ print("Cleaning Special Characters...\n")
 
 
 print("Loading data...\n")
-df = pd.read_csv("./data/df_target_comment_text.csv")
+df = pd.read_csv("./data/dev.tsv",sep="\t")
 print("Filling Missing Values...\n")
-df['comment_text'] = df['comment_text'].astype(str)
+df['comment_text'] = df['sentence'].astype(str)
 print("Cleaning and parsing the comments...\n")
 df['lowered_comment'] = df['comment_text'].apply(lambda x: x.lower())
 print("Cleaning Contractions...\n")
@@ -130,6 +130,7 @@ def correct_spelling(x, dic):
     return x
 print("Cleaning Spelling...\n")
 df['treated_comment'] = df['treated_comment'].apply(lambda x: correct_spelling(x, mispell_dict))
-df['comment'] = preprocess(df['treated_comment'])
+df['comment_text'] = preprocess(df['treated_comment'])
 print("Saving the data...\n")
-df[['comment','target']].to_csv('./data/df_treated_comment.csv',index=False)
+df.rename(columns={'label': 'target'}, inplace=True)
+df[['comment_text','target']].to_csv('./data/dev.csv',index=False)

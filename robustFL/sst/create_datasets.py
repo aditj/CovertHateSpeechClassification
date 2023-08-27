@@ -16,20 +16,20 @@ def create_datasets_clients(N_device = 10,
         # delte all files inside the folder
         for filename in os.listdir(client_dataset_path):
             os.remove(client_dataset_path+filename)
-    df = pd.read_csv("./data/train.tsv",index_col = False)
+    df = pd.read_csv("./data/df_treated_comment.csv",index_col = False)
     # relabel label as target
-    df['label'].rename('target', inplace=True)
     ## Balance the dataset
-    df_1 = df[df['target'] == 1]
-    df_0 = df[df['target'] == 0].sample(n=df_1.shape[0]).reset_index(drop=True)
+    print(df.columns)
+    df_0 = df[df['target'] == 0]
+    df_1 = df[df['target'] == 1].sample(n=df_0.shape[0]).reset_index(drop=True)
     print("Balanced dataset with shape: ",df_1.shape,df_0.shape)
     df = pd.concat([df_1,df_0]).reset_index(drop=True)
     ## Take fraction of data
     df = df.sample(frac=fraction_of_data).reset_index(drop=True)
     ## Create a list of the labels
-    df.rename(columns={'treated_comment': 'comment_text'}, inplace=True)
+    df.rename(columns={'comment': 'comment_text'}, inplace=True)
 
-    df = df[['comment_text', 'list']].copy()
+    df = df[['comment_text', 'target']].copy()
     #### Shuffle the dataset
     df = df.sample(frac=1).reset_index(drop=True)
     N_total = df.shape[0]

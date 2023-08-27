@@ -44,6 +44,8 @@ def main():
     GENERATE_POLICY = True # Generate policy or not
     N_device = 100
     N_choices = np.array([N_device//2.75,N_device//2.4,N_device//2.2,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
+    N_choices = np.array([N_device//10,N_device//10,N_device//10,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
+
     C_A = [[
                                 [0,1.8],
                                 [0,1.4],

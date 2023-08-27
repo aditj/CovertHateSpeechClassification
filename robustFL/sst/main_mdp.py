@@ -13,7 +13,7 @@ from tqdm import tqdm
 import logging
 
 def main():
-    cumm_exp_res_file = "./data/logs/cummulative_experiment_results_MDP.txt"
+    cumm_exp_res_file = "./data/logs/cummulative_experiment_results_MDP_7_SST.txt"
     Ps = [np.array([
        [0.7, 0.2, 0.05, 0.03,  0.02, 0.0, 0],
        [0.4, 0.42, 0.05, 0.03,  0.05, 0.05, 0],
@@ -36,13 +36,13 @@ def main():
     N_successful = 20 # Number of successful communication roundss
     model = BERTClass # Model to be used
     dataset = "MNIST" # Dataset to be used
-    n_classes = 10 # Number of classe
+    n_classes = 1 # Number of classe
     fraction_of_data = 1 # Fraction of data to be used
     # Filename to store all "final" results of use with date
     client_parameters = {"learning_rate":0.001} # Parameters for the client
     GENERATE_DATA = True # Generate data or not
     GENERATE_POLICY = True # Generate policy or not
-    N_device = 100
+    N_device = 20
     N_choices = np.array([N_device//2.75,N_device//2.4,N_device//2.2,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
     C_A = [[
                                 [0,1.8],

@@ -198,7 +198,6 @@ class Server():
         action_sequence = np.zeros(self.n_communications)
         action_sequence[action_sequence_indices] = 1
         for i in tqdm(range(self.n_communications)):
-
             action = action_sequence[i]
             tqdm.write(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: 1")
             if self.state_learning_queries == 0:
