@@ -1,4 +1,4 @@
-from models import CNNImage
+from models import BERTClass
 
 import torch
 import numpy as np
@@ -52,7 +52,7 @@ class Server():
         ### FL Client Related ###
         self.clients = []
         self.client_parameters = client_parameters
-        self.model = CNNImage
+        self.model = BERTClass
         self.initialize_clients(client_dataset_path)
         self.n_batch_per_client = self.clients[0].n_batch_per_client
         self.train_batch_size = self.clients[0].train_batch_size
@@ -119,7 +119,7 @@ class Server():
         
     def initialize_clients(self,client_dataset_path):
         for i in range(self.n_clients): # for each client
-            self.clients.append(Client(i,self.model(),n_classes=self.n_classes,learning_rate=self.client_parameters["learning_rate"],client_dataset_path=client_dataset_path)) # initialize a client
+            self.clients.append(Client(i,self.model(n_classes=self.n_classes),n_classes=self.n_classes,learning_rate=self.client_parameters["learning_rate"],client_dataset_path=client_dataset_path)) # initialize a client
     def select_clients(self,i):
         # All Clients
         #clients_participating = np.ones(self.n_clients)*self.n_batch_per_client # 

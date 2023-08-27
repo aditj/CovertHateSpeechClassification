@@ -1,0 +1,240 @@
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 9, Aggregated Accuracies: 0.12464285714285714 10
+Communication round: 10, Aggregated Accuracies: 0.16535714285714284 11
+Communication round: 11, Aggregated Accuracies: 0.20964285714285702 12
+Communication round: 12, Aggregated Accuracies: 0.3397619047619046 13
+Communication round: 13, Aggregated Accuracies: 0.4074999999999999 14
+Communication round: 14, Aggregated Accuracies: 0.5310714285714286 15
+Communication round: 15, Aggregated Accuracies: 0.6076190476190476 16
+Communication round: 16, Aggregated Accuracies: 0.6305952380952382 17
+Communication round: 17, Aggregated Accuracies: 0.632857142857143 18
+Communication round: 18, Aggregated Accuracies: 0.6797619047619047 19
+Communication round: 19, Aggregated Accuracies: 0.7179761904761903 20
+Communication round: 25, Aggregated Accuracies: 0.7266666666666666 26
+Communication round: 30, Aggregated Accuracies: 0.7297619047619045 31
+Communication round: 36, Aggregated Accuracies: 0.759285714285714 37
+Communication round: 37, Aggregated Accuracies: 0.7775 38
+Communication round: 38, Aggregated Accuracies: 0.8008333333333336 39
+Communication round: 39, Aggregated Accuracies: 0.7852380952380955 40
+Communication round: 40, Aggregated Accuracies: 0.813452380952381 41
+Communication round: 41, Aggregated Accuracies: 0.8153571428571433 42
+Communication round: 42, Aggregated Accuracies: 0.8277380952380952 43
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 18, Aggregated Accuracies: 0.139047619047619 19
+Communication round: 19, Aggregated Accuracies: 0.1921428571428572 20
+Communication round: 20, Aggregated Accuracies: 0.24178571428571424 21
+Communication round: 31, Aggregated Accuracies: 0.24285714285714277 32
+Communication round: 32, Aggregated Accuracies: 0.34654761904761927 33
+Communication round: 33, Aggregated Accuracies: 0.4384523809523808 34
+Communication round: 38, Aggregated Accuracies: 0.5173809523809524 39
+Communication round: 39, Aggregated Accuracies: 0.5614285714285716 40
+Communication round: 40, Aggregated Accuracies: 0.5807142857142857 41
+Communication round: 41, Aggregated Accuracies: 0.6216666666666664 42
+Communication round: 42, Aggregated Accuracies: 0.6495238095238094 43
+Communication round: 43, Aggregated Accuracies: 0.6885714285714283 44
+Communication round: 44, Aggregated Accuracies: 0.6979761904761906 45
+Communication round: 45, Aggregated Accuracies: 0.734285714285714 46
+Communication round: 46, Aggregated Accuracies: 0.7378571428571431 47
+Communication round: 47, Aggregated Accuracies: 0.7685714285714286 48
+Communication round: 48, Aggregated Accuracies: 0.7559523809523809 49
+Communication round: 49, Aggregated Accuracies: 0.787142857142857 50
+Communication round: 50, Aggregated Accuracies: 0.7848809523809526 51
+Communication round: 51, Aggregated Accuracies: 0.7973809523809524 52
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 5, Aggregated Accuracies: 0.15595238095238093 6
+Communication round: 6, Aggregated Accuracies: 0.14428571428571424 7
+Communication round: 7, Aggregated Accuracies: 0.23488095238095238 8
+Communication round: 8, Aggregated Accuracies: 0.2867857142857142 9
+Communication round: 9, Aggregated Accuracies: 0.4110714285714286 10
+Communication round: 10, Aggregated Accuracies: 0.5065476190476189 11
+Communication round: 11, Aggregated Accuracies: 0.5813095238095238 12
+Communication round: 12, Aggregated Accuracies: 0.6371428571428571 13
+Communication round: 13, Aggregated Accuracies: 0.6384523809523811 14
+Communication round: 14, Aggregated Accuracies: 0.6795238095238095 15
+Communication round: 15, Aggregated Accuracies: 0.7205952380952381 16
+Communication round: 16, Aggregated Accuracies: 0.7191666666666664 17
+Communication round: 17, Aggregated Accuracies: 0.7133333333333336 18
+Communication round: 18, Aggregated Accuracies: 0.7622619047619048 19
+Communication round: 19, Aggregated Accuracies: 0.7978571428571428 20
+Communication round: 20, Aggregated Accuracies: 0.8069047619047619 21
+Communication round: 21, Aggregated Accuracies: 0.8108333333333334 22
+Communication round: 22, Aggregated Accuracies: 0.8167857142857144 23
+Communication round: 23, Aggregated Accuracies: 0.818452380952381 24
+Communication round: 24, Aggregated Accuracies: 0.8320238095238096 25
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 7, Aggregated Accuracies: 0.1383333333333333 8
+Communication round: 8, Aggregated Accuracies: 0.18464285714285708 9
+Communication round: 9, Aggregated Accuracies: 0.24797619047619032 10
+Communication round: 10, Aggregated Accuracies: 0.382142857142857 11
+Communication round: 11, Aggregated Accuracies: 0.4948809523809525 12
+Communication round: 12, Aggregated Accuracies: 0.584047619047619 13
+Communication round: 13, Aggregated Accuracies: 0.6091666666666671 14
+Communication round: 14, Aggregated Accuracies: 0.6570238095238095 15
+Communication round: 15, Aggregated Accuracies: 0.6752380952380949 16
+Communication round: 16, Aggregated Accuracies: 0.7140476190476189 17
+Communication round: 17, Aggregated Accuracies: 0.6955952380952383 18
+Communication round: 18, Aggregated Accuracies: 0.7482142857142858 19
+Communication round: 19, Aggregated Accuracies: 0.7575000000000003 20
+Communication round: 20, Aggregated Accuracies: 0.7744047619047617 21
+Communication round: 21, Aggregated Accuracies: 0.78452380952381 22
+Communication round: 22, Aggregated Accuracies: 0.7941666666666667 23
+Communication round: 23, Aggregated Accuracies: 0.8119047619047619 24
+Communication round: 24, Aggregated Accuracies: 0.8136904761904766 25
+Communication round: 25, Aggregated Accuracies: 0.8138095238095243 26
+Communication round: 26, Aggregated Accuracies: 0.8098809523809524 27
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 4, Aggregated Accuracies: 0.11357142857142852 5
+Communication round: 5, Aggregated Accuracies: 0.16797619047619056 6
+Communication round: 7, Aggregated Accuracies: 0.19940476190476186 8
+Communication round: 8, Aggregated Accuracies: 0.24595238095238095 9
+Communication round: 9, Aggregated Accuracies: 0.3253571428571429 10
+Communication round: 10, Aggregated Accuracies: 0.46964285714285703 11
+Communication round: 11, Aggregated Accuracies: 0.5479761904761904 12
+Communication round: 12, Aggregated Accuracies: 0.5635714285714285 13
+Communication round: 13, Aggregated Accuracies: 0.5777380952380952 14
+Communication round: 14, Aggregated Accuracies: 0.6080952380952381 15
+Communication round: 15, Aggregated Accuracies: 0.6689285714285714 16
+Communication round: 16, Aggregated Accuracies: 0.7045238095238093 17
+Communication round: 17, Aggregated Accuracies: 0.6876190476190475 18
+Communication round: 18, Aggregated Accuracies: 0.7398809523809523 19
+Communication round: 19, Aggregated Accuracies: 0.7419047619047618 20
+Communication round: 20, Aggregated Accuracies: 0.7719047619047623 21
+Communication round: 21, Aggregated Accuracies: 0.7684523809523808 22
+Communication round: 22, Aggregated Accuracies: 0.7622619047619046 23
+Communication round: 23, Aggregated Accuracies: 0.7860714285714292 24
+Communication round: 24, Aggregated Accuracies: 0.7871428571428573 25
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 5, Aggregated Accuracies: 0.13892857142857148 6
+Communication round: 6, Aggregated Accuracies: 0.18178571428571424 7
+Communication round: 7, Aggregated Accuracies: 0.26488095238095233 8
+Communication round: 8, Aggregated Accuracies: 0.28380952380952384 9
+Communication round: 9, Aggregated Accuracies: 0.49083333333333334 10
+Communication round: 10, Aggregated Accuracies: 0.5855952380952381 11
+Communication round: 11, Aggregated Accuracies: 0.6246428571428572 12
+Communication round: 12, Aggregated Accuracies: 0.6753571428571428 13
+Communication round: 13, Aggregated Accuracies: 0.7109523809523811 14
+Communication round: 14, Aggregated Accuracies: 0.7465476190476188 15
+Communication round: 15, Aggregated Accuracies: 0.7560714285714285 16
+Communication round: 16, Aggregated Accuracies: 0.7795238095238094 17
+Communication round: 17, Aggregated Accuracies: 0.7789285714285712 18
+Communication round: 18, Aggregated Accuracies: 0.7779761904761905 19
+Communication round: 19, Aggregated Accuracies: 0.811785714285714 20
+Communication round: 20, Aggregated Accuracies: 0.8111904761904762 21
+Communication round: 21, Aggregated Accuracies: 0.8328571428571431 22
+Communication round: 22, Aggregated Accuracies: 0.8297619047619051 23
+Communication round: 23, Aggregated Accuracies: 0.8469047619047616 24
+Communication round: 24, Aggregated Accuracies: 0.8402380952380956 25
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 5, Aggregated Accuracies: 0.13583333333333333 6
+Communication round: 6, Aggregated Accuracies: 0.18345238095238087 7
+Communication round: 7, Aggregated Accuracies: 0.19654761904761905 8
+Communication round: 14, Aggregated Accuracies: 0.2602380952380951 15
+Communication round: 23, Aggregated Accuracies: 0.36333333333333323 24
+Communication round: 24, Aggregated Accuracies: 0.45892857142857146 25
+Communication round: 25, Aggregated Accuracies: 0.5222619047619048 26
+Communication round: 26, Aggregated Accuracies: 0.5246428571428572 27
+Communication round: 27, Aggregated Accuracies: 0.6124999999999999 28
+Communication round: 28, Aggregated Accuracies: 0.6547619047619047 29
+Communication round: 29, Aggregated Accuracies: 0.6955952380952379 30
+Communication round: 30, Aggregated Accuracies: 0.6866666666666669 31
+Communication round: 31, Aggregated Accuracies: 0.7225000000000001 32
+Communication round: 32, Aggregated Accuracies: 0.7316666666666666 33
+Communication round: 36, Aggregated Accuracies: 0.7414285714285714 37
+Communication round: 37, Aggregated Accuracies: 0.7551190476190476 38
+Communication round: 38, Aggregated Accuracies: 0.7529761904761905 39
+Communication round: 39, Aggregated Accuracies: 0.7578571428571429 40
+Communication round: 47, Aggregated Accuracies: 0.7822619047619049 48
+Communication round: 48, Aggregated Accuracies: 0.7885714285714286 49
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 11, Aggregated Accuracies: 0.13714285714285712 12
+Communication round: 12, Aggregated Accuracies: 0.19488095238095238 13
+Communication round: 13, Aggregated Accuracies: 0.18714285714285708 14
+Communication round: 14, Aggregated Accuracies: 0.30142857142857155 15
+Communication round: 15, Aggregated Accuracies: 0.39476190476190487 16
+Communication round: 16, Aggregated Accuracies: 0.4811904761904764 17
+Communication round: 17, Aggregated Accuracies: 0.49178571428571444 18
+Communication round: 18, Aggregated Accuracies: 0.5595238095238095 19
+Communication round: 19, Aggregated Accuracies: 0.6138095238095238 20
+Communication round: 20, Aggregated Accuracies: 0.6714285714285713 21
+Communication round: 21, Aggregated Accuracies: 0.6709523809523807 22
+Communication round: 22, Aggregated Accuracies: 0.7020238095238094 23
+Communication round: 23, Aggregated Accuracies: 0.7433333333333332 24
+Communication round: 24, Aggregated Accuracies: 0.7579761904761902 25
+Communication round: 25, Aggregated Accuracies: 0.7851190476190477 26
+Communication round: 26, Aggregated Accuracies: 0.7980952380952375 27
+Communication round: 27, Aggregated Accuracies: 0.8085714285714287 28
+Communication round: 28, Aggregated Accuracies: 0.8077380952380955 29
+Communication round: 29, Aggregated Accuracies: 0.8096428571428571 30
+Communication round: 31, Aggregated Accuracies: 0.8313095238095239 32
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 2, Aggregated Accuracies: 0.13869047619047614 3
+Communication round: 7, Aggregated Accuracies: 0.15249999999999994 8
+Communication round: 8, Aggregated Accuracies: 0.2004761904761905 9
+Communication round: 9, Aggregated Accuracies: 0.27119047619047615 10
+Communication round: 10, Aggregated Accuracies: 0.3686904761904762 11
+Communication round: 11, Aggregated Accuracies: 0.45880952380952356 12
+Communication round: 12, Aggregated Accuracies: 0.5051190476190477 13
+Communication round: 13, Aggregated Accuracies: 0.5429761904761904 14
+Communication round: 14, Aggregated Accuracies: 0.5903571428571429 15
+Communication round: 15, Aggregated Accuracies: 0.6661904761904761 16
+Communication round: 31, Aggregated Accuracies: 0.6539285714285715 32
+Communication round: 33, Aggregated Accuracies: 0.6933333333333332 34
+Communication round: 34, Aggregated Accuracies: 0.7011904761904759 35
+Communication round: 46, Aggregated Accuracies: 0.7271428571428575 47
+Communication round: 47, Aggregated Accuracies: 0.7338095238095238 48
+Communication round: 48, Aggregated Accuracies: 0.7602380952380955 49
+Communication round: 49, Aggregated Accuracies: 0.7688095238095236 50
+Communication round: 50, Aggregated Accuracies: 0.7913095238095241 51
+Communication round: 51, Aggregated Accuracies: 0.8048809523809527 52
+Communication round: 52, Aggregated Accuracies: 0.8052380952380953 53
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0_True_
+----------------------------------------------------------------------------------------------------
+Communication round: 8, Aggregated Accuracies: 0.11630952380952381 9
+Communication round: 9, Aggregated Accuracies: 0.17571428571428568 10
+Communication round: 10, Aggregated Accuracies: 0.2377380952380953 11
+Communication round: 11, Aggregated Accuracies: 0.31154761904761896 12
+Communication round: 12, Aggregated Accuracies: 0.4340476190476191 13
+Communication round: 13, Aggregated Accuracies: 0.47273809523809535 14
+Communication round: 14, Aggregated Accuracies: 0.5372619047619046 15
+Communication round: 15, Aggregated Accuracies: 0.622142857142857 16
+Communication round: 16, Aggregated Accuracies: 0.6476190476190474 17
+Communication round: 17, Aggregated Accuracies: 0.6598809523809527 18
+Communication round: 19, Aggregated Accuracies: 0.6958333333333333 20
+Communication round: 20, Aggregated Accuracies: 0.6854761904761907 21
+Communication round: 21, Aggregated Accuracies: 0.7255952380952381 22
+Communication round: 22, Aggregated Accuracies: 0.7442857142857139 23
+Communication round: 25, Aggregated Accuracies: 0.744404761904762 26
+Communication round: 26, Aggregated Accuracies: 0.7601190476190475 27
+Communication round: 27, Aggregated Accuracies: 0.778452380952381 28
+Communication round: 28, Aggregated Accuracies: 0.7975000000000005 29
+Communication round: 29, Aggregated Accuracies: 0.8188095238095241 30
+Communication round: 30, Aggregated Accuracies: 0.8153571428571432 31
+----------------------------------------------------------------------------------------------------

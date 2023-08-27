@@ -4,9 +4,12 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from collections import OrderedDict
 from transformers import logging
+from transformers import BertTokenizer
 logging.set_verbosity_error()
 import pandas as pd
 #tokenizer = AlbertTokenizer.from_pretrained('albert-base-v2')
+
+tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-2_H-128_A-2', do_lower_case=True)
 
 
 import warnings
@@ -18,7 +21,7 @@ class CustomDataset(Dataset):
         self.tokenizer = tokenizer
         self.data = dataframe
         self.comment_text = dataframe.comment_text
-        self.targets = self.data['list']
+        self.targets = self.data['target']
         self.max_len = max_len
 
     def __len__(self):
@@ -42,8 +45,7 @@ class CustomDataset(Dataset):
         token_type_ids = inputs["token_type_ids"]
         # make string of a list as a list
         targets = self.targets[index]
-        targets = [float(i) for i in targets]
-
+        
         return {
             'ids': torch.tensor(ids, dtype=torch.long),
             'mask': torch.tensor(mask, dtype=torch.long),
@@ -54,7 +56,7 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
-    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6,client_dataset_path = "./data/client_datasets/"):
+    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 2,client_dataset_path = "./data/client_datasets/"):
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -74,10 +76,10 @@ class Client():
         df = pd.read_csv(f'{self.client_dataset_path}client_{self.cid}.csv')
         
         train_df = df.copy()
-        valid_df = pd.read_csv(f'data/dev.tsv')
+        valid_df = pd.read_csv(f'data/dev.csv',index_col = False)
         train_df = train_df.reset_index(drop=True)
-        self.train_dataset = CustomDataset(train_df)
-        self.valid_dataset = CustomDataset(valid_df)
+        self.train_dataset = CustomDataset(train_df,tokenizer,self.max_len)
+        self.valid_dataset = CustomDataset(valid_df,tokenizer,self.max_len)
         self.train_loader = DataLoader(self.train_dataset, shuffle = True, batch_size=self.train_batch_size, num_workers=0)
         self.n_batch_per_client = len(self.train_loader)//self.train_batch_size
         self.valid_loader = DataLoader(self.valid_dataset, shuffle = True, batch_size=self.valid_batch_size, num_workers=0)
@@ -108,7 +110,7 @@ class Client():
                 targets = data['targets'].to(self.device,torch.float)
                 outputs = self.model(ids, mask, token_type_ids)
                 optimizer.zero_grad()
-                
+                targets = targets.unsqueeze(1)
                 ### Add weights for samples with all 0 classes to avoid bias
                 loss = torch.nn.BCEWithLogitsLoss()(outputs, targets)
                 optimizer.zero_grad()
