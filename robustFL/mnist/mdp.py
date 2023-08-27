@@ -28,6 +28,7 @@ class MarkovChain():
         ## Parameters of MDP
         self.oracle_states = np.zeros(T)
     def generate_device_data_matrix(self):
+        oracle_states = np.zeros(self.O)
         for t in range(self.T):
             no_of_devices_selected = int(np.random.uniform(self.N_choices[self.X] - self.N_window, self.N_choices[self.X] + self.N_window))
 
@@ -38,7 +39,9 @@ class MarkovChain():
             self.n_success[self.X] += self.device_data_matrix[t,:].sum()>self.thres
             self.n_visits[self.X] += 1
             self.oracle_states[t] = self.X
+            oracle_states[self.X] += 1
             self.X = np.random.choice(range(self.O),p = self.P[self.X])
+
             if self.device_data_matrix[t,:].sum()>self.thres:
                 self.successful_round[t] = 1
         self.success_prob = np.zeros((self.P.shape[0],2))
@@ -46,6 +49,7 @@ class MarkovChain():
             self.success_prob[i,0] = 1 - self.n_success[i]/self.n_visits[i]
             self.success_prob[i,1] = self.n_success[i]/self.n_visits[i]
         print("Success probability for each oracle state: ",self.success_prob)
+        print("Number of visits to each oracle state: ",oracle_states)
 def generate_success_prob():
     sucess_probs = []
     m = MarkovChain()
