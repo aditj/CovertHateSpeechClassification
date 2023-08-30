@@ -13,7 +13,10 @@ def average_cost(probpolicy,C,P,T):
                 x = np.random.choice(np.arange(O*L*E),p = P[a,x,:])
         return cost/T
 from utils.randomseed import seed_everything
-N_device = 50
+
+FILE_PATH = "./data/logs/MDP_TEST.txt"
+
+N_device = 100
 P = np.array([
 [0.8, 0.1, 0.05, 0.03,  0.02],
 [0.6, 0.2, 0.1, 0.03,  0.07],
@@ -21,10 +24,9 @@ P = np.array([
 [0.4,0.2,0.2,0.1,0.1],
 [0.02,0.02,0.1,0.18,0.68 ]
 ]) 
-print(P.sum(axis=1))
 # length 7 n_choice
 N_choices = np.array([N_device//2.75,N_device//2.4,N_device//2.2,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
-N_choices = np.array([N_device//50,N_device//5,N_device//4,N_device//3,N_device//1],dtype=int)
+N_choices = np.array([N_device//50,N_device//20,N_device//4,N_device//2,N_device//1],dtype=int)
 
 thresfactor = 10
 markovchain = MarkovChain(N_device=N_device,P = P, N_choices = N_choices,thresfactor = thresfactor,N_total = 60000,T=10000)
@@ -59,8 +61,6 @@ testMDP = True
 if testMDP:
         for k in range(10):
                 seed_everything(k)
-                
-
                 # C_L[L*E-2::L*E,:] = [1e10,0]
                 # C_L[L*E-1::L*E,:] = [1e10,0]
                 markovchain = MarkovChain(N_device=N_device,P = P, N_choices = N_choices,thresfactor = thresfactor,N_total = 60000,T=10000)
@@ -77,6 +77,7 @@ if testMDP:
                 count_learning_queries = 0
                 policy = mdp.policy
                 num_good_oracle_states = 0
+                total_learning_queries = 0 
                 batch_size = np.zeros(state_learning_queries)
                 j = 0
                 for i in tqdm(range(n_communications)):
@@ -85,20 +86,71 @@ if testMDP:
                         action = np.random.choice([0,1],p=[action_prob,1-action_prob])
                         if state_learning_queries == 0:
                                 action = 0
+                        total_learning_queries += action
+
                         if action == 1:
-                                count_learning_queries += 1
                                 if successful_round[i] == 1:
                                         batch_size[j] = device_data_matrix[i].sum()
                                         j += 1
                                         if oracle_state >= 3:
                                                 num_good_oracle_states += 1
                                         state_learning_queries -= 1
-                print(k,num_good_oracle_states,batch_size.mean(),state_learning_queries)
+                # Plot the policy
+                plt.figure(figsize=(10, 5))
+                plt.plot(np.arange(L*O),1 - policy[::2])
+                for i in range(O):
+                        plt.vlines(i*L,0,1,linestyles='dashed')
+                plt.xlabel("State")
+                plt.ylabel("Probability of taking action 1")
+                plt.savefig("./data/plots/MDP_policy.png")
+
+                with open(FILE_PATH,"a") as f:
+                        f.write(f"Optimal Policy {k} {num_good_oracle_states} {batch_size.mean()} {total_learning_queries} {state_learning_queries}\n")
+
+# greedy policy
+if testMDP:
+        for k in range(10):
+                seed_everything(k)
+                # C_L[L*E-2::L*E,:] = [1e10,0]
+                # C_L[L*E-1::L*E,:] = [1e10,0]
+                markovchain = MarkovChain(N_device=N_device,P = P, N_choices = N_choices,thresfactor = thresfactor,N_total = 60000,T=10000)
+                markovchain.generate_device_data_matrix()
+                successful_round = markovchain.successful_round
+                device_data_matrix = markovchain.device_data_matrix
+                
+                        # Plot the policy
+                # count number of successful rounds and simulate
+                state_learning_queries = num_succ_updates
+
+                count_learning_queries = 0
+                num_good_oracle_states = 0
+                total_learning_queries = 0 
+                batch_size = np.zeros(state_learning_queries)
+                j = 0
+                for i in tqdm(range(n_communications)):
+                        oracle_state = markovchain.oracle_states[i]
+                        action = 1
+                        if state_learning_queries == 0:
+                                action = 0
+                        total_learning_queries += action
+                        
+                        if action == 1:
+                                if successful_round[i] == 1:
+                                        batch_size[j] = device_data_matrix[i].sum()
+                                        j += 1
+                                        if oracle_state >= 3:
+                                                num_good_oracle_states += 1
+                                        state_learning_queries -= 1
+                # Plot the policy
+                
+                with open(FILE_PATH,"a") as f:
+                        f.write(f"Greedy Policy {k} {num_good_oracle_states} {batch_size.mean()} {total_learning_queries} {state_learning_queries}\n")
+
 
 # random policy
 batch_size = np.zeros((100,num_succ_updates))
 
-for k in range(100):
+for k in range(10):
         seed_everything(k)
         markovchain = MarkovChain(N_device=N_device,P = P, N_choices = N_choices,thresfactor = thresfactor,N_total = 60000,T=10000)
         markovchain.generate_device_data_matrix()
@@ -123,4 +175,5 @@ for k in range(100):
                         j += 1
                         count_learning_queries += 1
                         state_learning_queries -= 1
-print(batch_size.mean())
+        with open(FILE_PATH,"a") as f:
+                f.write(f"Random Policy {k} {count_learning_queries} {batch_size[k,:].mean()}\n")

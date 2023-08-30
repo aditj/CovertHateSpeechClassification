@@ -39,8 +39,8 @@ def main():
     client_parameters = {"learning_rate":0.001} # Parameters for the client
     GENERATE_DATA = True # Generate data or not
     GENERATE_POLICY = True # Generate policy or not
-    N_device = 50
-    N_choices = np.array([N_device//50,N_device//10,N_device//1.75,N_device//1.25,N_device//1],dtype=int)
+    N_device = 100
+    N_choices = np.array([N_device//50,N_device//20,N_device//4,N_device//2,N_device//1],dtype=int)
     C_A = [[
         [0,1.8],
         [0,1.6],
@@ -50,10 +50,9 @@ def main():
 ]]
     N_total = 60000
     
-
     exp_no = 0 
 
-    thres_factor = 8
+    thres_factor = 10
 
     for P in Ps:         
         experiment_condition = "P" + str(exp_no) # Experiment condition

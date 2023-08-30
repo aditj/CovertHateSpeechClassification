@@ -46,6 +46,7 @@ class MarkovChain():
             self.success_prob[i,0] = 1 - self.n_success[i]/self.n_visits[i]
             self.success_prob[i,1] = self.n_success[i]/self.n_visits[i]
         print("Success probability for each oracle state: ",self.success_prob)
+        print("Number of visits to each oracle state: ",self.n_visits)
 def generate_success_prob():
     sucess_probs = []
     m = MarkovChain()
