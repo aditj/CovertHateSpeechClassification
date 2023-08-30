@@ -78,7 +78,6 @@ class Client():
             if n_batches_end < n_batches_start:
                 n_batches_end = n_batches
             # take subset of train  loader from n_batches_start to n_batches_end                    
-
             for _,data in enumerate(self.train_loader,0):
                 if _ < n_batches_start:
                     continue

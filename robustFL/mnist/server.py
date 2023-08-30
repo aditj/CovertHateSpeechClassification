@@ -157,7 +157,7 @@ class Server():
         self.L = self.state_learning_queries + 1
         self.O = self.markovchain.P.shape[0]
         U = 2
-        D = 0.2
+        D = 0.15
         self.E = 2
         P_O = self.markovchain.P
         fs = self.markovchain.success_prob
@@ -200,6 +200,7 @@ class Server():
         for i in tqdm(range(self.n_communications)):
             action = action_sequence[i]
             tqdm.write(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: 1")
+            count_bad_learning_queries = 0
             if self.state_learning_queries == 0:
                 action = 0
             if action == 1:
@@ -211,6 +212,8 @@ class Server():
                 self.aggregated_loss = 0 # zero the aggregated loss
 
                 clients_participating = self.select_clients(i)
+                if clients_participating.sum() == 0:
+                    count_bad_learning_queries += 1
                 ### Train the clients and aggregate the parameters
                 for j,client_batch_size in tqdm(enumerate(clients_participating,0)): # for each client
                     self.clients[j].train(self.global_parameters,client_batch_size,i) # train the client
@@ -226,7 +229,7 @@ class Server():
                 with open(self.file, "a") as f:
                     f.write(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss} {self.count_learning_queries}')
                     f.write('\n')
-                tqdm.write(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss}') # print the loss
+                tqdm.write(f'Communication round: {i}, Aggregated Accuracies: {self.aggregated_loss} {count_bad_learning_queries}') # print the loss
             else:
                 tqdm.write("Communication round {} Skipped".format(i))
             

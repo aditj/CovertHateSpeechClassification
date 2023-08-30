@@ -1,0 +1,26 @@
+----------------------------------------------------------------------------------------------------
+P0NONGREEDY_False_
+----------------------------------------------------------------------------------------------------
+Communication round: 1, Aggregated Accuracies: 0.12678571428571428 1
+Communication round: 2, Aggregated Accuracies: 0.19404761904761905 2
+Communication round: 3, Aggregated Accuracies: 0.4680952380952382 3
+Communication round: 4, Aggregated Accuracies: 0.6275 4
+Communication round: 5, Aggregated Accuracies: 0.707142857142857 5
+Communication round: 6, Aggregated Accuracies: 0.7316666666666665 6
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0NONGREEDY_False_
+----------------------------------------------------------------------------------------------------
+Communication round: 7, Aggregated Accuracies: 0.16880952380952377 1
+Communication round: 8, Aggregated Accuracies: 0.28119047619047616 2
+Communication round: 10, Aggregated Accuracies: 0.38535714285714284 3
+Communication round: 12, Aggregated Accuracies: 0.5561904761904761 4
+Communication round: 19, Aggregated Accuracies: 0.6729761904761905 5
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+P0NONGREEDY_False_
+----------------------------------------------------------------------------------------------------
+Communication round: 5, Aggregated Accuracies: 0.15023809523809528 1
+Communication round: 6, Aggregated Accuracies: 0.1725 2
+Communication round: 17, Aggregated Accuracies: 0.31773809523809515 3
+----------------------------------------------------------------------------------------------------

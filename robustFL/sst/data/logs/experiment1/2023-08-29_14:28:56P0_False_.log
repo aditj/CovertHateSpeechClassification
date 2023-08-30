@@ -1,0 +1,12 @@
+----------------------------------------------------------------------------------------------------
+P0_False_
+----------------------------------------------------------------------------------------------------
+Communication round: 24, Aggregated Accuracies: 0.5243807339449541 12
+Communication round: 41, Aggregated Accuracies: 0.5666284403669727 25
+Communication round: 71, Aggregated Accuracies: 0.6576834862385321 37
+Communication round: 74, Aggregated Accuracies: 0.664288990825688 38
+Communication round: 75, Aggregated Accuracies: 0.6684633027522935 39
+Communication round: 78, Aggregated Accuracies: 0.7196330275229359 40
+Communication round: 79, Aggregated Accuracies: 0.7220642201834861 41
+Communication round: 80, Aggregated Accuracies: 0.7394724770642204 42
+----------------------------------------------------------------------------------------------------

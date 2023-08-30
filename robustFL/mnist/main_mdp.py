@@ -15,14 +15,13 @@ import logging
 def main():
     cumm_exp_res_file = "./data/logs/cummulative_experiment_results_MDP_7.txt"
     Ps = [np.array([
-[0.7, 0.2, 0.05, 0.03,  0.02, 0.0, 0],
-[0.4, 0.42, 0.05, 0.03,  0.05, 0.05, 0],
-[0.2, 0.3, 0.37, 0.02,  0.04, 0.04, 0.03],
-[0.025, 0.1, 0.2, 0.35,  0.2, 0.1, 0.025],
-[0.03, 0.04, 0.04, 0.02, 0.37, 0.3, 0.2],
-[0, 0.05, 0.05, 0.03, 0.05, 0.42, 0.4],
-[0, 0.0, 0.02, 0.03, 0.05, 0.2, 0.7]
-]) ,]
+[0.8, 0.1, 0.05, 0.03,  0.02],
+[0.6, 0.2, 0.1, 0.03,  0.07],
+[0.5, 0.2, 0.2, 0,  0.1],
+[0.4,0.2,0.2,0.1,0.1],
+[0.02,0.02,0.1,0.18,0.68 ]
+]),]
+    
     # Get experiment conditions which have been done
     experiment_conditions_done = []
     with open(cumm_exp_res_file,"r") as f:
@@ -33,7 +32,7 @@ def main():
     # get value counts of experiment_conditions_done
     experiment_conditions_done = pd.Series(experiment_conditions_done).value_counts()
     N_communication_rounds = 100 # Number of communication rounds
-    N_successful = 20 # Number of successful communication roundss
+    N_successful = 10 # Number of successful communication roundss
     model = CNNImage # Model to be used
     dataset = "MNIST" # Dataset to be used
     n_classes = 10 # Number of classe
@@ -42,28 +41,26 @@ def main():
     client_parameters = {"learning_rate":0.001} # Parameters for the client
     GENERATE_DATA = True # Generate data or not
     GENERATE_POLICY = True # Generate policy or not
-    N_device = 100
+    N_device = 50
     N_choices = np.array([N_device//2.75,N_device//2.4,N_device//2.2,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
-    N_choices = np.array([N_device//25,N_device//20,N_device//20,N_device//20,N_device//8,N_device//4,N_device//2],dtype=int)
+    N_choices = np.array([N_device//50,N_device//1.75,N_device//1.5,N_device//1.25,N_device//1],dtype=int)
 
     C_A = [[
-                                [0,1.8],
-                                [0,1.4],
-                                [0,1.1],
-                                [0,0.8],
-                                [0,0.5],
-                                [0,0.3],
-                                [0,0.1],
-                        ]]
+        [0,1.8],
+        [0,1.6],
+        [0,0.7],
+        [0,0.3],
+        [0,0.1],
+]]
 
     
 
     exp_no = 0 
 
-    thres_factor = 20
+    thres_factor = 6
 
     for P in Ps:         
-        experiment_condition = "P" + str(exp_no) + "random" # Experiment condition
+        experiment_condition = "P" + str(exp_no) + "RANDOM" # Experiment condition
         exp_no += 1
         N_exp_runs = 10 # Number of experiment runs
 

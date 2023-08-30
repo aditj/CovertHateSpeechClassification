@@ -24,24 +24,24 @@ P = np.array([
 print(P.sum(axis=1))
 # length 7 n_choice
 N_choices = np.array([N_device//2.75,N_device//2.4,N_device//2.2,N_device//2,N_device//1.8,N_device//1.7,N_device//1],dtype=int)
-N_choices = np.array([N_device//25,N_device//20,N_device//15,N_device//2,N_device],dtype=int)
+N_choices = np.array([N_device//50,N_device//10,N_device//1.75,N_device//1.25,N_device//1],dtype=int)
 
 thresfactor = 6
 markovchain = MarkovChain(N_device=N_device,P = P, N_choices = N_choices,thresfactor = thresfactor,N_total = 15000,T=10000)
 
-num_succ_updates = 20
+num_succ_updates = 7
 state_learning_queries = num_succ_updates
 L = state_learning_queries + 1
 O = markovchain.P.shape[0]
 U = 2
 E = 2
-D = 0.2
+D = 0.15
 P_O = markovchain.P
 ## Advesarial cost
 C_A = [[
         [0,1.8],
-        [0,1.1],
-        [0,0.8],
+        [0,1.6],
+        [0,0.7],
         [0,0.3],
         [0,0.1],
 ]]
@@ -54,7 +54,7 @@ markovchain.generate_device_data_matrix()
 successful_round = markovchain.successful_round
 device_data_matrix = markovchain.device_data_matrix
 fs = markovchain.success_prob
-n_communications = 100 
+n_communications = 100
 testMDP = True
 if testMDP:
         for k in range(1):

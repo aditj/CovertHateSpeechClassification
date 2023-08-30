@@ -34,7 +34,7 @@ class Server():
         
         
         ### MDP Related ###
-        self.n_total = 15000 
+        self.n_total = 60000 
         self.thres_factor = thres_factor
         self.markovchain = MarkovChain(N_device=self.n_clients,N_total=self.n_total,P = P_O,N_choices = N_choices,thresfactor=self.thres_factor)
         self.markovchain.generate_device_data_matrix()
@@ -157,7 +157,7 @@ class Server():
         self.L = self.state_learning_queries + 1
         self.O = self.markovchain.P.shape[0]
         U = 2
-        D = 0.2
+        D = 0.15
         self.E = 2
         P_O = self.markovchain.P
         fs = self.markovchain.success_prob
