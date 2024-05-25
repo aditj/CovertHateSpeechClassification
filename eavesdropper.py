@@ -10,7 +10,18 @@ from transformers import BertTokenizer
 tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-2_H-128_A-2', do_lower_case=True)
 from torch.utils.data import Dataset, DataLoader
 class Eavesdropper():
+
     def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-04,device = "cuda",n_classes = 6):
+        ''' 
+        Initialize the eavesdropper with the following parameters:
+        batch_size: Batch size for training
+        n_batches_per_client: Number of batches per client
+        max_len: Maximum length of the input
+        epochs: Number of epochs
+        learning_rate: Learning rate
+        device: Device to be used
+        n_classes: Number of classes
+        '''
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.device = device
@@ -22,6 +33,9 @@ class Eavesdropper():
         self.load_data()
         self.model.to(self.device)
     def load_data(self):
+        ''' 
+        Load the data for the eavesdropper
+        '''
         train_df = pd.read_csv('./data/client_datasets/client_eav_train.csv')
         train_df['list'] = train_df['list'].apply(lambda x: x.strip('][').split(','))
         train_df['list'] = train_df['list'].apply(lambda x: [float(i) for i in x])
@@ -34,6 +48,9 @@ class Eavesdropper():
         self.valid_loader = DataLoader(self.valid_dataset, shuffle = True, batch_size=self.batch_size, num_workers=0)
         print(f'Eavesdropper initialized with {len(self.train_dataset)} training samples and {len(self.valid_dataset)} validation samples')
     def train(self,parameters):
+        '''
+        Train the eavesdropper with the given parameters (NN model parameters)
+        '''
         if parameters is not None:
             self.set_parameters(parameters)
         self.model.train()
@@ -57,6 +74,10 @@ class Eavesdropper():
                 optimizer.step()
                 
     def evaluate(self):
+        '''
+        Evaluate the eavesdropper
+        '''
+        
         self.model.eval()
         fin_targets=[]
         fin_outputs=[]

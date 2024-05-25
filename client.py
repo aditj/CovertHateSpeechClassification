@@ -15,7 +15,9 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning) 
 
 class CustomDataset(Dataset):
-
+    '''
+    Custom dataset class for the client
+    '''
     def __init__(self, dataframe, tokenizer, max_len):
         self.tokenizer = tokenizer
         self.data = dataframe
@@ -55,7 +57,22 @@ class CustomDataset(Dataset):
 
 ## Class for FL client 
 class Client():
+    '''
+    A Federated Learning client class
+    '''
     def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6):
+        '''
+        Initialize the client with the following parameters:
+        cid: Client ID
+        network: Model to be used
+        train_batch_size: Batch size for training
+        valid_batch_size: Batch size for validation
+        max_len: Maximum length of the input
+        epochs: Number of epochs
+        learning_rate: Learning rate
+        device: Device to be used
+        n_classes: Number of classes
+        '''
         self.cid = cid
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
@@ -71,6 +88,9 @@ class Client():
         print("Client", self.cid, "initialized with ",len(self.train_dataset),"train samples and ",len(self.valid_dataset),"valid samples")
 
     def load_data(self):
+        '''
+        Load the data for the client
+        '''
         df = pd.read_csv(f'data/client_datasets/client_{self.cid}.csv')
         df['list'] = df['list'].apply(lambda x: x.strip('][').split(','))
         df['list'] = df['list'].apply(lambda x: [float(i) for i in x])
@@ -83,6 +103,12 @@ class Client():
         self.n_batch_per_client = len(self.train_loader)//self.train_batch_size
         self.valid_loader = DataLoader(self.valid_dataset, shuffle = True, batch_size=self.valid_batch_size, num_workers=0)
     def train(self,parameters,n_batches_max,i):
+        '''
+        Train the client with the given parameters (NN model parameters)
+        parameters: Parameters of the model
+        n_batches_max: Number of batches per client
+        i: Client number
+        '''
         self.set_parameters(parameters)
         self.model.train()
         ## Adam with weight decay AdamW
@@ -117,6 +143,11 @@ class Client():
             #print(f'Client: {self.cid}, Batch: {_}, Loss:  {loss.item()}')
     
     def evaluate(self,parameters,batch_size):
+        '''
+        Evaluate the client
+        parameters: Parameters of the model
+        batch_size: Batch size
+        '''
         self.set_parameters(parameters)
         self.model.eval()
         fin_targets=[]

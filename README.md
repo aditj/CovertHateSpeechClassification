@@ -1,4 +1,4 @@
-### Covert Optimization for Hate Speech Classification
+### Python Code for Covert Optimization for Hate Speech Classification
 
 
 ### Structure of the code base
@@ -11,7 +11,6 @@ mdp.py: Contains the MDP and the MarkovChain class
 create_datasets.py: Contains the functions to create the datasets for clients and eavesdropper
 models.py: Contains the Neural Network models
 utils/: Folder containing utility functions
-
 ```
 
 Create these directories in the root folder:
@@ -34,7 +33,3 @@ num_clients: Number of clients
 and run using ```python main.py```. 
 
 Figures can be generated using ```python utils/generateplotforspsa.py``` and ```python utils/generateplotfromlog.py```.
-
-####
-- Doburishin Coefficient 
-- Assumption might be strong for 

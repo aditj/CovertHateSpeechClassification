@@ -1,3 +1,7 @@
+##### Server Class #####
+# This file contains the Server class which is responsible for training the global model and aggregating the parameters from the clients
+
+
 import torch
 from client import Client
 from models import BERTClass,CNNBERTClass
@@ -10,7 +14,21 @@ import datetime
 now = datetime.datetime.now()
 from eavesdropper import Eavesdropper
 class Server():
+    ### Server Class ###
+    '''
+    The server class is responsible for training the global model and aggregating the parameters from the clients
+    '''
     def __init__(self,n_clients,n_communications,parameters,n_classes,client_parameters,generate_policy = False,greedy_policy = False):
+        '''
+        function to initialize the server
+        n_clients: number of clients
+        n_communications: number of communications
+        parameters: global parameters
+        n_classes: number of classes
+        client_parameters: client parameters
+        generate_policy: generate policy or not using SPSA
+        greedy_policy: greedy policy using greedy
+        '''
         ### FL Server Related ###
         self.n_clients = n_clients
         self.global_parameters = parameters.copy()
@@ -38,23 +56,33 @@ class Server():
         self.count_learning_queries = 0
 
         ### Eavesdropper Related ###
+        #### Eavesdropper who is smart and has a personal batch
         self.eavesdropper_smart = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         self.smart_obfuscating_parameters = self.eavesdropper_smart.get_parameters()
         self.zero_aggregated_parameters()
-        
+        #### Eavesdropper who is not smart and does not have a personal batch
         self.eavesdropper_without_obf = Eavesdropper(self.train_batch_size,self.n_batch_per_client,self.clients[0].max_len,n_classes = self.n_classes)
         self.eavesdropper_without_obf.set_parameters(self.global_parameters)
         
         print("Server initialized")
     def train(self):
+        '''
+        function to train the global model and aggregate the parameters from the clients
+        action_prob: probability of action
+        action: action
+        clients_participating: clients participating in the communication round
+    
+        '''
         self.count_learning_queries = 0
+        #### iterate over the number of communications
         for i in tqdm(range(self.n_communications)):
-            self.state_oracle = self.markovchain.oracle_states[i]
-            action_prob = self.policy[int(self.state_oracle*self.L + self.E*self.state_learning_queries)]
-            action = np.random.choice([0,1],p=[action_prob,1-action_prob])
-            print(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: {action_prob}")
+
+            self.state_oracle = self.markovchain.oracle_states[i] # get the oracle state
+            action_prob = self.policy[int(self.state_oracle*self.L + self.E*self.state_learning_queries)] # get the action probability
+            action = np.random.choice([0,1],p=[action_prob,1-action_prob]) # choose the action based on the action probability
+            print(f"Action: {action}, State: {self.state_oracle}, Queries: {self.state_learning_queries}, Prob: {action_prob}") # print the action
             if self.state_learning_queries == 0:
-                action = 0
+                action = 0 # if the state learning queries are 0, then the action is 0
             if action == 1:
                 self.count_learning_queries += 1
                 if self.successful_round[i] == 1 :
@@ -91,6 +119,8 @@ class Server():
                 print("Communication round {} Obfuscated".format(i))
                 
             print(self.count_learning_queries/(i+1))
+            #### Eavesdropper Evaluation
+            ##### if the count of learning queries is greater than 50% of the total queries, then evaluate the eavesdropper according to the true parameters
             if self.count_learning_queries/(i+1) > 0.5:
                 self.eavesdropper_smart.set_parameters(self.global_parameters)
                 accuracy, f1, balanced_accuracy = self.eavesdropper_smart.evaluate()
@@ -149,7 +179,10 @@ class Server():
                 return False
         return True
     def get_policy(self,generate_policy,greedy_policy):
-
+        '''
+        function to get policy using different methods
+        '''
+        ### generate policy using lp lagrange or spsa
         if generate_policy:
             self.L = self.state_learning_queries + 1
             self.O = 3
@@ -170,7 +203,7 @@ class Server():
             C_L[1::self.L*self.E,:] = [0,0]
             C_L[self.L*self.E-2::self.L*self.E,:] = [1e10,0]
             C_L[self.L*self.E-1::self.L*self.E,:] = [1e10,0]
-            mdp = MDP(self.L,P_O,fs,C_A,C_L,D,"lplagrange")
+            mdp = MDP(self.L,P_O,fs,C_A,C_L,D,"lplagrange") ### create MDP object
             
 
         if greedy_policy:

@@ -1,4 +1,10 @@
-
+''' 
+This file contains the model classes for the project. The models are as follows:
+    1. CNNImage: A Convolutional Neural Network model for image classification.
+    2. BERTClass: A BERT model for text classification.
+    3. CNNBERTClass: A model that combines CNN and BERT for text classification.
+    4. LSTM: A Long Short Term Memory model for text classification.
+'''
 import torch
 from transformers import AlbertModel, BertModel
 from transformers import logging
@@ -7,6 +13,9 @@ import torch.nn as nn
 logging.set_verbosity_error()
 
 class CNNImage(torch.nn.Module):
+    ''' 
+    A Convolutional Neural Network model for image classification.
+    '''
     def __init__(self,input_size,output_size):
         super(CNNImage, self).__init__()
         self.l1 = nn.Conv2d(1, 32, kernel_size=5,stride=1)
@@ -39,7 +48,11 @@ class CNNImage(torch.nn.Module):
         output_14 = self.l13(output_13)
         return output_14
 
+
 class BERTClass(torch.nn.Module):
+    '''
+    A BERT model for text classification.
+    '''
     def __init__(self,n_classes = 6):
         super(BERTClass, self).__init__()
         self.l1 = BertModel.from_pretrained("google/bert_uncased_L-2_H-128_A-2") # AlbertModel.from_pretrained('albert-base-v2')
@@ -58,6 +71,9 @@ class BERTClass(torch.nn.Module):
 
 
 class CNNBERTClass(torch.nn.Module):
+    '''
+    A model that combines CNN and BERT for text classification.
+    '''
     def __init__(self,n_classes = 6):
         super(CNNBERTClass, self).__init__()
         self.l1 = BertModel.from_pretrained("google/bert_uncased_L-2_H-128_A-2") # AlbertModel.from_pretrained('albert-base-v2')        
@@ -84,6 +100,9 @@ class CNNBERTClass(torch.nn.Module):
         return output
 
 class SpatialDropout(torch.nn.Dropout2d):
+    '''
+    Spatial Dropout for LSTM model.
+    '''
     def forward(self, x):
         x = x.unsqueeze(2)    # (N, T, 1, K)
         x = x.permute(0, 3, 2, 1)  # (N, K, 1, T)
@@ -93,6 +112,9 @@ class SpatialDropout(torch.nn.Dropout2d):
         return x
     
 class LSTM(torch.nn.Module):
+    '''
+    A Long Short Term Memory model for text classification.
+    '''
     def __init__(self, embedding_matrix,max_features):
         super(LSTM, self).__init__()
         self.max_features = max_features

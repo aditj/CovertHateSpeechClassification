@@ -1,6 +1,17 @@
 ### Successfully created dataset 
 ### Now create the server and clients
-
+'''
+The server and clients are created in the following way:
+    1. The server is created with the following parameters:
+        a. Number of devices
+        b. Number of communication rounds
+        c. Parameters of the model
+        d. Number of classes
+        e. Client parameters
+        f. Generate policy
+        g. Greedy policy
+    2. The server is trained.
+'''
 
 from server import Server
 from client import Client 
