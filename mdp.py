@@ -12,7 +12,7 @@ class MarkovChain():
        [0.15,0.7,0.15],
        [0.0,0.15,0.85]])):
        '''
-         T: Number of rounds
+        T: Number of rounds
         N_device: Number of devices
         N_total: Total number of batches
         thresfactor: Threshold factor
