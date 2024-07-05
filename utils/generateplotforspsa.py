@@ -149,14 +149,14 @@ parameter_initial_values = np.linspace(7,7,1)
 n_iter = 4000
 if True:
     for p_1 in parameter_initial_values:
-        parameters_initial = np.append(np.tile([p_1,12],O),np.pi/2)
+        parameters_initial = np.append(np.tile([p_1,12],O*E),np.pi/2)
         #delt = np.append(np.repeat(np.pi/2,O*(A)),np.pi/4) #np.power(0.99,(np.arange(1,n_iter+1)))+0.001
         delt = np.linspace(0.5,0.4,n_iter)
         T = 1000
         lamb = 1
         epsilon = np.linspace(0.4,0.2,n_iter)
         rho = 2
-        parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L)
+        parameters_spsa = spsa(parameters_initial,delt,n_iter,T,P,D,lamb,epsilon,rho,L,O,E,A,C_A,C_L,tau=0.9)
         np.save("./data/input/spsa/parameters_spsa_"+str(p_1),parameters_spsa)
 
 ## Plot these parameters  for different initial values and oracle states
@@ -177,33 +177,3 @@ if True:
   plt.xticks(size=16)
   plt.yticks(size=16)
   plt.savefig("fig2.pdf",bbox_inches='tight',pad_inches=0)
-
-# for a in range(A):
-#   for o in range(O):
-#     f = fs[o,a] # Probability of success
-#     P_L = (1-delta)*(f)*np.roll(np.identity(L),-1,axis=1) +  ((delta)*(f))*np.roll(np.identity(L),M-1,axis=1) +((1-delta)*(1-f))*np.roll(np.identity(L),0,axis=1) + delta*(1-f)*np.roll(np.identity(L),M,axis=1)# Probability transition for learner state
-#     # Transition can only be positive except if it's previous state
-#     for i in range(L):
-#        if i != 0:
-#          P_L[i,:i-1] = 0
-#     P_L[0,-1] = 0
-#     # Check for learner state
-#     if ((P_L>0).sum(axis = 1)>4).sum()>0:
-#       print("more learner transitions than required")
-#     P_L = P_L/P_L.sum(axis=1).reshape(L,1) # normalization
-#     P[a,L*o:(L)*(o+1),:] = np.tile(P_L,(1,O))*np.repeat(P_O[o,:],L,axis=0) # setting the learner transition matrix for o row and a action
-#     # Check for learner state combined with oracle transition
-#     if ((P[a,L*o:(L)*(o+1),:]>0).sum(axis =1 )>O*4).sum()>0:
-#       print("more learner transitions than required")
-
-#   #P[:,L-1::L,0::L] = 0 # setting the transition from L-1 to 0 to 0 
-#   P[a,:,:] = P[a,:,:]/P[a,:,:].sum(axis = 1).reshape(O*L,1) ## Normalization 
-#   P[a,:,:] = np.around(P[a,:,:],7) # Rounding
-### Dimension Check
-# if fs.shape != (O,A):
-#   print("please correct dimension of fs")
-# if P_O.shape != (O,O):
-#   print("please correct dimension of P_O")
-# ### Stochastic Check 
-# if (np.around(P.sum(axis = 2),5) != 1).sum() > 0:
-#   print("P is not stochastic")

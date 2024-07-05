@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 ## Function to create datasets
 
-def create_datasets_clients(N_device = 100, fraction_of_data = 1,batch_size = 40):
+def create_datasets_clients(N_device = 1g00, fraction_of_data = 1,batch_size = 40):
     df = pd.read_csv("./data/df_treated_comment.csv")
 ##    df = df.sample(frac=fraction_of_data).reset_index(drop=True)
     ## Composition before balancing the dataset
