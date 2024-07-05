@@ -29,22 +29,26 @@ Main prerequisites are:
 ```
  pytorch, ortools, seaborn, pandas, numpy, matplotlib, tqdm
 ```
-Python Version: 3.9.6 
+but all prerequisites can be installed using the following command:
+```
+pip install -r requirements.txt
+```
+
+
+Python Version: *3.9.6*
 
 
 
 Change the following variables in main.py:
 ```
-N_device: Number of client devices used in the federated learning setup
-N_communication_rounds: Number of rounds of federated learning
+- N_device: Number of client devices used in the federated learning setup
+- N_communication_rounds: Number of rounds of federated learning
 model: Model to be used for federated learning (Any model can be used we have implemented BERT+Linear) 
-fraction_of_data: Fraction of data to be used from the entire dataset
-n_classes: Number of classes in the dataset (toxic or not toxic for hatespeech classification dataset hence 1 class)
-client_parameters: Parameters for client neural network training (right now only learning rate can be set)
+- fraction_of_data: Fraction of data to be used from the entire dataset
+- n_classes: Number of classes in the dataset (toxic or not toxic for hatespeech classification dataset hence 1 class)
+- client_parameters: Parameters for client neural network training (right now only learning rate can be set)
 ```
-and run using ```python main.py```. 
 
-Figures can be generated using ```python utils/generateplotforspsa.py``` and ```python utils/generateplotfromlog.py```.
 
 ## Running the code (detailed instructions)
 
