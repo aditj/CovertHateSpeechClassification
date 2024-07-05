@@ -17,8 +17,10 @@ Create these directories in the root folder:
 ```
 data/: Directory to store the dataset and results
 data/input: Directory to store intermediate variables
+data/input/spsa: Directory to store the SPSA parameters
 data/client_datasets: Directory to store client datasets
 data/logs: Directory to store logs
+data/logs/experiment1: Directory to store logs for experiment 1
 data/plots: Directory to store plots
 
 ```
@@ -27,6 +29,9 @@ Main prerequisites are:
 ```
  pytorch, ortools, seaborn, pandas, numpy, matplotlib, tqdm
 ```
+Python Version: 3.9.6 
+
+
 
 Change the following variables in main.py:
 ```
@@ -41,15 +46,21 @@ and run using ```python main.py```.
 
 Figures can be generated using ```python utils/generateplotforspsa.py``` and ```python utils/generateplotfromlog.py```.
 
+## Running the code (detailed instructions)
+
 ### Steps to create dataset
 1. Download the dataset from https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/data (train.csv.zip)
-2. Unzip the file and place it in the data folder
+2. Unzip the file and place it in the data folder with the name train.csv
 3. Run the following code to preprocess the data
 ``` python utils/preprocess.py```
 
 ### Steps to run the code:
 1. Change the variables (mentioned above) in main.py
 2. Create the required directories (mentioned above)
-2. Run the code using ```python main.py```
+3. Create the dataset using the steps mentioned above
+4. Run the code using ```python main.py``` for eavesdropper mentioned under different regimes (10% and no data) these regimes are run automatically
+5. Generate the plots using ```python utils/generateplotforspsa.py``` (Plot 2 in Paper) and ```python utils/generateplotfromlog.py``` (Plot 1 in Paper)
+6. The results are stored in the data/plots folder 
+
 
 
