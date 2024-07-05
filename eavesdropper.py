@@ -11,7 +11,7 @@ tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-2_H-128_A-2', d
 from torch.utils.data import Dataset, DataLoader
 class Eavesdropper():
 
-    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-04,device = "cuda",n_classes = 6):
+    def __init__(self,batch_size,n_batches_per_client,max_len=20,epochs = 1,learning_rate = 1e-04,device = "mps",n_classes = 6):
         ''' 
         Initialize the eavesdropper with the following parameters:
         batch_size: Batch size for training

@@ -112,7 +112,7 @@ print("Cleaning Special Characters...\n")
 
 
 print("Loading data...\n")
-df = pd.read_csv("./data/df_target_comment_text.csv")
+df = pd.read_csv("./data/train.csv") 
 print("Filling Missing Values...\n")
 df['comment_text'] = df['comment_text'].astype(str)
 print("Cleaning and parsing the comments...\n")
@@ -131,5 +131,9 @@ def correct_spelling(x, dic):
 print("Cleaning Spelling...\n")
 df['treated_comment'] = df['treated_comment'].apply(lambda x: correct_spelling(x, mispell_dict))
 df['comment'] = preprocess(df['treated_comment'])
+### remove \n 
+df['comment'] = df['comment'].str.replace('\n',' ')
+print("Removing New Lines...\n")
 print("Saving the data...\n")
+df['target'] = df['toxic'] 
 df[['comment','target']].to_csv('./data/df_treated_comment.csv',index=False)

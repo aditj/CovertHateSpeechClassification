@@ -5,11 +5,13 @@ This file contains the model classes for the project. The models are as follows:
     3. CNNBERTClass: A model that combines CNN and BERT for text classification.
     4. LSTM: A Long Short Term Memory model for text classification.
 '''
+
 import torch
 from transformers import AlbertModel, BertModel
 from transformers import logging
 from torch.nn import functional as F
 import torch.nn as nn
+
 logging.set_verbosity_error()
 
 class CNNImage(torch.nn.Module):
@@ -159,8 +161,23 @@ class LSTM(torch.nn.Module):
         
         return result
 
-
-
-
-
-
+class AgeRegressionConvNet(torch.nn.Module):
+    '''
+    A model for age regression .
+    '''
+    def __init__(self):
+        super(AgeRegressionConvNet, self).__init__()
+        self.l1 = torch.nn.Conv2d(1, 32, kernel_size=5,stride=1)
+        self.l2 = torch.nn.ReLU()
+        self.l3 = torch.nn.Linear(128, 128)
+        self.l4 = torch.nn.ReLU()
+        self.l5 = torch.nn.Linear(128, 1)
+    
+    def forward(self, x):
+        output_1 = self.l1(x)
+        output_2 = self.l2(output_1)
+        output_3 = self.l3(output_2)
+        output_4 = self.l4(output_3)
+        output = self.l5(output_4)
+        
+        return output

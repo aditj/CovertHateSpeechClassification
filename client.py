@@ -60,7 +60,7 @@ class Client():
     '''
     A Federated Learning client class
     '''
-    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "cuda",n_classes = 6):
+    def __init__(self,cid,network,train_batch_size = 40,valid_batch_size = 32,max_len = 300,epochs = 1,learning_rate = 1e-03,device = "mps",n_classes = 6):
         '''
         Initialize the client with the following parameters:
         cid: Client ID
@@ -70,7 +70,7 @@ class Client():
         max_len: Maximum length of the input
         epochs: Number of epochs
         learning_rate: Learning rate
-        device: Device to be used
+        device: Device to be used mps or cuda or cpu
         n_classes: Number of classes
         '''
         self.cid = cid

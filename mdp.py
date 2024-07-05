@@ -7,17 +7,17 @@ from utils.solvemdp import solvelp,spsa,solvelp_generalcost
 class MarkovChain():
     ''' 
     A Markov Chain model for the project.
+    T: Number of rounds
+    N_device: Number of devices
+    N_total: Total number of batches
+    thresfactor: Threshold factor
+    P: Transition matrix
     '''
     def __init__(self,T = 1000,N_device = 100,N_total = 150000,thresfactor = 4,P = np.array([[0.7,0.3,0],
        [0.15,0.7,0.15],
        [0.0,0.15,0.85]])):
-       '''
-        T: Number of rounds
-        N_device: Number of devices
-        N_total: Total number of batches
-        thresfactor: Threshold factor
-        P: Transition matrix
-        '''
+      
+        
         self.T = T
         self.N_device = N_device
         self.N_total = N_total
